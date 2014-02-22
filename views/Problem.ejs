@@ -1,0 +1,58 @@
+<div id="searchResultRow" class="row" style="display:none">
+	<table id="searchResult" class="table table-striped table-centered">
+		<thead>
+			<tr>
+				<th class="header-status">
+				</th>
+				<th class="header-id">
+					<div id="searchTitleBtn" class="" order='asc'><a href="#">ID</a></div>
+				</th>
+				<th class="header-title">
+					<div id="searchTitleBtn" class="" order='asc'><a href="#">Title</a></div>
+				</th>
+				<th class="header-oj">
+					<div id="searchFreshBtn" class="" order='asc'><a href="#">OJ</a></div>
+				</th>
+				<th class="header-ac">
+					<div id="searchAcrateBtn" class="" order='asc'><a href="#">AC Rates</a></div>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+</div>
+<div id="problemListRow" class="row">
+	<table id="problemList" class="table table-striped table-centered">
+		<thead>
+			<tr>
+				<th class="header-status">
+				</th>
+				<th class="header-id">
+					<div id="titleBtn" class="" order='asc'><a href="#">ID</a></div>
+				</th>
+				<th class="header-title">
+					<div id="titleBtn" class="" order='asc'><a href="#">Title</a></div>
+				</th>
+				<th class="header-oj">
+					<div id="freshBtn" class="" order='asc'><a href="#">OJ</a></div>
+				</th>
+				<th class="header-ac">
+					<div id="acrateBtn" class="" order='asc'><a href="#">AC Rates</a></div>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+				<tr>
+						<td>
+								<span class="ac"> </span>
+						</td>
+						<td><%= test.uid %></td>
+						<td><a href="/problem/<%= test.uid %>"><%= test.title %></a>
+						</td>
+						<td>TOJ</td>
+						<td>18.9%</td>
+				</tr>
+		</tbody>
+	</table>
+</div>

@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title><%= title %> - NewTOJ</title>
+		<link href="/stylesheets/bootstrap.css" rel="stylesheet">
+		<link href="/stylesheets/bootstrap-theme.css" rel="stylesheet">
+		<link href="/stylesheets/jumbotron.css" rel="stylesheet">
+		<style type="text/css">
+			img {
+				border:0;
+			}
+			#navBar-right img {
+				border-radius: 5px;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Fixed navbar -->
+		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="/">NewTOJ</a>
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li class="aactive"><a href="/Problem">Problem</a></li>
+						<li><a href="#about">Pick One!</a></li>
+						<li><a href="#contact">Status</a></li>
+						<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Contest<b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="#">Virtual Contest</a></li>
+							<li><a href="#">ICPC Format</a></li>
+							<li><a href="#">CF Format</a></li>
+							<li class="divider"></li>
+							<li class="dropdown-header">Arrange a contest</li>
+							<li><a href="#">Separated link</a></li>
+							<li><a href="#">One more separated link</a></li>
+						</ul>
+						</li>
+					</ul>
+
+					<% if (!user) { %>
+					<div class="navbar-form navbar-right">
+						<a class="btn btn-primary" href="/reg">Sign up</a>
+						<a class="btn btn-default" href="/login">Sign in</a>
+					</div>
+					<% } else {%>
+					<ul id="navBar-right" class="nav navbar-nav navbar-right">
+
+						<li class="dropdown">
+						<a href="#" class="dropdown-toggle" style="margin-bottom:-5px" data-toggle="dropdown">
+							<img src="http://www.gravatar.com/avatar/9ec418b31946b80fafb4c0a51667eaaf?s=25" />&nbsp&nbsp<%=user.name %>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="/discuss/user/jie414341055">My Discuss</a></li>
+							<li><a href="/profile/">Profile</a></li>
+							<!-- TODO:  Dashboard  -->
+							<li><a href="/accounts/password/change/">Change Password</a></li>
+							<li class="divider"></li>
+							<li><a href="/logout/">Sign out</a></li>
+						</ul>
+						</li>
+					</ul>
+					<% } %>
+				</div><!--/.nav-collapse -->
+			</div>
+		</div>
+
+
+
+		<!-- Main jumbotron for a primary marketing message or call to action -->
+		
+
+		<div id="container" class="container">
+			<% if (success) { %>
+				<div class="alert alert-success alert-dismissable">
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+					<%= success %>
+				</div>
+			<% } %>
+			<% if (error) { %>
+				<div class="alert alert-error alert-dismissable">
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+					<%= error %>
+				</div> 
+			<% } %>
+
+			<%- body %>
+			<hr />
+		</div>
+
+		<div id="footer">
+			<div class="container">
+				<p class="text-muted">&copy; NewTOJ 2014</p>	
+			</div>
+		</div>
+	</body>
+	<script src="/javascripts/jquery.js"></script>
+	<script src="/javascripts/bootstrap.min.js"></script>
+</html>
