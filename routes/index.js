@@ -16,36 +16,41 @@ module.exports = function(app) {
 		});
 	});
 	app.get('/Problem', function(req, res) {
-		var prob = new Prob({
-			uid:1001,
-			title:'A+B problem',
-			oj:'TOJ',
-			rates:17.9,
-		    	desc: 'this is fucking ...'
-		});
-		res.render('Problem', {
-			title:'Problem',
-			test: prob,
+		console.log("ttttt");
+		Prob.page(1, function(err, probs) {
+			console.log(probs);
+			if (err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			}
+			res.render('Problem', {
+				title:'Problem',
+				probs: probs,
+			});
 		});
 	});
-	app.get('/problem/:test', function(req, res) {
-		Prob.get(req.params.test, function(err, test) {
-			if (!test) {
+	app.get('/problem/:prob', function(req, res) {
+		Prob.get(req.params.prob, function(err, prob) {
+			if (!prob) {
 				req.flash('error', 'No such problem!');
 				return res.redirect('/Problem');
 			}
-		Prob.get(test.uid, function(err, test) {
+		Prob.get(prob.pid, function(err, prob) {
 				if (err) {
 					req.flash('error', err);
 					return res.redirect('/');
 				}
 				//console.log(test);
-				res.render('test', {
-					uid: test.uid,
-					title: test.title,
-					oj: test.oj,
-					rates: test.rates,
-					desc: test.desc,
+				res.render('prob', {
+					pid: 	prob.pid,
+					oj: 	prob.oj,
+					title: 	prob.title,
+					rates: 	prob.rates,
+					desc: 	prob.desc,
+					input:	prob.input,
+					output:	prob.output,
+					sample_in:	prob.sample_in,
+					sample_out:	prob.sample_out,
 				});
 			});
 		});

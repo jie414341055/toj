@@ -14,7 +14,7 @@
 					<div id="searchFreshBtn" class="" order='asc'><a href="#">OJ</a></div>
 				</th>
 				<th class="header-ac">
-					<div id="searchAcrateBtn" class="" order='asc'><a href="#">AC Rates</a></div>
+					<div id="searchAcrateBtn" class="" order='asc'><a href="#">AC Ratio</a></div>
 				</th>
 			</tr>
 		</thead>
@@ -38,21 +38,23 @@
 					<div id="freshBtn" class="" order='asc'><a href="#">OJ</a></div>
 				</th>
 				<th class="header-ac">
-					<div id="acrateBtn" class="" order='asc'><a href="#">AC Rates</a></div>
+					<div id="acrateBtn" class="" order='asc'><a href="#">AC Ratio</a></div>
 				</th>
 			</tr>
 		</thead>
 		<tbody>
-				<tr>
-						<td>
-								<span class="ac"> </span>
-						</td>
-						<td><%= test.uid %></td>
-						<td><a href="/problem/<%= test.uid %>"><%= test.title %></a>
-						</td>
-						<td>TOJ</td>
-						<td>18.9%</td>
-				</tr>
+			<% probs.forEach(function(prob, index) { %>
+			<tr>
+				<span class="ac"> </span>
+				<td>
+					<td><%= prob.pid %></td>
+					<td><a href="/problem/<%= prob.pid %>"><%= prob.title %></a></td>
+					<td><%= prob.oj %></td>
+					<td><%= prob.vtotal_ac/prob.vtotal_submit*100 %></td>
+				</td>	
+			</tr>
+			<% }); %>
+				
 		</tbody>
 	</table>
 </div>
