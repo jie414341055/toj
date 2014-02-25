@@ -125,7 +125,7 @@ Prob.page = function page(pageID, callback) {
 				return callback(err);
 			}
 			pageID = parseInt(pageID);
-			collection.find().sort({pid:1}).toArray(function(err, docs) {
+			collection.find().sort({pid:1}).limit(5).skip((pageID - 1) * 5).toArray(function(err, docs) {
 				mongodb.close();
 				if(err) {
 					callback(err, null);
@@ -142,3 +142,23 @@ Prob.page = function page(pageID, callback) {
 	});
 };
 
+Prob.getCount = function getCount(query, callback) {
+	mongodb.open(function(err, db) {
+		if(err) {
+			return callback(err);
+		}
+		db.collection('problem', function(err, collection) {
+			if(err) {
+				mongodb.close();
+				return callback(err);
+			}
+			collection.find(query).count(function(err, count) {
+				mongodb.close();
+				if(err) {
+					callback(err, null);
+				}
+				callback(null, count);
+			});
+		});
+	});
+};

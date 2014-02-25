@@ -1,0 +1,36 @@
+<div class="row">
+	<div class="col-sm-6 col-md-4">
+		<div class="thumbnail">
+			<!--<img data-src="holder.js/300x200" alt="...">-->
+			<img src="/avatar/<%= fuser.username %>.jpg" alt="...">
+				<div class="caption">
+					<h3><%= fuser.username %></h3>
+					<p>Schoold: 
+						<% if(fuser.school) { %>
+						<%= fuser.school %>
+						<% } else { %>
+						Unkown
+						<% }%>
+					</p>
+					<p>Nickname:
+						<% if(fuser.nickname) {%>	
+						<%= fuser.nickname %>
+						<% } else { %>
+						Unkown
+						<% }%>
+					</p>
+					<p>Email:
+						<% if(fuser.email) {%>	
+						<%= fuser.email %>
+						<% } else { %>
+						Unkown
+						<% }%>
+					</p>
+					<p>Rigester time: <%= fuser.register_time%>
+					</p>
+					<p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

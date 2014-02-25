@@ -11,31 +11,62 @@ module.exports = function(app) {
 			}
 			res.render('index', {
 				title: 'Home',
-				posts: posts,
+				fposts: posts,
 			});
 		});
 	});
 	app.get('/Problem', function(req, res) {
-		console.log("ttttt");
-		Prob.page(1, function(err, probs) {
-			console.log(probs);
-			if (err) {
+		
+		Prob.getCount({}, function(err, total_prob_num) {
+			if(err) {
 				req.flash('error', err);
 				return res.redirect('/');
 			}
-			res.render('Problem', {
-				title:'Problem',
-				probs: probs,
+			Prob.page(1, function(err, probs) {
+				if (err) {
+					req.flash('error', err);
+					return res.redirect('/');
+				}
+				res.render('Problem', {
+					title:'Problem',
+					ftotal_prob_num: total_prob_num,
+					fprobs: probs,
+				});
 			});
 		});
 	});
-	app.get('/problem/:prob', function(req, res) {
+	
+	app.get('/problem/:vol', function(req, res) {
+
+		var vol_num = req.params.vol;
+		vol_num = parseInt(vol_num.substr(3, vol_num.length));
+
+		Prob.getCount({}, function(err, total_prob_num) {
+			if(err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			}
+			Prob.page(vol_num, function(err, probs) {
+				if(err) {
+					req.flash('error', err);
+					return res.redirect('/Problem');
+				}
+				res.render('vol', {
+					title:'Problem',
+					fvol_num:vol_num,
+					ftotal_prob_num:total_prob_num,
+					fprobs: probs,
+				});
+			});
+		});
+	});
+	app.get('/ShowProblems/:prob', function(req, res) {
 		Prob.get(req.params.prob, function(err, prob) {
 			if (!prob) {
 				req.flash('error', 'No such problem!');
 				return res.redirect('/Problem');
 			}
-		Prob.get(prob.pid, function(err, prob) {
+			Prob.get(prob.pid, function(err, prob) {
 				if (err) {
 					req.flash('error', err);
 					return res.redirect('/');
@@ -68,7 +99,7 @@ module.exports = function(app) {
 	app.post('/reg', function(req, res) {
 		//檢驗用戶兩次輸入的口令是否一致
 		if (req.body['password-repeat'] != req.body['password']) {
-			req.flash('error', '兩次輸入的口令不一致');
+			req.flash('error', 'The password isn\'t the same.');
 			return res.redirect('/reg');
 		}
 
@@ -77,19 +108,19 @@ module.exports = function(app) {
 		var password = md5.update(req.body.password).digest('base64');
 
 		var newUser = new User({
-			name: req.body.username,
+			username: req.body.username,
 		    password: password,
 		});
 
 		//檢查用戶名是否已經存在
-		User.get(newUser.name, function(err, user) {
+		User.get(newUser.username, function(err, user) {
 			if (user)
 			err = 'Username already exists.';
 		if (err) {
 			req.flash('error', err);
 			return res.redirect('/reg');
 		}
-		//如果不存在則新增用戶
+		//if not exists, add a new user
 		newUser.save(function(err) {
 			if (err) {
 				req.flash('error', err);
@@ -105,7 +136,7 @@ module.exports = function(app) {
 	app.get('/login', checkNotLogin);
 	app.get('/login', function(req, res) {
 		res.render('login', {
-			title: '用戶登入',
+			title: 'Sign in',
 		});
 	});
 
@@ -117,15 +148,15 @@ module.exports = function(app) {
 
 		User.get(req.body.username, function(err, user) {
 			if (!user) {
-				req.flash('error', '用戶不存在');
+				req.flash('error', 'User doesn\'t exists.');
 				return res.redirect('/login');
 			}
 			if (user.password != password) {
-				req.flash('error', '用戶口令錯誤');
+				req.flash('error', 'Wrong password.');
 				return res.redirect('/login');
 			}
 			req.session.user = user;
-			req.flash('success', '登入成功');
+			req.flash('success', 'Sign in success.');
 			res.redirect('/');
 		});
 	});
@@ -133,23 +164,43 @@ module.exports = function(app) {
 	app.get('/logout', checkLogin);
 	app.get('/logout', function(req, res) {
 		req.session.user = null;
-		req.flash('success', '登出成功');
+		req.flash('success', 'Sign out success.');
 		res.redirect('/');
 	});
+
+	app.get('/profile/:user', function(req, res) {
+		User.get(req.params.user, function(err, user) {
+			if(!user) {
+				req.flash('error', 'user doesn\'t exists.');
+				return res.redirect('/');
+			}
+			User.get(user.username, function(err, user) {
+				if(err) {
+					req.flash('error', err);
+					return res.redirect('/');
+				}
+				res.render('profile', {
+					title: 'My profile',
+					fuser: user,
+				});
+			});
+		});
+	});
+
 
 	app.get('/u/:user', function(req, res) {
 		User.get(req.params.user, function(err, user) {
 			if (!user) {
-				req.flash('error', '用戶不存在');
+				req.flash('error', 'User doesn\'t exists.');
 				return res.redirect('/');
 			}
-			Post.get(user.name, function(err, posts) {
+			Post.get(user.username, function(err, posts) {
 				if (err) {
 					req.flash('error', err);
 					return res.redirect('/');
 				}
 				res.render('user', {
-					title: user.name,
+					title: user.username,
 					posts: posts,
 				});
 			});
@@ -159,21 +210,21 @@ module.exports = function(app) {
 	app.post('/post', checkLogin);
 	app.post('/post', function(req, res) {
 		var currentUser = req.session.user;
-		var post = new Post(currentUser.name, req.body.post);
+		var post = new Post(currentUser.username, req.body.post);
 		post.save(function(err) {
 			if (err) {
 				req.flash('error', err);
 				return res.redirect('/');
 			}
-			req.flash('success', '發表成功');
-			res.redirect('/u/' + currentUser.name);
+			req.flash('success', 'post success.');
+			res.redirect('/u/' + currentUser.username);
 		});
 	});
 };
 
 function checkLogin(req, res, next) {
 	if (!req.session.user) {
-		req.flash('error', '未登入');
+		req.flash('error', 'Please Sign in first.');
 		return res.redirect('/login');
 	}
 	next();
@@ -181,7 +232,7 @@ function checkLogin(req, res, next) {
 
 function checkNotLogin(req, res, next) {
 	if (req.session.user) {
-		req.flash('error', '已登入');
+		req.flash('error', 'Signed in.');
 		return res.redirect('/');
 	}
 	next();

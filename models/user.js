@@ -1,60 +1,71 @@
 var mongodb = require('./db');
 
 function User(user) {
-  this.name = user.name;
+  this.username = user.username;
+  this.nickname = user.nickname;
   this.password = user.password;
+  this.school = user.school;
+  this.email = user.email;
+  this.total_submit = user.submit;
+  this.total_ac = user.total_ac;
+  this.register_time = new Date();
+  this.ipaddr = user.ipaddr;
 };
 module.exports = User;
 
 User.prototype.save = function save(callback) {
-  // 存入 Mongodb 的文檔
-  var user = {
-    name: this.name,
-    password: this.password,
-  };
-  mongodb.open(function(err, db) {
-    if (err) {
-      return callback(err);
-    }
-    // 讀取 users 集合
-    db.collection('users', function(err, collection) {
-      if (err) {
-        mongodb.close();
-        return callback(err);
-      }
-      // 爲 name 屬性添加索引
-      collection.ensureIndex('name', {unique: true});
-      // 寫入 user 文檔
-      collection.insert(user, {safe: true}, function(err, user) {
-        mongodb.close();
-        callback(err, user);
-      });
-    });
-  });
+	// 存入 Mongodb 的文檔
+	var user = {
+		username: this.username,
+		nickname: this.nickname,
+		password: this.password,
+		school:	this.school,
+		email:	this.email,
+		total_submit:	this.total_submit,
+		total_ac:	this.total_ac,
+		register_time:	this.register_time,
+		ipaddr:	this.ipaddr,
+	};
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+		// users collections
+		db.collection('users', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			// add index for username
+			collection.ensureIndex('username', {unique: true});
+			// insert
+			collection.insert(user, {safe: true}, function(err, user) {
+				mongodb.close();
+				callback(err, user);
+			});
+		});
+	});
 };
 
-User.get = function get(username, callback) {
-  mongodb.open(function(err, db) {
-    if (err) {
-      return callback(err);
-    }
-    // 讀取 users 集合
-    db.collection('users', function(err, collection) {
-      if (err) {
-        mongodb.close();
-        return callback(err);
-      }
-      // 查找 name 屬性爲 username 的文檔
-      collection.findOne({name: username}, function(err, doc) {
-        mongodb.close();
-        if (doc) {
-          // 封裝文檔爲 User 對象
-          var user = new User(doc);
-          callback(err, user);
-        } else {
-          callback(err, null);
-        }
-      });
-    });
-  });
+User.get = function get(Username, callback) {
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+		db.collection('users', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			collection.findOne({username: Username}, function(err, doc) {
+				mongodb.close();
+				if (doc) {
+					var user = new User(doc);
+					callback(err, user);
+				} else {
+					callback(err, null);
+				}
+			});
+		});
+	});
 };
