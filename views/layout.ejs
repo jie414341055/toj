@@ -85,7 +85,7 @@
 		<!-- Main jumbotron for a primary marketing message or call to action -->
 		
 
-		<div id="container" class="container">
+		<div id="msg" class="container">
 			<% if (success) { %>
 				<div class="alert alert-success alert-dismissable">
 					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -99,6 +99,14 @@
 				</div> 
 			<% } %>
 
+		</div>
+		<script>
+			setTimeout(function() {
+				$("#msg").slideUp();
+			}, 1500);
+  		</script>
+
+		<div id="container" class="container">
 			<%- body %>
 			<hr />
 		</div>

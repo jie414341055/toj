@@ -201,7 +201,7 @@ module.exports = function(app) {
 				}
 				res.render('user', {
 					title: user.username,
-					posts: posts,
+					fposts: posts,
 				});
 			});
 		});

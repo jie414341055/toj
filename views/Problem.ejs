@@ -10,6 +10,15 @@
 				<th class="header-title">
 					<div id="searchTitleBtn" class="" order='asc'><a href="#">Title</a></div>
 				</th>
+				<th class="header-source">
+					<div id="searchTitleBtn" class="" order='asc'><a href="#">Source</a></div>
+				</th>
+				<th class="header-submit">
+					<div id="titleBtn" class="" order='asc'><a href="#">Total</a></div>
+				</th>
+				<th class="header-ac">
+					<div id="titleBtn" class="" order='asc'><a href="#">AC</a></div>
+				</th>
 				<th class="header-oj">
 					<div id="searchFreshBtn" class="" order='asc'><a href="#">OJ</a></div>
 				</th>
@@ -30,6 +39,11 @@
 		<li><a href="/Problem/vol3">3</a></li>
 		<li><a href="/Problem/vol4">4</a></li>
 		<li><a href="/Problem/vol5">5</a></li>
+		<li><a href="/Problem/vol5">6</a></li>
+		<li><a href="/Problem/vol5">7</a></li>
+		<li><a href="/Problem/vol5">8</a></li>
+		<li><a href="/Problem/vol5">9</a></li>
+		<li><a href="/Problem/vol5">10</a></li>
 		<li><a href="#">&raquo;</a></li>
 	</ul>
 	<table id="problemList" class="table table-striped table-centered">
@@ -42,6 +56,15 @@
 				</th>
 				<th class="header-title">
 					<div id="titleBtn" class="" order='asc'><a href="#">Title</a></div>
+				</th>
+				<th class="header-source">
+					<div id="searchTitleBtn" class="" order='asc'><a href="#">Source</a></div>
+				</th>
+				<th class="header-submit">
+					<div id="titleBtn" class="" order='asc'><a href="#">Total</a></div>
+				</th>
+				<th class="header-ac">
+					<div id="titleBtn" class="" order='asc'><a href="#">AC</a></div>
 				</th>
 				<th class="header-oj">
 					<div id="freshBtn" class="" order='asc'><a href="#">OJ</a></div>
@@ -58,8 +81,11 @@
 				<td>
 					<td><%= prob.pid %></td>
 					<td><a href="/ShowProblems/<%= prob.pid %>"><%= prob.title %></a></td>
+					<td><%= prob.vtotal_submit + prob.total_submit %></td>
+					<td><%= prob.source %></td>
+					<td><%= prob.vtotal_ac + prob.total_ac %></td>
 					<td><%= prob.oj %></td>
-					<td><%= prob.vtotal_ac/prob.vtotal_submit*100 %></td>
+					<td><%= Math.round(prob.vtotal_ac/prob.vtotal_submit*10000)/100 %>&#37;</td>
 				</td>	
 			</tr>
 			<% }); %>
@@ -73,6 +99,11 @@
 		<li><a href="/Problem/vol3">3</a></li>
 		<li><a href="/Problem/vol4">4</a></li>
 		<li><a href="/Problem/vol5">5</a></li>
+		<li><a href="/Problem/vol5">6</a></li>
+		<li><a href="/Problem/vol5">7</a></li>
+		<li><a href="/Problem/vol5">8</a></li>
+		<li><a href="/Problem/vol5">9</a></li>
+		<li><a href="/Problem/vol5">10</a></li>
 		<li><a href="#">&raquo;</a></li>
 	</ul>
 </div>

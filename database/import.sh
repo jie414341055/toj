@@ -1,1 +1,1 @@
-mongoimport -d toj -c problem -file data.json -upsert 
+mongoimport -d toj -c problem --file ok.json --jsonArray

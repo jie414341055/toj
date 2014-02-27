@@ -34,3 +34,45 @@
 		</div>
 	</div>
 </div>
+
+
+<script type="javascript">
+	$(function(){
+		$("td").click(tdclick);
+	});
+	function tdclick(){
+
+		var td = $(this);
+		var text = td.text();
+		td.html("");//也可以用empty()方法
+		var input = $("<input>");
+		input.attr("value",text);
+		input.keyup(function(event){
+			var myEvent = event || window.event;
+			var key = myEvent.keyCode;
+			if(key == 13){
+				var inputNode = $(this);
+				var inputText = inputNode.val();
+				inputNode.parent().html(inputText);
+
+				td.click(tdclick);
+			}
+		});
+
+		input.blur(function(){
+			var inputNode = $(this);
+			var inputText = inputNode.val();
+			inputNode.parent().html(inputText);
+			td.click(tdclick);
+		});
+
+		td.append(input);
+
+		td.unbind("click");
+	}
+</script>
+<table border="1px">
+	<tr>
+		<td>123123</td>    <td>456456</td>
+	</tr>
+</table>

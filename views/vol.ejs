@@ -10,6 +10,15 @@
 				<th class="header-title">
 					<div id="searchTitleBtn" class="" order='asc'><a href="#">Title</a></div>
 				</th>
+				<th class="header-source">
+					<div id="searchTitleBtn" class="" order='asc'><a href="#">Source</a></div>
+				</th>
+				<th class="header-submit">
+					<div id="titleBtn" class="" order='asc'><a href="#">Total</a></div>
+				</th>
+				<th class="header-ac">
+					<div id="titleBtn" class="" order='asc'><a href="#">AC</a></div>
+				</th>
 				<th class="header-oj">
 					<div id="searchFreshBtn" class="" order='asc'><a href="#">OJ</a></div>
 				</th>
@@ -25,7 +34,7 @@
 <div id="problemListRow" class="row">
 	<ul class="pagination">
 		<li class="disabled"><a href="#">&laquo;</a></li>
-		<% for(var i = 1;i <= 5; ++i) { %>
+		<% for(var i = 1;i <= 10; ++i) { %>
 		<% if (i == fvol_num) { %>
 		<li class="active"><a href="#"><%= fvol_num %> <span class="sr-only">(current)</span></a></li>
 		<% } else { %>
@@ -45,6 +54,15 @@
 				<th class="header-title">
 					<div id="titleBtn" class="" order='asc'><a href="#">Title</a></div>
 				</th>
+				<th class="header-source">
+					<div id="searchTitleBtn" class="" order='asc'><a href="#">Source</a></div>
+				</th>
+				<th class="header-submit">
+					<div id="titleBtn" class="" order='asc'><a href="#">Total</a></div>
+				</th>
+				<th class="header-ac">
+					<div id="titleBtn" class="" order='asc'><a href="#">AC</a></div>
+				</th>
 				<th class="header-oj">
 					<div id="freshBtn" class="" order='asc'><a href="#">OJ</a></div>
 				</th>
@@ -60,8 +78,11 @@
 				<td>
 					<td><%= prob.pid %></td>
 					<td><a href="/ShowProblems/<%= prob.pid %>"><%= prob.title %></a></td>
+					<td><%= prob.source %></td>
+					<td><%= prob.vtotal_submit + prob.total_submit %></td>
+					<td><%= prob.vtotal_ac + prob.total_ac %></td>
 					<td><%= prob.oj %></td>
-					<td><%= prob.vtotal_ac/prob.vtotal_submit*100 %></td>
+					<td><%= Math.round(prob.vtotal_ac/prob.vtotal_submit*10000)/100 %>&#37;</td>
 				</td>	
 			</tr>
 			<% }); %>
@@ -70,7 +91,7 @@
 	</table>
 	<ul class="pagination">
 		<li class="disabled"><a href="#">&laquo;</a></li>
-		<% for(var i = 1;i <= 5; ++i) { %>
+		<% for(var i = 1;i <= 10; ++i) { %>
 		<% if (i == fvol_num) { %>
 		<li class="active"><a href="#"><%= fvol_num %> <span class="sr-only">(current)</span></a></li>
 		<% } else { %>

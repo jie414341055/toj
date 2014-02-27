@@ -14,7 +14,7 @@ function User(user) {
 module.exports = User;
 
 User.prototype.save = function save(callback) {
-	// 存入 Mongodb 的文檔
+
 	var user = {
 		username: this.username,
 		nickname: this.nickname,
