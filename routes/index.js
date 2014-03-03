@@ -29,7 +29,7 @@ module.exports = function(app) {
 				}
 				res.render('Problem', {
 					title:'Problem',
-					ftotal_prob_num: total_prob_num,
+					ftotal_vol: Math.ceil(total_prob_num/50),
 					fprobs: probs,
 				});
 			});
@@ -54,7 +54,7 @@ module.exports = function(app) {
 				res.render('vol', {
 					title:'Problem',
 					fvol_num:vol_num,
-					ftotal_prob_num:total_prob_num,
+					ftotal_vol: Math.ceil(total_prob_num/50),
 					fprobs: probs,
 				});
 			});
@@ -87,6 +87,12 @@ module.exports = function(app) {
 		});
 	});
 
+	app.get('/pager', function(req, res) {
+		res.render('pager', {
+			title: 'test',
+		});
+	});
+
 
 	app.get('/reg', checkNotLogin);
 	app.get('/reg', function(req, res) {
@@ -109,27 +115,27 @@ module.exports = function(app) {
 
 		var newUser = new User({
 			username: req.body.username,
-		    password: password,
+		    	password: password,
 		});
 
 		//檢查用戶名是否已經存在
 		User.get(newUser.username, function(err, user) {
 			if (user)
 			err = 'Username already exists.';
-		if (err) {
-			req.flash('error', err);
-			return res.redirect('/reg');
-		}
-		//if not exists, add a new user
-		newUser.save(function(err) {
 			if (err) {
 				req.flash('error', err);
 				return res.redirect('/reg');
 			}
-			req.session.user = newUser;
-			req.flash('success', 'Register succeed.');
-			res.redirect('/');
-		});
+			//if not exists, add a new user
+			newUser.save(function(err) {
+				if (err) {
+					req.flash('error', err);
+					return res.redirect('/reg');
+				}
+				req.session.user = newUser;
+				req.flash('success', 'Register succeed.');
+				res.redirect('/');
+			});
 		});
 	});
 

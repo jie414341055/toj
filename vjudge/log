@@ -1,0 +1,118 @@
+buffer = hdu 2
+__SOURCE-CODE-BEGIN-LABLE__
+#include<cstring>
+#include<cstdio>
+using namespace std;
+int main() { int a, b;
+ int c = a + b;
+ return 0; }
+__SOURCE-CODE-END-LABLE__
+x 1 x 12 x 1002 x 0 x 1000 x 1000 x 65536 x 0 1002 1002 1002 1002
+
+@@@!! code = #include<cstring>
+#include<cstdio>
+using namespace std;
+int main() { int a, b;
+ int c = a + b;
+ return 0; }
+
+@@@!! code end...
+@@ runid = 1 lang = 12 pid = 1002 number_of_cases = 0 time_limit = 1000 case_limit = 1000 memory_limit = 65536 special_judge_status = 0 vname = 1002 vid = 1002
+Queuing
+10202256
+Wrong Answer
+10202256
+buffer = hdu 2
+__SOURCE-CODE-BEGIN-LABLE__
+#include<cstring>
+#include<cstdio>
+using namespace std;
+int main() { int a, b;
+ int c = a + b;
+ return 0; }
+__SOURCE-CODE-END-LABLE__
+x 1 x 12 x 1002 x 0 x 1000 x 1000 x 65536 x 0 1002 1002 1002 1002
+
+@@@!! code = #include<cstring>
+#include<cstdio>
+using namespace std;
+int main() { int a, b;
+ int c = a + b;
+ return 0; }
+
+@@@!! code end...
+@@ runid = 1 lang = 12 pid = 1002 number_of_cases = 0 time_limit = 1000 case_limit = 1000 memory_limit = 65536 special_judge_status = 0 vname = 1002 vid = 1002
+Queuing
+10202257
+Queuing
+10202257
+Queuing
+10202257
+Compiling
+10202257
+Wrong Answer
+10202257
+buffer = hdu 2
+__SOURCE-CODE-BEGIN-LABLE__
+#include<cstring>
+#include<cstdio>
+using namespace std;
+int main() { int a, b;
+ int c = a + b;
+ return 0; }
+__SOURCE-CODE-END-LABLE__
+x 1 x 12 x 1002 x 0 x 1000 x 1000 x 65536 x 0 1002 1002 1002 1002
+
+@@@!! code = #include<cstring>
+#include<cstdio>
+using namespace std;
+int main() { int a, b;
+ int c = a + b;
+ return 0; }
+
+@@@!! code end...
+@@ runid = 1 lang = 12 pid = 1002 number_of_cases = 0 time_limit = 1000 case_limit = 1000 memory_limit = 65536 special_judge_status = 0 vname = 1002 vid = 1002
+Queuing
+10202261
+Queuing
+10202261
+Queuing
+10202261
+Queuing
+10202261
+Wrong Answer
+10202261
+buffer = hdu 2
+__SOURCE-CODE-BEGIN-LABLE__
+#include<cstring>
+#include<cstdio>
+using namespace std;
+int main() { int a, b;
+ int c = a + b;
+ return 0; }
+__SOURCE-CODE-END-LABLE__
+x 1 x 12 x 1002 x 0 x 1000 x 1000 x 65536 x 0 1002 1002 1002 1002
+
+@@@!! code = #include<cstring>
+#include<cstdio>
+using namespace std;
+int main() { int a, b;
+ int c = a + b;
+ return 0; }
+
+@@@!! code end...
+@@ runid = 1 lang = 12 pid = 1002 number_of_cases = 0 time_limit = 1000 case_limit = 1000 memory_limit = 65536 special_judge_status = 0 vname = 1002 vid = 1002
+Queuing
+10202262
+Queuing
+10202262
+Queuing
+10202262
+Queuing
+10202262
+Queuing
+10202262
+Queuing
+10202262
+Wrong Answer
+10202262
