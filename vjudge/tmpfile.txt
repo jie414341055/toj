@@ -1,8 +1,8 @@
 <type> 3
 <runid> 1
-<memory_used> 240
+<memory_used> 320
 <time_used> 0
-<result> Wrong Answer
+<result> Accepted
 __COMPILE-INFO-BEGIN-LABLE__
 
 __COMPILE-INFO-END-LABLE__

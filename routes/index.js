@@ -2,6 +2,7 @@ var crypto = require('crypto');
 var User = require('../models/user.js');
 var Post = require('../models/post.js');
 var Prob = require('../models/prob.js');
+var net = require('net');
 
 module.exports = function(app) {
 	app.get('/', function(req, res) {
@@ -66,13 +67,27 @@ module.exports = function(app) {
 				req.flash('error', 'No such problem!');
 				return res.redirect('/Problem');
 			}
+			
+			res.render('ShowProblem', {
+				pid: 	prob.pid,
+				oj: 	prob.oj,
+				title: 	prob.title,
+				rates: 	prob.rates,
+				desc: 	prob.desc,
+				input:	prob.input,
+				output:	prob.output,
+				sample_in:	prob.sample_in,
+				sample_out:	prob.sample_out,
+			});
+			
+			/*	
 			Prob.get(prob.pid, function(err, prob) {
 				if (err) {
 					req.flash('error', err);
 					return res.redirect('/');
 				}
 				//console.log(test);
-				res.render('prob', {
+				res.render('ShowProblem', {
 					pid: 	prob.pid,
 					oj: 	prob.oj,
 					title: 	prob.title,
@@ -84,12 +99,54 @@ module.exports = function(app) {
 					sample_out:	prob.sample_out,
 				});
 			});
+			*/	
 		});
 	});
 
-	app.get('/pager', function(req, res) {
-		res.render('pager', {
-			title: 'test',
+	app.get('/ProbSubmit/:prob', function(req, res) {
+		var currentUser = req.session.user;
+		if(!currentUser) {
+			return res.redirect('/login');
+		}
+		Prob.get(req.params.prob, function(err, prob) {
+			if(err) {
+				req.flash('error', err);
+				return res.redirect('/ShowProblem/' + prob.pid);
+			}
+			//console.log('/Showproblem/' + prob.pid);
+			res.render('ProbSubmit', {
+				title: 'Submit',
+				fprob: prob,
+			});
+		});
+	});
+	app.get('/Status', function(req, res) {
+		console.log('get status');
+	});
+	app.post('/Status', function(req, res) {
+		var HOST = '127.0.0.1';
+		var PORT = 6969;
+		console.log(req.body['code']);
+		SendCode(HOST, PORT, req.body['code']);
+	});
+
+	function SendCode(HOST, PORT, SourceCode) {
+		var client = new net.Socket();
+		client.connect(PORT, HOST, function() {
+			client.write(SourceCode);
+		});
+	};
+
+	app.post('/post', function(req, res) {
+		var currentUser = req.session.user;
+		var post = new Post(currentUser.username, req.body.post);
+		post.save(function(err) {
+			if (err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			}
+			req.flash('success', 'post success.');
+			res.redirect('/u/' + currentUser.username);
 		});
 	});
 
@@ -103,7 +160,7 @@ module.exports = function(app) {
 
 	app.post('/reg', checkNotLogin);
 	app.post('/reg', function(req, res) {
-		//檢驗用戶兩次輸入的口令是否一致
+		//check the password entered are the same
 		if (req.body['password-repeat'] != req.body['password']) {
 			req.flash('error', 'The password isn\'t the same.');
 			return res.redirect('/reg');
@@ -118,7 +175,7 @@ module.exports = function(app) {
 		    	password: password,
 		});
 
-		//檢查用戶名是否已經存在
+		//check if the username already exists
 		User.get(newUser.username, function(err, user) {
 			if (user)
 			err = 'Username already exists.';

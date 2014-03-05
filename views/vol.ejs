@@ -1,3 +1,37 @@
+<style>
+	.ac {
+		display: inline-block;
+		height: 16px;
+		width: 16px;
+		background-image: url('/static/images/correct.png');
+		background-repeat: no-repeat;
+	}
+	.notac {
+		display: inline-block;
+		height: 16px;
+		width: 16px;
+		background-image: url('/static/images/question.png');
+		background-repeat: no-repeat;
+	}
+	.table-centered {
+		margin: 0 auto !important;
+		float: none !important;
+		width: 700px;
+	}
+	.header-status {
+		width: 5%;
+	}
+	.header-title {
+		width: 60%;
+	}
+	.header-oj {
+		width: 8%;
+	}
+	.header-ac {
+		width: 27%;
+		min-width: 100px;
+	}
+</style>
 <div id="searchResultRow" class="row" style="display:none">
 	<table id="searchResult" class="table table-striped table-centered">
 		<thead>
@@ -10,14 +44,8 @@
 				<th class="header-title">
 					<div id="searchTitleBtn" class="" order='asc'><a href="#">Title</a></div>
 				</th>
-				<th class="header-submit">
-					<div id="titleBtn" class="" order='asc'><a href="#">Total</a></div>
-				</th>
-				<th class="header-ac">
-					<div id="titleBtn" class="" order='asc'><a href="#">AC</a></div>
-				</th>
 				<th class="header-oj">
-					<div id="searchFreshBtn" class="" order='asc'><a href="#">OJ</a></div>
+					<div id="titleBtn" class="" order='asc'><a href="#">OJ</a></div>
 				</th>
 				<th class="header-ac">
 					<div id="searchAcrateBtn" class="" order='asc'><a href="#">AC Ratio</a></div>
@@ -30,13 +58,13 @@
 </div>
 <div id="problemListRow" class="row">
 	<center>
-	<ul class="pagination">
-		<% if(fvol_num >= 4) { %>
+		<ul class="pagination">
+			<% if(fvol_num >= 4) { %>
 			<% if(fvol_num+3<ftotal_vol-2) { %>		
 				<% if(fvol_num == 4) { %>		
-					<li class="disabled"><a href="#">&laquo;</a></li>
+				<li class="disabled"><a href="#">&laquo;</a></li>
 				<% } else { %>
-					<li><a href="/Problem/vol<%= fvol_num-4%>">&laquo;</a></li>
+				<li><a href="/Problem/vol<%= fvol_num-4%>">&laquo;</a></li>
 				<% } %>
 				<li><a href="/Problem/vol<%= fvol_num-3 %>"><%= fvol_num-3 %></a></li>
 				<li><a href="/Problem/vol<%= fvol_num-2 %>"><%= fvol_num-2 %></a></li>
@@ -50,129 +78,121 @@
 				<li><a href="/Problem/vol<%= ftotal_vol-1 %>"><%= ftotal_vol-1 %></a></li>
 				<li><a href="/Problem/vol<%= ftotal_vol %>"><%= ftotal_vol %></a></li>
 				<li><a href="/Problem/vol<%= fvol_num+4%>">&laquo;</a></li>
-			<% } else {%>
+				<% } else {%>
 				<li class="disabled"><a href="#">&laquo;</a></li>
 				<li><a href="/Problem/vol1">1</a></li>
 				<li><a href="/Problem/vol2">2</a></li>
 				<li><a href="/Problem/vol3">3</a></li>
 				<li><a href="#">...</a></li>
 				<% for(var i=ftotal_vol-6;i<=ftotal_vol;++i){ %>
-					<%if(i==fvol_num){%> <li class="active"><%}else { %>
+				<%if(i==fvol_num){%> <li class="active"><%}else { %>
 					<li><%}%>
-					<a href="/Problem/vol<%= i %>"><%= i %></a></li>
-				<%}%>
-				<li class="disabled"><a href="#">&laquo;</a></li>
-			<% } %>
-		<% } else { %>
-			<li class="disabled"><a href="#">&laquo;</a></li>
-			<%for(var i=1;i<=7;++i){%>
-				<%if(i==fvol_num){%> <li class="active"><%}else{%>
-				<li><%}%>
-				<a href="/Problem/vol<%= i %>"><%= i %></a></li>
-			<%}%>
-			<li><a href="#">...</a></li>
-			<li><a href="/Problem/vol<%= ftotal_vol-2 %>"><%= ftotal_vol-2 %></a></li>
-			<li><a href="/Problem/vol<%= ftotal_vol-1 %>"><%= ftotal_vol-1 %></a></li>
-			<li><a href="/Problem/vol<%= ftotal_vol %>"><%= ftotal_vol %></a></li>
-			<li><a href="/Problem/vol8">&laquo;</a></li>
-		<%}%>
-
-	</ul>
-	</center>
-	<table id="problemList" class="table table-striped table-centered">
-		<thead>
-			<tr>
-				<th class="header-status">
-				</th>
-				<th class="header-id">
-					<div id="titleBtn" class="" order='asc'><a href="#">ID</a></div>
-				</th>
-				<th class="header-title">
-					<div id="titleBtn" class="" order='asc'><a href="#">Title</a></div>
-				</th>
-				<th class="header-submit">
-					<div id="titleBtn" class="" order='asc'><a href="#">Total</a></div>
-				</th>
-				<th class="header-ac">
-					<div id="titleBtn" class="" order='asc'><a href="#">AC</a></div>
-				</th>
-				<th class="header-oj">
-					<div id="freshBtn" class="" order='asc'><a href="#">OJ</a></div>
-				</th>
-				<th class="header-ac">
-					<div id="acrateBtn" class="" order='asc'><a href="#">AC Ratio</a></div>
-				</th>
-			</tr>
-		</thead>
-		<tbody>
-			<% fprobs.forEach(function(prob, index) { %>
-			<tr>
-				<span class="ac"> </span>
-				<td>
-					<td><%= prob.pid %></td>
-					<td><a href="/ShowProblems/<%= prob.pid %>"><%= prob.title %></a></td>
-					<td><%= prob.vtotal_submit + prob.total_submit %></td>
-					<td><%= prob.vtotal_ac + prob.total_ac %></td>
-					<td><%= prob.oj %></td>
-					<td><%= Math.round(prob.vtotal_ac/prob.vtotal_submit*10000)/100 %>&#37;</td>
-				</td>	
-			</tr>
-			<% }); %>
-				
-		</tbody>
-	</table>
-	<center>
-	<ul class="pagination">
-		<% if(fvol_num >= 4) { %>
-			<% if(fvol_num+3<ftotal_vol-2) { %>		
-				<% if(fvol_num == 4) { %>		
+						<a href="/Problem/vol<%= i %>"><%= i %></a></li>
+					<%}%>
 					<li class="disabled"><a href="#">&laquo;</a></li>
-				<% } else { %>
-					<li><a href="/Problem/vol<%= fvol_num-4%>">&laquo;</a></li>
-				<% } %>
-				<li><a href="/Problem/vol<%= fvol_num-3 %>"><%= fvol_num-3 %></a></li>
-				<li><a href="/Problem/vol<%= fvol_num-2 %>"><%= fvol_num-2 %></a></li>
-				<li><a href="/Problem/vol<%= fvol_num-1 %>"><%= fvol_num-1 %></a></li>
-				<li class="active"><a href="/Problem/vol<%= fvol_num %>"><%= fvol_num %></a></li>
-				<li><a href="/Problem/vol<%= fvol_num+1 %>"><%= fvol_num+1 %></a></li>
-				<li><a href="/Problem/vol<%= fvol_num+2 %>"><%= fvol_num+2 %></a></li>
-				<li><a href="/Problem/vol<%= fvol_num+3 %>"><%= fvol_num+3 %></a></li>
-				<li><a href="#">...</a></li>
-				<li><a href="/Problem/vol<%= ftotal_vol-2 %>"><%= ftotal_vol-2 %></a></li>
-				<li><a href="/Problem/vol<%= ftotal_vol-1 %>"><%= ftotal_vol-1 %></a></li>
-				<li><a href="/Problem/vol<%= ftotal_vol %>"><%= ftotal_vol %></a></li>
-				<li><a href="/Problem/vol<%= fvol_num+4%>">&laquo;</a></li>
-			<% } else {%>
-				<li class="disabled"><a href="#">&laquo;</a></li>
-				<li><a href="/Problem/vol1">1</a></li>
-				<li><a href="/Problem/vol2">2</a></li>
-				<li><a href="/Problem/vol3">3</a></li>
-				<li><a href="#">...</a></li>
-				<% for(var i=ftotal_vol-6;i<=ftotal_vol;++i){ %>
+					<% } %>
+					<% } else { %>
+					<li class="disabled"><a href="#">&laquo;</a></li>
+					<%for(var i=1;i<=7;++i){%>
 					<%if(i==fvol_num){%> <li class="active"><%}else{%>
-					<li><%}%>
-					<a href="/Problem/vol<%= i %>"><%= i %></a></li>
-				<%}%>
-				<li class="disabled"><a href="#">&laquo;</a></li>
-			<% } %>
-		<% } else { %>
-			<li class="disabled"><a href="#">&laquo;</a></li>
-			<%for(var i=1;i<=7;++i){%>
-				<%if(i==fvol_num){%> <li class="active"><%}else{%>
-				<li><%}%>
-				<a href="/Problem/vol<%= i %>"><%= i %></a></li>
-			<%}%>
-			<li><a href="#">...</a></li>
-			<li><a href="/Problem/vol<%= ftotal_vol-2 %>"><%= ftotal_vol-2 %></a></li>
-			<li><a href="/Problem/vol<%= ftotal_vol-1 %>"><%= ftotal_vol-1 %></a></li>
-			<li><a href="/Problem/vol<%= ftotal_vol %>"><%= ftotal_vol %></a></li>
-			<li><a href="/Problem/vol8">&laquo;</a></li>
-		<%}%>
+						<li><%}%>
+							<a href="/Problem/vol<%= i %>"><%= i %></a></li>
+						<%}%>
+						<li><a href="#">...</a></li>
+						<li><a href="/Problem/vol<%= ftotal_vol-2 %>"><%= ftotal_vol-2 %></a></li>
+						<li><a href="/Problem/vol<%= ftotal_vol-1 %>"><%= ftotal_vol-1 %></a></li>
+						<li><a href="/Problem/vol<%= ftotal_vol %>"><%= ftotal_vol %></a></li>
+						<li><a href="/Problem/vol8">&laquo;</a></li>
+						<%}%>
 
-	</ul>
-	</center>
-</body>
-</html>
+					</ul>
+				</center>
+				<table id="problemList" class="table table-striped table-centered">
+					<thead>
+						<tr>
+							<th class="header-status">
+							</th>
+							<th class="header-id">
+								<div id="searchTitleBtn" class="" order='asc'><a href="#">ID</a></div>
+							</th>
+							<th class="header-title">
+								<div id="searchTitleBtn" class="" order='asc'><a href="#">Title</a></div>
+							</th>
+							<th class="header-oj">
+								<div id="titleBtn" class="" order='asc'><a href="#">OJ</a></div>
+							</th>
+							<th class="header-ac">
+								<div id="searchAcrateBtn" class="" order='asc'><a href="#">AC Ratio</a></div>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% fprobs.forEach(function(prob, index) { %>
+						<tr>
+							<span class="ac"> </span>
+							<td>
+								<td><%= prob.pid %></td>
+								<td><a href="/ShowProblems/<%= prob.pid %>"><%= prob.title %></a></td>
+								<td><%= prob.oj %></td>
+								<td><%= Math.round(prob.vtotal_ac/prob.vtotal_submit*10000)/100 %>&#37;(<%= prob.vtotal_ac+prob.total_ac %>/<%= prob.vtotal_submit+prob.total_submit %>)</td>
+							</td>	
+						</tr>
+						<% }); %>
 
-	</script>
-</div>
+					</tbody>
+				</table>
+				<center>
+					<ul class="pagination">
+						<% if(fvol_num >= 4) { %>
+						<% if(fvol_num+3<ftotal_vol-2) { %>		
+							<% if(fvol_num == 4) { %>		
+							<li class="disabled"><a href="#">&laquo;</a></li>
+							<% } else { %>
+							<li><a href="/Problem/vol<%= fvol_num-4%>">&laquo;</a></li>
+							<% } %>
+							<li><a href="/Problem/vol<%= fvol_num-3 %>"><%= fvol_num-3 %></a></li>
+							<li><a href="/Problem/vol<%= fvol_num-2 %>"><%= fvol_num-2 %></a></li>
+							<li><a href="/Problem/vol<%= fvol_num-1 %>"><%= fvol_num-1 %></a></li>
+							<li class="active"><a href="/Problem/vol<%= fvol_num %>"><%= fvol_num %></a></li>
+							<li><a href="/Problem/vol<%= fvol_num+1 %>"><%= fvol_num+1 %></a></li>
+							<li><a href="/Problem/vol<%= fvol_num+2 %>"><%= fvol_num+2 %></a></li>
+							<li><a href="/Problem/vol<%= fvol_num+3 %>"><%= fvol_num+3 %></a></li>
+							<li><a href="#">...</a></li>
+							<li><a href="/Problem/vol<%= ftotal_vol-2 %>"><%= ftotal_vol-2 %></a></li>
+							<li><a href="/Problem/vol<%= ftotal_vol-1 %>"><%= ftotal_vol-1 %></a></li>
+							<li><a href="/Problem/vol<%= ftotal_vol %>"><%= ftotal_vol %></a></li>
+							<li><a href="/Problem/vol<%= fvol_num+4%>">&laquo;</a></li>
+							<% } else {%>
+							<li class="disabled"><a href="#">&laquo;</a></li>
+							<li><a href="/Problem/vol1">1</a></li>
+							<li><a href="/Problem/vol2">2</a></li>
+							<li><a href="/Problem/vol3">3</a></li>
+							<li><a href="#">...</a></li>
+							<% for(var i=ftotal_vol-6;i<=ftotal_vol;++i){ %>
+							<%if(i==fvol_num){%> <li class="active"><%}else{%>
+								<li><%}%>
+									<a href="/Problem/vol<%= i %>"><%= i %></a></li>
+								<%}%>
+								<li class="disabled"><a href="#">&laquo;</a></li>
+								<% } %>
+								<% } else { %>
+								<li class="disabled"><a href="#">&laquo;</a></li>
+								<%for(var i=1;i<=7;++i){%>
+								<%if(i==fvol_num){%> <li class="active"><%}else{%>
+									<li><%}%>
+										<a href="/Problem/vol<%= i %>"><%= i %></a></li>
+									<%}%>
+									<li><a href="#">...</a></li>
+									<li><a href="/Problem/vol<%= ftotal_vol-2 %>"><%= ftotal_vol-2 %></a></li>
+									<li><a href="/Problem/vol<%= ftotal_vol-1 %>"><%= ftotal_vol-1 %></a></li>
+									<li><a href="/Problem/vol<%= ftotal_vol %>"><%= ftotal_vol %></a></li>
+									<li><a href="/Problem/vol8">&laquo;</a></li>
+									<%}%>
+
+								</ul>
+							</center>
+						</body>
+					</html>
+
+				</script>
+			</div>

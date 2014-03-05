@@ -1,0 +1,60 @@
+<script src="/javascripts/editors.js"></script>
+
+<style type="text/css" media="screen">
+	#embedded_ace_code {
+		height: 455px;
+		width: 650px;
+		border: 1px solid #DDD;
+		border-radius: 4px;
+		border-bottom-right-radius: 0px;
+		margin-top: 85px;
+	}
+
+</style>
+
+<div class="col-md-2" id="langselect">
+	<select class="form-control" name="lang" id="lang" autocomplete="off">
+		<% if(fprob.oj == "hdu") { %>
+			<option value="cpp">C++</option>
+			<option value="gpp">G++</option>
+			<option value="gcc">GCC</option>
+			<option value="c">C</option>
+			<option value="java">Java</option>
+			<option value="pascal">Pascal</option>
+		<% } %>
+
+	</select>
+</div>
+
+<div id="embedded_ace_code" style="opacity:1" >
+</div>
+<button type="submit" class="btn btn-primary" onclick="Submit()"> Submit </button>
+
+<script src="/javascripts/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="/javascripts/mode-java.js" type="text/javascript" charset="utf-8"></script>
+<script src="/javascripts/mode-c_cpp.js" type="text/javascript" charset="utf-8"></script>
+<script>
+	var obj = document.getElementById("lang").value;
+	alert(obj);
+	var editor = ace.edit("embedded_ace_code");
+	editor.setTheme("ace/theme/chrome");
+	editor.getSession().setMode("ace/mode/c_cpp");
+</script>
+<script>
+	function Submit() {
+		var editor = ace.edit("embedded_ace_code");
+		var code = editor.getValue();
+		alert(code);
+		var aform = document.createElement('form');
+		aform.method='post';
+		aform.action='/Status';
+		var a=document.createElement('input');
+		a.type='hidden';
+		a.name='code';
+		a.value=code;
+		aform.appendChild(a);
+
+		document.body.appendChild(aform);
+		aform.submit();
+	}
+</script>

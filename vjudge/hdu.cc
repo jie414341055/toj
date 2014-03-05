@@ -296,9 +296,6 @@ void judge(string pid,string lang,string runid,string src) {
 	writelog("Logined\n");
 	lang=corrlang[lang];
 	if (!submit(pid,lang,src)) {
-		//minjie
-		printf("before submit error!");
-		cout << pid << " " << lang << " " << src << endl;
 		writelog("Submit error!\n");
 		toBottFile(runid,"0","0","Judge Error","");
 		return;
@@ -376,15 +373,12 @@ void convert()
 		memset(temp.src,0,sizeof(temp.src));
 		while (fgets(buffer,MAX_DATA_SIZE,server_offer)&&strcmp(buffer,"__SOURCE-CODE-END-LABLE__\n")!=0)
 			strcat(temp.src,buffer);
-		//minjie
-		printf("@@@!! code = %s\n", temp.src);
-		printf("@@@!! code end...\n");
 		char ts[20][50];
 		fscanf(server_offer,"%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%*s%s%*s%s",ts[0],&temp.runid,ts[1],&temp.lang,ts[2],
 				&temp.pid,ts[3],&temp.number_of_cases,ts[4],&temp.time_limit,ts[5],&temp.case_limit,ts[6],
 				&temp.memory_limit,ts[7],&temp.special_judge_status,temp.vname,temp.vid);
 		//minjie
-		printf("@@ runid = %d lang = %d pid = %d number_of_cases = %d time_limit = %d case_limit = %d memory_limit = %d special_judge_status = %d vname = %s vid = %s\n", temp.runid, temp.lang, temp.pid, temp.number_of_cases, temp.time_limit, temp.case_limit, temp.memory_limit, temp.special_judge_status, temp.vname, temp.vid);
+		//printf("@@ runid = %d lang = %d pid = %d number_of_cases = %d time_limit = %d case_limit = %d memory_limit = %d special_judge_status = %d vname = %s vid = %s\n", temp.runid, temp.lang, temp.pid, temp.number_of_cases, temp.time_limit, temp.case_limit, temp.memory_limit, temp.special_judge_status, temp.vname, temp.vid);
 		fclose(server_offer);
 		char templog[1000]={0};
 		sprintf(templog,"runid:%d\n",temp.runid);
@@ -437,7 +431,7 @@ int main(int argc, char *argv[])
 			got_things=true;
 			fputs(buffer,target_file);
 			//minjie
-			printf("buffer = %s\n", buffer);
+			//printf("buffer = %s\n", buffer);
 		}
 		fclose(target_file);
 		if (num==0) reconnect();
