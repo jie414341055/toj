@@ -2,17 +2,24 @@ var crypto = require('crypto');
 var User = require('../models/user.js');
 var Post = require('../models/post.js');
 var Prob = require('../models/prob.js');
+var Rcont = require('../models/rcont.js');
+var Status = require('../models/status.js');
 var net = require('net');
+var fs = require('fs');
 
 module.exports = function(app) {
 	app.get('/', function(req, res) {
-		Post.get(null, function(err, posts) {
+		Rcont.get(function(err, rconts) {
 			if (err) {
-				posts = [];
+				rconts = [];
 			}
+			/*
+			var contests = fs.readFileSync('/home/minjie/project/toj/server/contests.json', "utf-8");
+			contests = JSON.parse(contests);
+			*/
 			res.render('index', {
 				title: 'Home',
-				fposts: posts,
+				fcontests: rconts,
 			});
 		});
 	});
@@ -122,12 +129,33 @@ module.exports = function(app) {
 	});
 	app.get('/Status', function(req, res) {
 		console.log('get status');
+		Status.page(1, function(err, stats) {
+			if(err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			}
+			res.render('Status', {
+				title:'Status',
+				fstats: stats,
+			});
+		});
 	});
 	app.post('/Status', function(req, res) {
 		var HOST = '127.0.0.1';
 		var PORT = 6969;
 		console.log(req.body['code']);
 		SendCode(HOST, PORT, req.body['code']);
+		Status.page(1, function(err, stats) {
+			if(err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			}
+			res.render('Status', {
+				title:'Status',
+				fstats: stats,
+			});
+		});
+		res.redirect('/Status');
 	});
 
 	function SendCode(HOST, PORT, SourceCode) {

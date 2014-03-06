@@ -1,6 +1,7 @@
 #ifndef HDUHANDLER_H_INCLUDED
 #define HDUHANDLER_H_INCLUDED
 
+#include "mongo/client/dbclient.h"
 #include "curl/curl.h"
 #include <unistd.h>
 #include <stdio.h>
@@ -34,6 +35,7 @@
 #define MAX_TRY_TIME 5
 
 using namespace std;
+using namespace mongo;
 
 extern "C" size_t decode_html_entities_utf8(char *dest, const char *src);
 

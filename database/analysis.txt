@@ -1,0 +1,52 @@
+##Collection Status
+Status{
+	Run_ID:		,	
+	vRun_ID:	,
+	OJ:		,
+	Submit_time:	,
+	Result:		,
+	Pid:		,
+	use_time:	,
+	use_mem:	,
+	code_len:	,
+	ce_info:	,
+	lang:		,
+	username:	
+};
+
+//Run_ID未加索引
+db.Status.find({"Run_ID":178399}).explain(); //485ms
+db.Status.find({"Run_ID":1783}).explain();   //472ms
+db.Status.find({"Run_ID":778399}).explain(); //469ms
+
+//给Run_ID加索引，且唯一
+db.Status.ensureIndex({"Run_ID":-1},{unique:true});
+
+db.Status.find({"Run_ID":178399}).explain(); 	//0ms
+db.Status.find({"Run_ID":1783}).explain();  	//0ms
+db.Status.find({"Run_ID":778399}).explain();	//
+
+
+//未加索引
+db.Status.find({username:2, Result:2}).sort({Submit_time:-1}).limit(20).explain() 	//693ms
+db.Status.find({username:2, Result:2}).sort({"Run_ID":-1}).limit(20).explain()		//92ms
+
+
+//添加username索引
+db.Status.ensureIndex({"usernamae":1})
+db.Status.find({username:2}).limit(20).explain() //22ms
+db.Status.find({username:2,Result:2}).limit(300).explain() //220ms
+
+//添加lang索引
+db.Status.ensureIndex({"lang":1})
+
+
+//添加username,Result索引
+db.Status.ensureIndex({username:1,Result:1})
+db.Status.find({username:2,Result:2}).limit(300).explain() //2ms
+
+//添加username,lang索引
+db.Status.ensureIndex({username:1,lang:1})
+
+
+

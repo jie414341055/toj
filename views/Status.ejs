@@ -1,0 +1,10 @@
+<table>
+	<% fstats.forEach(function(stat, index) { %>
+	<tr>
+		<td><%= stat.Run_ID %></td>
+		<td><%= stat.Result %></td>
+		<td><%= stat.use_time %></td>
+		<td><%= stat.use_mem %></td>
+	</tr>
+	<% }) %>
+</table>

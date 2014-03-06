@@ -1,12 +1,36 @@
+<style>
+	tr,td{font-size:13px;
+		color:#000000;
+	}
+</style>
+
 <div class="jumbotron">
 	<div class="container">
 		<h2>Welcome to NewTOJ!</h2>
 		<p>NewTOJ is ...</p>
 		<p><a class="btn btn-primary btn-lg" role="button">Learn more &raquo;</a></p>
-		<p>Recent Contest:</p>
 	</div>
 </div>
-<% if (user) { %>
-	<%- partial('say') %>
-<% } %>
-<%- partial('posts') %>
+<div class="jumbotron">
+	<h3>Recent Contests:</h3>
+	<table class="table">
+		<tr>
+			<td>#</td>
+			<td>OJ</td>
+			<td>Name</td>
+			<td>Start-time</td>
+			<td>Week</td>
+		<td>Access</td>
+		</tr>
+		<% fcontests.forEach(function(cont, index) { %>
+		<tr>
+			<td><%= index+1 %></td>
+			<td><%= cont.oj %></td>
+			<td><a id=name_<%= cont.id %> href=<%= cont.link %>><%= cont.name %></a></td>
+			<td><%= cont.start_time %></td>
+			<td><%= cont.week %></td>
+			<td><%= cont.access %></td>
+		</tr>	
+		<% }) %>
+	</table>
+</div>

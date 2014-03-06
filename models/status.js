@@ -1,13 +1,14 @@
 var mongodb = require('./db');
 
 function Status(stat) {
-	this.runid = stat.runid;
+	this.Run_ID = stat.Run_ID;
+	this.vRun_ID = stat.vRun_ID;
+	this.OJ = stat.OJ;
 	this.subtime = stat.subtime;
-	this.result = stat.result;
+	this.Result = stat.Result;
 	this.pid = stat.pid;
-	this.runtime = stat.runtime;
-	this.usetime = stat.usetime;
-	this.usememory = stat.usememory;
+	this.use_time = stat.use_time;
+	this.use_mem = stat.use_mem;
 	this.codelen = stat.codelen;
 	this.lang = stat.lang;
 	this.username = stat.username;
@@ -15,7 +16,7 @@ function Status(stat) {
 
 module.exports = Status;
 
-Status.get = function get(RUNID, callback) {
+Status.get = function get(runid, callback) {
 	mongodb.open(function(err, db) {
 		if(err) {
 			return callback(err);
@@ -26,8 +27,8 @@ Status.get = function get(RUNID, callback) {
 				return callback(err);
 			}
 
-			RUNID = parseInt(RUNID);
-			collection.findOne({runid:RUNID}, function(err, doc) {
+			runid = parseInt(runid);
+			collection.findOne({Run_ID:runid}, function(err, doc) {
 				mongodb.close();
 				if(doc) {
 					var stat = new Status(doc);
@@ -51,7 +52,7 @@ Status.page = function page(pageID, callback) {
 				return callback(err);
 			}
 			pageID = parseInt(pageID);
-			collection.find().sort({RUNID:1}).limit(20).skip((pageID - 1) * 20).toArray(function(err, docs) {
+			collection.find().sort({runid:-1}).limit(20).skip((pageID - 1) * 20).toArray(function(err, docs) {
 				mongodb.close();
 				if(err) {
 					callback(err, null);

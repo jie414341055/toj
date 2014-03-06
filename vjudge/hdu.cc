@@ -194,7 +194,7 @@ string getUsedMem(string s) {
 	return s.substr(pos,st-pos);
 }
 
-//http://acm.hdu.edu.cn/status.php?first=&pid=1000&user=bnuvjudge&lang=1&status=0
+//http://acm.hdu.edu.cn/status.php?first=&pid=1000&user=tjuvjudge&lang=1&status=0
 bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu,string &mu) {
 	int begin=time(NULL);
 	string runid;

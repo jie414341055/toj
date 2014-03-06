@@ -1,9 +1,8 @@
 
 conn = new Mongo();
-db = conn.getDB("microblog");
-db.problem.find();
-cursor = db.problem.find();
+db = conn.getDB("toj");
 
+/*
 var prob = {
 	pid: 	1010,			//题目pid，作为'主键'
 	vid:	1001,			//题目在原oj的id
@@ -32,4 +31,16 @@ var prob = {
 	author:	'',			//题目作者
 	tag:	[],			//题目标签，可以使用数组
 };
-db.problem.insert(prob);
+*/
+
+for(i=0;i<1000000;++i) {
+	var tmp = {
+		"Run ID":i,
+		"Submit_time": new Date(),
+		"Result": i%5,
+		"PID": i/10,
+		"username": i%1000
+	};
+	db.Status.insert(tmp);
+}
+
