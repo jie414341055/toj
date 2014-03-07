@@ -23,53 +23,40 @@ module.exports = function(app) {
 			});
 		});
 	});
-	app.get('/Problem', function(req, res) {
-		
-		Prob.getCount({}, function(err, total_prob_num) {
-			if(err) {
-				req.flash('error', err);
-				return res.redirect('/');
-			}
-			Prob.page(1, function(err, probs) {
-				if (err) {
-					req.flash('error', err);
-					return res.redirect('/');
-				}
-				res.render('Problem', {
-					title:'Problem',
-					ftotal_vol: Math.ceil(total_prob_num/50),
-					fprobs: probs,
-				});
-			});
-		});
+	//app.get(/\/test(\?lang=(\d?)\&pid=((\d{4,6})?))?/, function(req, res) {
+	app.get(/^\/test(\?lang=(\d?)\&pid=(\d{4,5}?))?/,function(req, res) {
+		console.log(req.query.pid=="");
+		console.log(req.query.lang);
 	});
-	
-	app.get('/problem/:vol', function(req, res) {
-
-		var vol_num = req.params.vol;
-		vol_num = parseInt(vol_num.substr(3, vol_num.length));
-
+	/*
+	 *  /\/Problem(\?Volumn=(\d+)?)?/
+	 */
+	app.get(/\/Problem(\?Volume=(\d+)?)?/, function(req, res) {
+		var vol_num = req.query.Volume;
+		if(vol_num == "") vol_num = 1;
+		else vol_num = parseInt(vol_num);
 		Prob.getCount({}, function(err, total_prob_num) {
 			if(err) {
 				req.flash('error', err);
 				return res.redirect('/');
 			}
 			Prob.page(vol_num, function(err, probs) {
-				if(err) {
+				if (err) {
 					req.flash('error', err);
-					return res.redirect('/Problem');
+					return res.redirect('/');
 				}
-				res.render('vol', {
+				res.render('Volume', {
 					title:'Problem',
-					fvol_num:vol_num,
+					fvol_num: vol_num,
 					ftotal_vol: Math.ceil(total_prob_num/50),
 					fprobs: probs,
 				});
 			});
 		});
 	});
-	app.get('/ShowProblems/:prob', function(req, res) {
-		Prob.get(req.params.prob, function(err, prob) {
+	app.get(/\/ShowProblems\?pid=(\d+)/, function(req, res) {
+	//app.get('/ShowProblems/:prob', function(req, res) {
+		Prob.get(req.query.pid, function(err, prob) {
 			if (!prob) {
 				req.flash('error', 'No such problem!');
 				return res.redirect('/Problem');
