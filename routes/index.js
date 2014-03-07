@@ -24,10 +24,6 @@ module.exports = function(app) {
 		});
 	});
 	//app.get(/\/test(\?lang=(\d?)\&pid=((\d{4,6})?))?/, function(req, res) {
-	app.get(/^\/test(\?lang=(\d?)\&pid=(\d{4,5}?))?/,function(req, res) {
-		console.log(req.query.pid=="");
-		console.log(req.query.lang);
-	});
 	/*
 	 *  /\/Problem(\?Volumn=(\d+)?)?/
 	 */
@@ -54,9 +50,14 @@ module.exports = function(app) {
 			});
 		});
 	});
-	app.get(/\/ShowProblems\?pid=(\d+)/, function(req, res) {
+	app.get(/\/test(\?xx=(\d+)?)?/, function(req, res) {
+		console.log(req.query.xx);
+	});
+	app.get(/\/ShowProblems(\?pid=(\d+)?)?/, function(req, res) {
 	//app.get('/ShowProblems/:prob', function(req, res) {
-		Prob.get(req.query.pid, function(err, prob) {
+		if(pid == "") pid = "1";
+		var pid = parseInt(req.query.pid);
+		Prob.get(pid, function(err, prob) {
 			if (!prob) {
 				req.flash('error', 'No such problem!');
 				return res.redirect('/Problem');
@@ -115,7 +116,6 @@ module.exports = function(app) {
 		});
 	});
 	app.get('/Status', function(req, res) {
-		console.log('get status');
 		Status.page(1, function(err, stats) {
 			if(err) {
 				req.flash('error', err);
