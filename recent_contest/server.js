@@ -1,9 +1,10 @@
-var mongodb = require('../models/rcont.js');
+var mongodb = require('../models/db');
 var http = require('http');
 var iconv = require('iconv-lite');
 var url=require('url');
 
 var minutes = 60, the_interval = minutes * 60 * 1000;
+
 setInterval(function() {
 	var html = "";
 	var getURL = url.parse('http://contests.acmicpc.info/contests.json');
@@ -25,7 +26,7 @@ setInterval(function() {
 						mongodb.close();
 						return callback(err);
 					}
-					collection.ensureIndex('id', {uniqueLtrue});
+					collection.ensureIndex('id', {unique:true});
 					collection.insert(data, {safe:true}, function(err, data) {
 						mongodb.close();
 						callback(err, data);
@@ -38,4 +39,3 @@ setInterval(function() {
 	});
 
 }, the_interval);
-

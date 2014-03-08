@@ -49,7 +49,8 @@ Rcont.get = function get(callback) {
 				mongodb.close();
 				return callback(err);
 			}
-			collection.find().sort({start_time:1}).limit(10).toArray(function(err, docs) {
+			var now_tm = new Date().toISOString().replace(/T/,' ').replace(/\..+/,'');
+			collection.find({"start_time":{"$gte":now_tm}}).sort({start_time:1}).limit(15).toArray(function(err, docs) {
 				mongodb.close();
 				if(err) {
 					callback(err, null);
