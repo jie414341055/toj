@@ -68,6 +68,12 @@ module.exports = function(app) {
 			});
 		});
 	});
+	//app.get(/\/test\/([^\/]+)\/?\/lang/, function(req, res){
+	// /^\/test\//
+	app.get(/\/test\/(lang=([0-5])?)\&(pid=([\d]{4})?)/, function(req, res) {
+		console.log(req.params[0]);
+		console.log(req.params[1]);
+	});
 	app.get('/ShowProblems/:prob', function(req, res) {
 		Prob.get(req.params.prob, function(err, prob) {
 			if (!prob) {
