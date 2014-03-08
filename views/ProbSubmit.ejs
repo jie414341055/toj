@@ -13,19 +13,18 @@
 </style>
 
 <div class="col-md-2" id="langselect">
-	<select class="form-control" name="lang" id="lang" autocomplete="off">
+	<select class="form-control" name="lang" id="lang" onchange="SelectLang(this)">
 		<% if(fprob.oj == "hdu") { %>
-			<option value="cpp">C++</option>
-			<option value="gpp">G++</option>
-			<option value="gcc">GCC</option>
-			<option value="c">C</option>
-			<option value="java">Java</option>
-			<option value="pascal">Pascal</option>
+			<option value="1">G++</option>
+			<option value="2">GCC</option>
+			<option value="3">Java</option>
+			<option value="4">Pascal</option>
+			<option value="12" selected>C++</option>
+			<option value="13">C</option>
 		<% } %>
 
 	</select>
 </div>
-
 <div id="embedded_ace_code" style="opacity:1" >
 </div>
 <button type="submit" class="btn btn-primary" onclick="Submit()"> Submit </button>
@@ -34,11 +33,22 @@
 <script src="/javascripts/mode-java.js" type="text/javascript" charset="utf-8"></script>
 <script src="/javascripts/mode-c_cpp.js" type="text/javascript" charset="utf-8"></script>
 <script>
-	var obj = document.getElementById("lang").value;
-	alert(obj);
 	var editor = ace.edit("embedded_ace_code");
 	editor.setTheme("ace/theme/chrome");
 	editor.getSession().setMode("ace/mode/c_cpp");
+	function SelectLang(choose) {
+		var obj = choose.value;
+		var editor = ace.edit("embedded_ace_code");
+		editor.setTheme("ace/theme/chrome");
+		if(obj == "1" || obj == "2" || obj == "12" || obj == "13") {
+			editor.getSession().setMode("ace/mode/c_cpp");
+		} else if(obj == "3") {
+			editor.getSession().setMode("ace/mode/java");
+		} else {
+			editor.getSession().setMode("ace/mode/pascal");
+		}
+
+	}
 </script>
 <script>
 	function Submit() {
@@ -47,7 +57,7 @@
 		alert(code);
 		var aform = document.createElement('form');
 		aform.method='post';
-		aform.action='/Status';
+		aform.action='/ProbSubmit?pid=<%= fprob.pid %>';
 		var a=document.createElement('input');
 		a.type='hidden';
 		a.name='code';

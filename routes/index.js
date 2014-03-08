@@ -96,15 +96,16 @@ module.exports = function(app) {
 		});
 	});
 
-	app.get('/ProbSubmit/:prob', function(req, res) {
+	app.get('/ProbSubmit', function(req, res) {
 		var currentUser = req.session.user;
+		var pid = req.query.pid;
 		if(!currentUser) {
 			return res.redirect('/login');
 		}
-		Prob.get(req.params.prob, function(err, prob) {
+		Prob.get(pid, function(err, prob) {
 			if(err) {
 				req.flash('error', err);
-				return res.redirect('/ShowProblem/' + prob.pid);
+				return res.redirect('/ShowProblem?pid=' + pid);
 			}
 			//console.log('/Showproblem/' + prob.pid);
 			res.render('ProbSubmit', {
@@ -112,6 +113,12 @@ module.exports = function(app) {
 				fprob: prob,
 			});
 		});
+	});
+	app.post('/ProbSubmit', function(req, res) {
+		var pid = req.query.pid;
+		var code = req.body['code'];
+		console.log(pid);
+		console.log(code);
 	});
 	app.get('/Status', function(req, res) {
 		Status.page(1, function(err, stats) {

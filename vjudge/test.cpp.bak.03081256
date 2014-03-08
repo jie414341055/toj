@@ -331,15 +331,14 @@ struct Judger_data {
 	char src[MAX_DATA_SIZE];
 	int runid;
 	int pid;
-	int vid;
 	int lang;
-	//int time_limit;
-	//int case_limit;
-	//int number_of_cases;
-	//int memory_limit;
-	//int special_judge_status;
-	//char vid[300];
-	//char vname[300];
+	int time_limit;
+	int case_limit;
+	int number_of_cases;
+	int memory_limit;
+	int special_judge_status;
+	char vid[300];
+	char vname[300];
 };
 
 int num;
@@ -380,12 +379,6 @@ void reconnect()
 
 void convert()
 {
-	/*	fuffer format
-	 *	hdu 2 __SOURCE-CODE-BEGIN-LABLE__
-	 *	  source code here...
-	 *	__SOURCE-CODE-END-LABLE__
-	 *	runid lang pid vid
-	 */
 	FILE *server_offer=fopen("temp.bott","r");
 	int offer_type;
 	char type_str[50];
@@ -397,10 +390,11 @@ void convert()
 		while (fgets(buffer,MAX_DATA_SIZE,server_offer)&&strcmp(buffer,"__SOURCE-CODE-END-LABLE__\n")!=0)
 			strcat(temp.src,buffer);
 		char ts[20][50];
-		fscanf(server_offer, "%d%d%d%s", &temp.runid, &temp.lang, &temp.pid, temp.vid);
-		//fscanf(server_offer,"%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%*s%s%*s%s",ts[0],&temp.runid,ts[1],&temp.lang,ts[2],
-		//			&temp.pid,ts[3],&temp.number_of_cases,ts[4],&temp.time_limit,ts[5],&temp.case_limit,ts[6],
-		//			&temp.memory_limit,ts[7],&temp.special_judge_status,temp.vname,temp.vid);
+		fscanf(server_offer,"%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%*s%s%*s%s",ts[0],&temp.runid,ts[1],&temp.lang,ts[2],
+				&temp.pid,ts[3],&temp.number_of_cases,ts[4],&temp.time_limit,ts[5],&temp.case_limit,ts[6],
+				&temp.memory_limit,ts[7],&temp.special_judge_status,temp.vname,temp.vid);
+		//minjie
+		//printf("@@ runid = %d lang = %d pid = %d number_of_cases = %d time_limit = %d case_limit = %d memory_limit = %d special_judge_status = %d vname = %s vid = %s\n", temp.runid, temp.lang, temp.pid, temp.number_of_cases, temp.time_limit, temp.case_limit, temp.memory_limit, temp.special_judge_status, temp.vname, temp.vid);
 		fclose(server_offer);
 		char templog[1000]={0};
 		sprintf(templog,"runid:%d\n",temp.runid);
