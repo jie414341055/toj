@@ -54,7 +54,6 @@
 	function Submit() {
 		var editor = ace.edit("embedded_ace_code");
 		var code = editor.getValue();
-		alert(code);
 		var aform = document.createElement('form');
 		aform.method='post';
 		aform.action='/ProbSubmit?pid=<%= fprob.pid %>';
@@ -62,8 +61,12 @@
 		a.type='hidden';
 		a.name='code';
 		a.value=code;
+		var b=document.createElement('input');
+		b.type='hidden';
+		b.name='lang';
+		b.value=document.getElementById('lang').value;
 		aform.appendChild(a);
-
+		aform.appendChild(b);
 		document.body.appendChild(aform);
 		aform.submit();
 	}

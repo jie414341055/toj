@@ -6,6 +6,24 @@ char tmps[10000000];
 char outs[MAX_DATA_SIZE];
 struct curl_slist *headerlist=NULL;
 
+struct Judger_data {
+	char src[MAX_DATA_SIZE];
+	int runid;
+	int pid;
+	int lang;
+	char vid[300];
+	char submit_time[50];
+	char user[50];
+	//int time_limit;
+	//int case_limit;
+	//int number_of_cases;
+	//int memory_limit;
+	//int special_judge_status;
+	//char vname[300];
+};
+Judger_data temp;
+
+
 int code_convert(char *from_charset,char *to_charset,char *inbuf,size_t inlen,char *outbuf,size_t outlen)
 {
 	iconv_t cd;
@@ -198,7 +216,6 @@ string getUsedMem(string s) {
 bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu,string &mu) {
 	int begin=time(NULL);
 	string runid;
-	int Run_ID;
 	tu=mu="0";
 	string ts;
 	int tried=0;
@@ -229,6 +246,7 @@ bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu
 		}
 		runid=getRunid(ts);
 		result=getResult(ts);
+		/* minjie
 		auto_ptr<DBClientCursor> cursor = db_client.query("toj.Status",
 				mongo::Query().sort("Run_ID",-1),1,0);
 		if(!cursor->more()) Run_ID = 1;
@@ -236,11 +254,14 @@ bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu
 		cursor = db_client.query("toj.Status",
 				BSON("vRun_ID"<<runid<<"OJ"<<"HDU"));
 		if(!cursor->more()) Run_ID ++;
-		cout << result<<endl<<runid<<" "<<Run_ID<<endl;
+		*/
 		db_client.update("toj.Status",
-				BSON("vRun_ID" << runid<<"OJ"<<"HDU"),
-				BSON("Run_ID" << Run_ID<<"vRun_ID"<<runid<<"OJ"<<"HDU"<< "Result" << result),
+				BSON("run_ID" << temp.runid),
+				BSON("$set" << BSON("result"<<result)),
 				true, false);
+				//upsert, multi
+		
+		cout << result<<endl<<runid<<endl;
 		if (result.find("Waiting")==string::npos
 				&&result.find("Running")==string::npos
 				&&result.find("Judging")==string::npos
@@ -263,9 +284,10 @@ bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu
 	else ce_info="";
 	tu=getUsedTime(ts);
 	mu=getUsedMem(ts);
+	/* minjie*/
 	db_client.update("toj.Status",
-			BSON("Run_ID" << Run_ID),
-			BSON("Run_ID"<<Run_ID<<"Result"<<result<<"use_time" << tu << "use_mem" << mu),
+			BSON("run_ID" << temp.runid),
+			BSON("$set" << BSON("result"<<result<<"time_used"<<tu<<"mem_used"<<mu<<"ce_info"<<ce_info)),
 			true, false);
 	if (result!="Accepted"&&result[result.length()-1]=='d') {
 		result.erase(result.end()-2,result.end());
@@ -309,6 +331,9 @@ void judge(string pid,string lang,string runid,string src) {
 		//puts("Login error");
 		return;
 	}
+	/* minjie*/
+	db_client.insert("toj.Status",
+			BSON("run_ID"<<temp.runid<<"submit_time"<<temp.submit_time<<"pid"<<pid<<"lang"<<lang<<"username"<<temp.user<<"code_len"<<covert(src.length())));
 	writelog("Logined\n");
 	lang=corrlang[lang];
 	if (!submit(pid,lang,src)) {
@@ -327,20 +352,6 @@ void judge(string pid,string lang,string runid,string src) {
 }
 
 
-struct Judger_data {
-	char src[MAX_DATA_SIZE];
-	int runid;
-	int pid;
-	int vid;
-	int lang;
-	//int time_limit;
-	//int case_limit;
-	//int number_of_cases;
-	//int memory_limit;
-	//int special_judge_status;
-	//char vid[300];
-	//char vname[300];
-};
 
 int num;
 int target;
@@ -348,7 +359,6 @@ char buffer[MAX_DATA_SIZE];
 bool got_things;
 int sockfd;
 struct sockaddr_in server;
-Judger_data temp;
 
 void send_register_info()
 {
@@ -397,7 +407,11 @@ void convert()
 		while (fgets(buffer,MAX_DATA_SIZE,server_offer)&&strcmp(buffer,"__SOURCE-CODE-END-LABLE__\n")!=0)
 			strcat(temp.src,buffer);
 		char ts[20][50];
-		fscanf(server_offer, "%d%d%d%s", &temp.runid, &temp.lang, &temp.pid, temp.vid);
+		//minjie
+		fscanf(server_offer, "%d\n", &temp.runid);
+		fgets(temp.submit_time, 50, server_offer);
+		fscanf(server_offer, "%d%d%s%s", &temp.pid, &temp.lang, temp.user, temp.vid);
+		cout << temp.runid << endl << temp.submit_time << temp.pid << endl << temp.lang<< endl << temp.user << endl << temp.vid << endl;
 		//fscanf(server_offer,"%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%*s%s%*s%s",ts[0],&temp.runid,ts[1],&temp.lang,ts[2],
 		//			&temp.pid,ts[3],&temp.number_of_cases,ts[4],&temp.time_limit,ts[5],&temp.case_limit,ts[6],
 		//			&temp.memory_limit,ts[7],&temp.special_judge_status,temp.vname,temp.vid);
@@ -455,7 +469,7 @@ int main(int argc, char *argv[])
 			got_things=true;
 			fputs(buffer,target_file);
 			//minjie
-			//printf("buffer = %s\n", buffer);
+			printf("buffer = %s\n", buffer);
 		}
 		fclose(target_file);
 		if (num==0) reconnect();

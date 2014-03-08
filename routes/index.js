@@ -7,6 +7,17 @@ var Status = require('../models/status.js');
 var net = require('net');
 var fs = require('fs');
 
+var digit2result = new Array();
+digit2result[0] = "Accepted";
+digit2result[1] = "Wrong answer";
+digit2result[2] = "Presentation Error";
+digit2result[3] = "Compilation Error";
+digit2result[4] = "Runtime Error";
+digit2result[5] = "Time Limit Exceed";
+digit2result[6] = "Memory Limit Exceed";
+digit2result[7] = "Output Limit Exceed";
+digit2result[8] = "Judge Error";
+
 module.exports = function(app) {
 	app.get('/', function(req, res) {
 		Rcont.get(function(err, rconts) {
@@ -26,7 +37,7 @@ module.exports = function(app) {
 	//app.get(/\/Problem(\?Volume=(\d+)?)?/, function(req, res) {
 	app.get('/Problems', function(req, res) {
 		var vol_num = req.query.Volume;
-		if(vol_num == "") vol_num = 1;
+		if(!vol_num || vol_num == "") vol_num = 1;
 		else vol_num = parseInt(vol_num);
 		Prob.getCount({}, function(err, total_prob_num) {
 			if(err) {
@@ -47,18 +58,15 @@ module.exports = function(app) {
 			});
 		});
 	});
-	app.get(/\/test\/(lang=([0-5])?)\&(pid=([\d]{4})?)/, function(req, res) {
-		console.log(req.params[0]);
-		console.log(req.params[1]);
-	});
 	//app.get(/\/ShowProblems(\?pid=(\d+)?)?/, function(req, res) {
 	app.get('/ShowProblems', function(req, res) {
-		if(pid == "") pid = "1";
-		var pid = parseInt(req.query.pid);
+		var pid = req.query.pid;
+		if(!pid || pid == "") pid = "1001";
+		pid = parseInt(pid);
 		Prob.get(pid, function(err, prob) {
 			if (!prob) {
 				req.flash('error', 'No such problem!');
-				return res.redirect('/Problem');
+				return res.redirect('/Problems');
 			}
 			
 			res.render('ShowProblem', {
@@ -72,33 +80,13 @@ module.exports = function(app) {
 				sample_in:	prob.sample_in,
 				sample_out:	prob.sample_out,
 			});
-			
-			/*	
-			Prob.get(prob.pid, function(err, prob) {
-				if (err) {
-					req.flash('error', err);
-					return res.redirect('/');
-				}
-				//console.log(test);
-				res.render('ShowProblem', {
-					pid: 	prob.pid,
-					oj: 	prob.oj,
-					title: 	prob.title,
-					rates: 	prob.rates,
-					desc: 	prob.desc,
-					input:	prob.input,
-					output:	prob.output,
-					sample_in:	prob.sample_in,
-					sample_out:	prob.sample_out,
-				});
-			});
-			*/	
 		});
 	});
 
 	app.get('/ProbSubmit', function(req, res) {
 		var currentUser = req.session.user;
 		var pid = req.query.pid;
+		console.log('submit get');
 		if(!currentUser) {
 			return res.redirect('/login');
 		}
@@ -115,47 +103,87 @@ module.exports = function(app) {
 		});
 	});
 	app.post('/ProbSubmit', function(req, res) {
+		console.log('submit post');
 		var pid = req.query.pid;
 		var code = req.body['code'];
-		console.log(pid);
-		console.log(code);
-	});
-	app.get('/Status', function(req, res) {
-		Status.page(1, function(err, stats) {
-			if(err) {
-				req.flash('error', err);
-				return res.redirect('/');
+		var lang = req.body['lang'];
+		var currentUser = req.session.user;
+		console.log(currentUser.username);
+		if(!currentUser) {
+			return res.redirect('/login');
+		}
+		Prob.get(pid, function(err, prob) {
+			if (!prob) {
+				req.flash('error', 'No such problem!');
+				return res.redirect('/Problems');
 			}
-			res.render('Status', {
-				title:'Status',
-				fstats: stats,
-			});
-		});
-	});
-	app.post('/Status', function(req, res) {
-		var HOST = '127.0.0.1';
-		var PORT = 6969;
-		console.log(req.body['code']);
-		SendCode(HOST, PORT, req.body['code']);
-		Status.page(1, function(err, stats) {
-			if(err) {
-				req.flash('error', err);
-				return res.redirect('/');
-			}
-			res.render('Status', {
-				title:'Status',
-				fstats: stats,
-			});
-		});
-		res.redirect('/Status');
-	});
+			Status.getMaxID(function(err, maxID) {
+				if(err) {
+					req.flash('error', 'Database error!');
+					return res.redirect('/ShowProblems?pid='+pid);
+				}
+				var HOST = '127.0.0.1';
+				var PORT = 6969;
+				var runid = parseInt(maxID) + 1;
+				var sub_time = new Date().toISOString().replace(/T/,' ').replace(/\..+/,'');
+				var data = prob.oj + " 2  __SOURCE-CODE-BEGIN-LABLE__\n" + code + "\n__SOURCE-CODE-END-LABLE__\n" + runid + "\n" + sub_time + "\n" + pid + " " + lang + " " + currentUser.username + " " + prob.vid;
 
-	function SendCode(HOST, PORT, SourceCode) {
+				/*
+				var stat = new Status({
+					run_ID:	runid,
+					pid:	prob.pid,
+					oj:	prob.oj,
+					lang:	lang,
+					username: currentUser.username,
+					submit_time:	new Date().toISOString().replace(/T/,' ').replace(/\..+/,''),
+					result:	"Received"
+				});
+				console.log(stat);
+				stat.save(function(err) {
+					if (err) {
+						req.flash('error', err);
+						return res.redirect('/ProbSubmit?pid='+prob.pid);
+					}
+				});
+				*/
+				console.log(data);
+				SendCode(HOST, PORT, data);
+				res.redirect('/Status?page=1');
+			});
+		});
+	});
+	function SendCode(HOST, PORT, data) {
 		var client = new net.Socket();
 		client.connect(PORT, HOST, function() {
-			client.write(SourceCode);
+			client.write(data);
 		});
 	};
+	app.get('/Status', function(req, res) {
+	//Status?pid=&username=&lang=&result=&page=
+		var query = {};
+		var pid = req.query.pid;
+		var username = req.query.username;
+		var lang = req.query.lang;
+		var result = req.query.result;
+		var pageID = req.query.page;
+		if(pid) query.pid = parseInt(pid);
+		if(username) query.username = username;
+		if(lang) query.lang = parseInt(lang);
+		if(result) query.result = digit2result[result];
+		if(pageID) pageID = parseInt(pageID);
+		else pageID = 1;
+
+		Status.page(query, pageID, function(err, stats) {
+			if(err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			}
+			res.render('Status', {
+				title:'Status',
+				fstats: stats,
+			});
+		});
+	});
 
 	app.post('/post', function(req, res) {
 		var currentUser = req.session.user;

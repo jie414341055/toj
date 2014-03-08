@@ -71,7 +71,7 @@ Prob.prototype.save = function save(callback) {
 			return callback(err);
 		}
 		// 读取 problem 集合
-		db.collection('problem', function(err, collection) {
+		db.collection('Problem', function(err, collection) {
 			if (err) {
 				mongodb.close();
 				return callback(err);
@@ -93,7 +93,7 @@ Prob.get = function get(PID, callback) {
 			return callback(err);
 		}
 		// 读取 problem 集合
-		db.collection('problem', function(err, collection) {
+		db.collection('Problem', function(err, collection) {
 			if (err) {
 				mongodb.close();
 				return callback(err);
@@ -119,7 +119,7 @@ Prob.page = function page(pageID, callback) {
 			return callback(err);
 		}
 		// 读取 problem 集合
-		db.collection('problem', function(err, collection) {
+		db.collection('Problem', function(err, collection) {
 			if (err) {
 				mongodb.close();
 				return callback(err);
@@ -147,7 +147,7 @@ Prob.getCount = function getCount(query, callback) {
 		if(err) {
 			return callback(err);
 		}
-		db.collection('problem', function(err, collection) {
+		db.collection('Problem', function(err, collection) {
 			if(err) {
 				mongodb.close();
 				return callback(err);
