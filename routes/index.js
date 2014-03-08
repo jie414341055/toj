@@ -23,11 +23,8 @@ module.exports = function(app) {
 			});
 		});
 	});
-	//app.get(/\/test(\?lang=(\d?)\&pid=((\d{4,6})?))?/, function(req, res) {
-	/*
-	 *  /\/Problem(\?Volumn=(\d+)?)?/
-	 */
-	app.get(/\/Problem(\?Volume=(\d+)?)?/, function(req, res) {
+	//app.get(/\/Problem(\?Volume=(\d+)?)?/, function(req, res) {
+	app.get('/Problem', function(req, res) {
 		var vol_num = req.query.Volume;
 		if(vol_num == "") vol_num = 1;
 		else vol_num = parseInt(vol_num);
@@ -50,11 +47,8 @@ module.exports = function(app) {
 			});
 		});
 	});
-	app.get(/\/test(\?xx=(\d+)?)?/, function(req, res) {
-		console.log(req.query.xx);
-	});
-	app.get(/\/ShowProblems(\?pid=(\d+)?)?/, function(req, res) {
-	//app.get('/ShowProblems/:prob', function(req, res) {
+	//app.get(/\/ShowProblems(\?pid=(\d+)?)?/, function(req, res) {
+	app.get('/ShowProblems', function(req, res) {
 		if(pid == "") pid = "1";
 		var pid = parseInt(req.query.pid);
 		Prob.get(pid, function(err, prob) {
