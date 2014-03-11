@@ -27,6 +27,11 @@ corrlang[4] = "Pascal";
 corrlang[12] = "C++";
 corrlang[13] = "C";
 
+Judger_server = {};
+Judger_server['HDU'] = 6969;
+Judger_server['POJ'] = 6971;
+
+
 module.exports = function(app) {
 	app.get('/', function(req, res) {
 		Rcont.get(function(err, rconts) {
@@ -136,9 +141,13 @@ module.exports = function(app) {
 					req.flash('error', 'Database error!');
 					return res.redirect('/ShowProblems?pid='+pid);
 				}
+
+				var oj = prob.oj;
 				var HOST = '127.0.0.1';
-				var PORT = 6969;
+				var PORT = Judger_server[oj];
 				var runid = parseInt(runID) + 1;
+
+
 				var now_date = new Date();
 				now_date.setHours(now_date.getHours()+8);
 				var sub_time = now_date.toISOString().replace(/T/,' ').replace(/\..+/,'');
