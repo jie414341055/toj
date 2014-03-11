@@ -139,7 +139,10 @@ module.exports = function(app) {
 				var HOST = '127.0.0.1';
 				var PORT = 6969;
 				var runid = parseInt(runID) + 1;
-				var sub_time = (new Date()).toISOString().replace(/T/,' ').replace(/\..+/,'');
+				var now_date = new Date();
+				now_date.setHours(now_date.getHours()+8);
+				var sub_time = now_date.toISOString().replace(/T/,' ').replace(/\..+/,'');
+
 				var data = prob.oj + " 2  __SOURCE-CODE-BEGIN-LABLE__\n" + code + "\n__SOURCE-CODE-END-LABLE__\n" + runid + "\n" + sub_time + "\n" + pid + " " + lang + " " + currentUser.username + " " + prob.vid + " ss mm\n";
 
 				/*
@@ -182,8 +185,8 @@ module.exports = function(app) {
 		var pageID = req.query.page;
 		if(pid) {
 			query.pid = pid;
-			url += "&pid="+pid;
-		} else url += "&pid=";
+			url += "pid="+pid;
+		} else url += "pid=";
 		if(username) {
 			query.username = username;
 			url += "&username=" + username;

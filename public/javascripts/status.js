@@ -10,7 +10,7 @@ window.onload = function(){
 }
 function SetScrollPosition(){
 	var intY = document.body.scrollTop;
-	document.title = intY;
+	//document.title = intY;
 	document.cookie = "yPos=!~" + intY + "~!";
 }
 window.onscroll = SetScrollPosition;
