@@ -1,49 +1,128 @@
 <link href="/stylesheets/status.css" rel="stylesheet">
-<table id="Status" class="table table-striped table-centered">
-	<thead>
-		<tr>
-			<th class="header-runid">
-				<div id="searchTitleBtn" class="" order='asc'><a href="#">Run ID</a></div>
-			</th>
-			<th class="header-sub_time">
-				<div id="searchTitleBtn" class="" order='asc'><a href="#">Submit Time</a></div>
-			</th>
-			<th class="header-result">
-				<div id="titleBtn" class="" order='asc'><a href="#">Result</a></div>
-			</th>
-			<th class="header-pid">
-				<div id="searchAcrateBtn" class="" order='asc'><a href="#">PID</a></div>
-			</th>
-			<th class="header-time">
-				<div id="searchAcrateBtn" class="" order='asc'><a href="#">Time</a></div>
-			</th>
-			<th class="header-memory">
-				<div id="searchAcrateBtn" class="" order='asc'><a href="#">Memory</a></div>
-			</th>
-			<th class="header-codelen">
-				<div id="searchAcrateBtn" class="" order='asc'><a href="#">Code Len</a></div>
-			</th>
-			<th class="header-lang">
-				<div id="searchAcrateBtn" class="" order='asc'><a href="#">Language</a></div>
-			</th>
-			<th class="header-user">
-				<div id="searchAcrateBtn" class="" order='asc'><a href="#">User</a></div>
-			</th>
-		</tr>
-	</thead>
-	<tbody>
-		<% fstats.forEach(function(stat, index) { %>
-		<tr>
-			<td><%= stat.run_ID %></td>
-			<td><%= stat.submit_time%></td>
-			<td><%= stat.result %></td>
-			<td><a href=/ShowProblems?pid=<%=stat.pid %> > <%= stat.pid %></a></td>
-			<td><%= stat.time_used%></td>
-			<td><%= stat.mem_used%></td>
-			<td><%= stat.code_len %></td>
-			<td><%= stat.lang %></td>
-			<td><%= stat.username %></td>
-		</tr>
-		<% }) %>
-	</tbody>
-</table>
+<script src="/javascripts/status.js"></script>
+
+<div id="title">
+<center><h2><font color="#428BCA">Realtime Status</font></h2></center>
+<form class="form-inline" role="form">
+</form>
+</div>
+
+<div class="form-horizontal" role="form">
+	<div class="form-group">
+		<label class="col-sm-1 control-label">Prob ID:</label>
+		<div class="col-xs-1">
+			<input id = "pid" type="text" class="form-control" placeholder="PID">
+		</div>
+		<label class="col-sm-1 control-label">User:</label>
+		<div class="col-xs-2">
+			<input id = "user" type="text" class="form-control" placeholder="username">
+		</div>
+		<label class="col-sm-1 control-label">Result:</label>
+		<div class="col-xs-2">
+			<select id = "result" class="form-control">
+				<option value="">All</option>
+				<option value="0">Accepted</option>
+				<option value="1">Wrong Answer</option>
+				<option value="2">Presentation Error</option>
+				<option value="3">Compilation Error</option>
+				
+				<option value="4">Runtime Error</option>
+				<option value="5">TimeLimit Exceed</option>
+				<option value="6">MemoryLimit Exceed</option>
+				<option value="7">OutputLimit Exceed</option>
+				<option value="8">Judge Error</option>
+			</select>
+		</div>
+		<label class="col-sm-1 control-label">Language:</label>
+		<div class="col-xs-2">
+			<select id = "lang" class="form-control">
+				<option value="">All</option>
+				<option value="12">C++</option>
+				<option value="1">G++</option>
+				<option value="3">Java</option>
+				<option value="13">C</option>
+				<option value="4">Pascal</option>
+				<option value="">Perl</option>
+				<option value="">Python</option>
+			</select>
+		</div>
+		<button type="button" class="btn btn-primary" onclick="Search()">Search</button>
+
+	</div>
+	<div class="form-group">
+		<table id="Status" class="table table-condensed table-bordered table-striped table-centered">
+			<thead>
+				<tr>
+					<th class="header-runid">
+						<div id="searchTitleBtn" class="" order='asc'><a href="#">Run ID</a></div>
+					</th>
+					<th class="header-sub_time">
+						<div id="searchTitleBtn" class="" order='asc'><a href="#">Submit Time</a></div>
+					</th>
+					<th class="header-result">
+						<div id="titleBtn" class="" order='asc'><a href="#">Result</a></div>
+					</th>
+					<th class="header-pid">
+						<div id="searchAcrateBtn" class="" order='asc'><a href="#">PID</a></div>
+					</th>
+					<th class="header-time">
+						<div id="searchAcrateBtn" class="" order='asc'><a href="#">Time</a></div>
+					</th>
+					<th class="header-memory">
+						<div id="searchAcrateBtn" class="" order='asc'><a href="#">Memory</a></div>
+					</th>
+					<th class="header-codelen">
+						<div id="searchAcrateBtn" class="" order='asc'><a href="#">Code Len</a></div>
+					</th>
+					<th class="header-lang">
+						<div id="searchAcrateBtn" class="" order='asc'><a href="#">Language</a></div>
+					</th>
+					<th class="header-user">
+						<div id="searchAcrateBtn" class="" order='asc'><a href="#">User</a></div>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% fstats.forEach(function(stat, index) { %>
+				<tr>
+					<td><%- stat.run_ID %></td>
+					<td><%- stat.submit_time %></td>
+					<% if(stat.result == "Accepted") {%>
+					<td><font color="red"><%- stat.result %></font></td>
+					<% } else if(stat.result == "Compile Error") {%>
+					<td><font color="#6633FF"><a href=/ShowCEError?runid=<%- stat.run_ID%>><%- stat.result %></a></font></td>
+					<% } else if(stat.result == "Presentation Error") {%>
+					<td><font color="orange"><%- stat.result %></font></td>
+					<% } else { %>
+					<td><font color="green"><%- stat.result %></font></td>
+					<% } %>
+					<td><a href=/ShowProblems?pid=<%- stat.pid%>> <%- stat.pid %></a></td>
+					<td><%- stat.time_used %></td>
+					<td><%- stat.mem_used %></td>
+					<td><%- stat.code_len %></td>
+					<td><%- fcorrlang[stat.lang]%></td>
+					<td><%- stat.username %></td>
+				</tr>
+				<% }) %>
+			</tbody>
+		</table>
+	</div>
+	<div class="form-group">
+		<center>
+		<ul class="pager"> 
+			<li><a href=<%= furl %>&page=1>First Page</a></li>
+			<% if(fpageID == 1) { %>
+			<li><a href=#>Prev Page</a></li>
+			<% } else {%>
+			<li><a href=<%= furl%>&page=<%= fpageID-1%>>Prev Page</a></li>
+			<% } %>
+			<% if(fpageID == ftotal_page) { %>
+			<li><a href=#>Next Page</a></li>
+			<% } else {%>
+			<li><a href=<%= furl%>&page=<%= fpageID+1%>>Next Page</a></li>
+			<% } %>
+			<li><a href=<%= furl %>&page=<%= ftotal_page %>>Last Page</a></li>
+		</ul>
+		</center>
+	</div>
+</div>

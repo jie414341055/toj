@@ -255,6 +255,12 @@ bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu
 				BSON("vRun_ID"<<runid<<"OJ"<<"HDU"));
 		if(!cursor->more()) Run_ID ++;
 		*/
+		if (result!="Accepted"&&result[result.length()-1]=='d') {
+			result.erase(result.end()-2,result.end());
+		} else if (result=="Compilation Error") {
+			result="Compile Error";
+			ce_info=getCEinfo(runid);
+		}
 		db_client.update("toj.Status",
 				BSON("run_ID" << temp.runid),
 				BSON("$set" << BSON("result"<<result)),
@@ -277,21 +283,36 @@ bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu
 				&&result.find("Judging")==string::npos
 				&&result.find("Queuing")==string::npos
 				&&result.find("Compiling")==string::npos)) return false;
+	/*
 	if (result=="Compilation Error") {
 		result="Compile Error";
 		ce_info=getCEinfo(runid);
 	}
 	else ce_info="";
+	*/
+	if(result!="Compile Error") ce_info="";
 	tu=getUsedTime(ts);
 	mu=getUsedMem(ts);
 	/* minjie*/
+	/*
+	if (result!="Accepted"&&result[result.length()-1]=='d') {
+		result.erase(result.end()-2,result.end());
+	}
+	*/
 	db_client.update("toj.Status",
 			BSON("run_ID" << temp.runid),
 			BSON("$set" << BSON("result"<<result<<"time_used"<<tu<<"mem_used"<<mu<<"ce_info"<<ce_info)),
 			true, false);
-	if (result!="Accepted"&&result[result.length()-1]=='d') {
-		result.erase(result.end()-2,result.end());
-	}
+	db_client.update("toj.User",
+			BSON("username" << temp.user),
+			BSON("$inc"<<BSON("total_submit"<<1)),
+			false,true);
+			//upsert,multi
+	if(result == "Accepted")
+		db_client.update("toj.User",
+				BSON("username" << temp.user),
+				BSON("$inc"<<BSON("total_ac"<<1)),
+				false,true);
 	return true;
 }
 
@@ -333,7 +354,9 @@ void judge(string pid,string lang,string runid,string src) {
 	}
 	/* minjie*/
 	db_client.insert("toj.Status",
-			BSON("run_ID"<<temp.runid<<"submit_time"<<temp.submit_time<<"pid"<<pid<<"lang"<<lang<<"username"<<temp.user<<"code_len"<<covert(src.length())));
+			BSON("run_ID" << temp.runid << "result" << "Queuing" << "submit_time"<<temp.submit_time
+				<<"pid"<<pid<<"lang"<<lang<<"username"<<temp.user<<"code_len"<<covert(src.length()) )),
+
 	writelog("Logined\n");
 	lang=corrlang[lang];
 	if (!submit(pid,lang,src)) {
@@ -394,7 +417,7 @@ void convert()
 	 *	hdu 2 __SOURCE-CODE-BEGIN-LABLE__
 	 *	  source code here...
 	 *	__SOURCE-CODE-END-LABLE__
-	 *	runid lang pid vid
+	 *	runid lang pid vid ss mm
 	 */
 	FILE *server_offer=fopen("temp.bott","r");
 	int offer_type;
@@ -410,8 +433,10 @@ void convert()
 		//minjie
 		fscanf(server_offer, "%d\n", &temp.runid);
 		fgets(temp.submit_time, 50, server_offer);
-		fscanf(server_offer, "%d%d%s%s", &temp.pid, &temp.lang, temp.user, temp.vid);
-		cout << temp.runid << endl << temp.submit_time << temp.pid << endl << temp.lang<< endl << temp.user << endl << temp.vid << endl;
+		if(temp.submit_time[strlen(temp.submit_time)-1] == '\n')
+			temp.submit_time[strlen(temp.submit_time)-1] = '\0';
+		fscanf(server_offer, "%d%d%s%s%s%s", &temp.pid, &temp.lang, temp.user, temp.vid,ts[0],ts[1]);
+		cout << temp.runid << endl << temp.submit_time << endl << temp.pid << endl << temp.lang<< endl << temp.user << endl << temp.vid << endl;
 		//fscanf(server_offer,"%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%*s%s%*s%s",ts[0],&temp.runid,ts[1],&temp.lang,ts[2],
 		//			&temp.pid,ts[3],&temp.number_of_cases,ts[4],&temp.time_limit,ts[5],&temp.case_limit,ts[6],
 		//			&temp.memory_limit,ts[7],&temp.special_judge_status,temp.vname,temp.vid);

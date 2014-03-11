@@ -1,0 +1,49 @@
+<link href="/stylesheets/volume.css" rel="stylesheet">
+
+<div id="problemListRow" class="row">
+	<center>
+	</center>
+	<table id="problemList" class="table table-striped table-centered">
+		<thead>
+			<tr>
+				<th class="header-rank">
+					<div id="searchTitleBtn" class="" order='asc'><a href="#">Rank</a></div>
+				</th>
+				<th class="header-username">
+					<div id="searchTitleBtn" class="" order='asc'><a href="#">Username</a></div>
+				</th>
+				<th class="header-nickname">
+					<div id="titleBtn" class="" order='asc'><a href="#">Nickname</a></div>
+				</th>
+				<th class="header-AC">
+					<div id="searchAcrateBtn" class="" order='asc'><a href="#">AC</a></div>
+				</th>
+				<th class="header-ALL">
+					<div id="searchAcrateBtn" class="" order='asc'><a href="#">ALL</a></div>
+				</th>
+				<th class="header-Rating">
+					<div id="searchAcrateBtn" class="" order='asc'><a href="#">Rating</a></div>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% fusers.forEach(function(user, index) { %>
+			<tr>
+					<td><%= (fpage-1)*50 + index + 1 %></td>
+					<td><a href=/profile/<%- user.username %>><%= user.username %></a></td>
+					<td><a href=/profile/<%- user.username %>><%= user.nickname %></a></td>
+					<td><a href=/Status?username=<%= user.username%>&result=0><%= user.total_ac %></a></td>
+					<td><a href=/Status?username=<%= user.username%>&result=><%= user.total_submit %></a></td>
+					<td><%= user.ac/user.total_submit %></td>
+			</tr>
+			<% }); %>
+
+		</tbody>
+	</table>
+	<center>
+	</center>
+	<div class='toTop' style="opacity: 1;" title="Back To Top">
+		<div class="arrow"></div>
+		<div class="stick"></div>
+	</div>
+</div>

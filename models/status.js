@@ -7,11 +7,12 @@ function Status(stat) {
 	this.submit_time = stat.submit_time;
 	this.result = stat.result;
 	this.pid = stat.pid;
+	this.username = stat.username;
+	this.lang = stat.lang;
 	this.time_used = stat.time_used;
 	this.mem_used = stat.mem_used;
 	this.code_len = stat.code_len;
-	this.lang = stat.lang;
-	this.username = stat.username;
+	this.ce_info = stat.ce_info;
 };
 
 module.exports = Status;
@@ -29,6 +30,7 @@ Status.prototype.save = function save(callback) {
 		code_len:	this.code_len,
 		lang:		this.lang,
 		username:	this.username,
+		ce_info:	this.ce_info,
 	};
 	mongodb.open(function(err, db) {
 		if(err) {
@@ -48,7 +50,26 @@ Status.prototype.save = function save(callback) {
 	});
 };
 
-
+Status.getRunID = function getRunID(callback) {
+	mongodb.open(function(err, db) {
+		if(err) {
+			return callback(err);
+		}
+		db.collection('Status', function(err, collection) {
+			if(err) {
+				mongodb.close();
+				return callback(err);
+			}
+			db.insert({_id:getNext("runid"), result:"Queuing"}, {safe:true}, function(err, doc) {
+				if(err) {
+					mongodb.close();
+					return callback(err);
+				}
+				callback(err, doc._id);
+			});
+		});
+	});
+};
 
 Status.getMaxID = function getMaxID(callback) {
 	mongodb.open(function(err, db) {
@@ -116,7 +137,7 @@ Status.page = function page(query, pageID, callback) {
 				return callback(err);
 			}
 			pageID = parseInt(pageID);
-			collection.find(query).sort({run_ID:-1}).limit(20).skip((pageID - 1) * 20).toArray(function(err, docs) {
+			collection.find(query).sort({run_ID:-1}).limit(15).skip((pageID - 1) * 15).toArray(function(err, docs) {
 				mongodb.close();
 				if(err) {
 					callback(err, null);
@@ -132,3 +153,23 @@ Status.page = function page(query, pageID, callback) {
 	});
 };
 
+Status.getCount = function getCount(query, callback) {
+	mongodb.open(function(err, db) {
+		if(err) {
+			return callback(err);
+		}
+		db.collection('Status', function(err, collection) {
+			if(err) {
+				mongodb.close();
+				return callback(err);
+			}
+			collection.find(query).count(function(err, count) {
+				mongodb.close();
+				if(err) {
+					callback(err, null);
+				}
+				callback(null, count);
+			});
+		});
+	});
+};

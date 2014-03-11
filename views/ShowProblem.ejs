@@ -1,25 +1,33 @@
-<div class="page-header">
-	<h3><%= pid %> <%= title %><small></small></h3>
+<div class="container" id="page-content">
+	<div class="row-fluid">
+		<div class="span12">
+			<div id="showProblem">
+				<h2 style="text-align:center"><%= title %></h2>
+				<div id="conditions" class="well tcenter">
+					<div class="span6">Time Limit:</div>	
+					<div class="span6">Memory Limit:</div>	
+				</div>
+				 <div class="content-wrapper well">
+					 <%- desc %>
+				 </div>
+				 <h3> Input </h3>
+				 <div class="content-wrapper well">
+					 <%- input %>
+					 <div style="clear:both"></div>
+				 </div>
+				 <h3> Output </h3>
+				 <div class="content-wrapper well">
+					 <%- output %>
+					 <div style="clear:both"></div>
+				 </div>
+				 <h3> Sample Input </h3>
+				 <pre class="content-wrapper"><%- sample_in %></pre>
+				 <h3> Sample Output </h3>
+				 <pre class="content-wrapper"><%- sample_out %></pre>
+			</div>
+		</div>
+	</div>
 </div>
-
-<%= desc %>
-
-
-<h4>Input</h4>
-	<%= input %>
-
-<h4>Output</h4>
-	<%= output %>
-
-<h4>Sample Input</h4>
-	<%= sample_in %>
-
-<h4>Sample Output</h4>
-	<%= sample_out %>
-
-<h4>Hint</h4>
-hint here...
-
 <center>
 	<a href="/ProbSubmit?pid=<%= pid %>"><button type="button" class="btn btn-default">Submit</button></a>
 	<a href="#"><button type="button" class="btn btn-default">Status</button></a>
