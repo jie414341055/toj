@@ -4,6 +4,23 @@ CURL *curl;
 CURLcode res;
 char tmps[1000000];
 
+struct Judger_data {
+	char src[MAX_DATA_SIZE];
+	int runid;
+	int pid;
+	int lang;
+	char vid[300];
+	char submit_time[50];
+	char user[50];
+	//int time_limit;
+	//int case_limit;
+	//int number_of_cases;
+	//int memory_limit;
+	//int special_judge_status;
+	//char vname[300];
+};
+Judger_data temp;
+
 string getAllFromFile(char *filename) {
 	string res="";
 	FILE * fp=fopen(filename,"r");
@@ -181,7 +198,14 @@ bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu
 		if (ts.find("Error Occurred")!=string::npos||ts.find("The page is temporarily unavailable")!=string::npos) return false;
 		runid=getRunid(ts);
 		result=getResult(ts);
-		//cout << result;
+		/* minjie */
+		if(result == "Compile Error") result = "Compilation Error";
+		db_client.update("toj.Status",
+				BSON("run_ID" << temp.runid),
+				BSON("$set" << BSON("result"<<result)),
+				true, false);
+				//upsert, multi
+		cout << result << endl << runid << endl;
 		if (result.find("Waiting")==string::npos
 				&&result.find("Running")==string::npos
 				&&result.find("Judging")==string::npos
@@ -198,15 +222,35 @@ bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu
 				&&result.find("Queuing")==string::npos
 				&&result.find("Compiling")==string::npos
 				&&result!=""&&result[0]!='\n'&&result[0]!='\t'&&result[0]!='\r'&&result[0]!=' ')) return false;
-	if (result=="Compile Error") ce_info=getCEinfo(runid);
+
+	if (result=="Compilation Error") {
+		ce_info=getCEinfo(runid);
+	}
 	else ce_info="";
 	if (result=="Accepted") {
 		tu=getUsedTime(ts);
 		mu=getUsedMem(ts);
+	} else {
+		tu = "";
+		mu = "";
 	}
-	else if (result[result.length()-1]=='d') {
-		result.erase(result.end()-2,result.end());
-	}
+
+	/* minjie update Status */
+	db_client.update("toj.Status",
+			BSON("run_ID" << temp.runid),
+			BSON("$set" << BSON("vrun_ID" << runid << "oj" << "POJ" << "result"<<result<<"time_used"<<tu<<"mem_used"<<mu<<"ce_info"<<ce_info)),
+			true, false);
+	/* minjie update User */
+	db_client.update("toj.User",
+			BSON("username" << temp.user),
+			BSON("$inc"<<BSON("total_submit"<<1)),
+			false,true);
+			//upsert,multi
+	if(result == "Accepted")
+		db_client.update("toj.User",
+				BSON("username" << temp.user),
+				BSON("$inc"<<BSON("total_ac"<<1)),
+				false,true);
 	return true;
 }
 
@@ -222,6 +266,12 @@ bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu
  */
 
 void toBottFile(string runid,string tu,string mu,string result,string ce_info){
+	/* minjie */
+	db_client.update("toj.Status",
+			BSON("run_ID" << temp.runid),
+			BSON("$set" << BSON("result"<<result<<"time_used"<<tu<<"mem_used"<<mu<<"ce_info"<<ce_info)),
+			true, false);
+
 	FILE * fp=fopen(tfilename,"w+");
 	fputs("<type> 3\n",fp);
 	fprintf(fp,"<runid> %s\n",runid.c_str());
@@ -235,6 +285,11 @@ void toBottFile(string runid,string tu,string mu,string result,string ce_info){
 }
 
 void judge(string pid,string lang,string runid,string src) {
+	/* minjie*/
+	db_client.insert("toj.Status",
+			BSON("run_ID" << temp.runid << "result" << "Queuing" << "submit_time" << temp.submit_time
+				<< "pid"<<covert(temp.pid)<<"lang"<<lang<<"username"<<temp.user<<"code_len"<< covert(src.length())));
+
 	if (src.length()<15) {
 		toBottFile(runid,"0","0","Compile Error","");
 		return;
@@ -261,19 +316,6 @@ void judge(string pid,string lang,string runid,string src) {
 	toBottFile(runid,tu,mu,result,ce_info);
 }
 
-struct Judger_data {
-	char src[MAX_DATA_SIZE];
-	int runid;
-	int pid;
-	int lang;
-	int time_limit;
-	int case_limit;
-	int number_of_cases;
-	int memory_limit;
-	int special_judge_status;
-	char vid[300];
-	char vname[300];
-};
 
 int num;
 int target;
@@ -281,7 +323,6 @@ char buffer[MAX_DATA_SIZE];
 bool got_things;
 int sockfd;
 struct sockaddr_in server;
-Judger_data temp;
 
 void send_register_info()
 {
@@ -314,6 +355,14 @@ void reconnect()
 
 void convert()
 {
+	/*	buffer format
+	 *	poj 2 __SOURCE-CODE-BEGIN-LABLE__
+	 *		source code here...
+	 *	__SOSURCE-CODE-END-LABLE__
+	 *	runid 
+	 *	submit_time
+	 *	pid lang user vid ss mm
+	 */
 	FILE *server_offer=fopen("temp.bott","r");
 	int offer_type;
 	char type_str[50];
@@ -325,9 +374,17 @@ void convert()
 		while (fgets(buffer,MAX_DATA_SIZE,server_offer)&&strcmp(buffer,"__SOURCE-CODE-END-LABLE__\n")!=0)
 			strcat(temp.src,buffer);
 		char ts[20][50];
-		fscanf(server_offer,"%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%*s%s%*s%s",ts[0],&temp.runid,ts[1],&temp.lang,ts[2],
-				&temp.pid,ts[3],&temp.number_of_cases,ts[4],&temp.time_limit,ts[5],&temp.case_limit,ts[6],
-				&temp.memory_limit,ts[7],&temp.special_judge_status,temp.vname,temp.vid);
+		/* minjie */
+		fscanf(server_offer, "%d\n", &temp.runid);
+		fgets(temp.submit_time, 50, server_offer);
+		if(temp.submit_time[strlen(temp.submit_time)-1] == '\n')
+			temp.submit_time[strlen(temp.submit_time)-1] = '\0';
+		fscanf(server_offer, "%d%d%s%s%s%s", &temp.pid, &temp.lang, temp.user, temp.vid,ts[0],ts[1]);
+		cout << temp.runid << endl << temp.submit_time << endl << temp.pid << endl << temp.lang<< endl << temp.user << endl << temp.vid << endl;
+
+		//fscanf(server_offer,"%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%*s%s%*s%s",ts[0],&temp.runid,ts[1],&temp.lang,ts[2],
+		//	&temp.pid,ts[3],&temp.number_of_cases,ts[4],&temp.time_limit,ts[5],&temp.case_limit,ts[6],
+		//		&temp.memory_limit,ts[7],&temp.special_judge_status,temp.vname,temp.vid);
 		fclose(server_offer);
 		char templog[1000]={0};
 		sprintf(templog,"runid:%d\n",temp.runid);
@@ -379,6 +436,8 @@ int main(int argc, char *argv[])
 		{
 			got_things=true;
 			fputs(buffer,target_file);
+			/* minjie */
+			printf("buffer = %s\n", buffer);
 		}
 		fclose(target_file);
 		if (num==0) reconnect();

@@ -13,11 +13,11 @@ var corrlang = new Array();
 digit2result[0] = "Accepted";
 digit2result[1] = "Wrong Answer";
 digit2result[2] = "Presentation Error";
-digit2result[3] = "Compile Error";
+digit2result[3] = "Compilation Error";
 digit2result[4] = "Runtime Error";
-digit2result[5] = "Time Limit Exceed";
-digit2result[6] = "Memory Limit Exceed";
-digit2result[7] = "Output Limit Exceed";
+digit2result[5] = "Time Limit Exceeded";
+digit2result[6] = "Memory Limit Exceeded";
+digit2result[7] = "Output Limit Exceeded";
 digit2result[8] = "Judge Error";
 
 corrlang[1] = "G++";
@@ -226,6 +226,12 @@ module.exports = function(app) {
 					fstats: stats,
 					fcorrlang: corrlang,
 					fpageID: pageID,
+					fselected:{
+						"pid":pid,
+						"username":username,
+						"lang":lang,
+						"result":digit2result[result],
+					},
 					furl: url,
 					ftotal_page: Math.ceil(total_num/15),
 				});

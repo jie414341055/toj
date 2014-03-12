@@ -2,7 +2,7 @@
 <script src="/javascripts/status.js"></script>
 
 <div id="title">
-<center><h2><font color="#428BCA">Realtime Status</font></h2></center>
+	<h2 style="text-align:center"><font color="#428BCA">Realtime Status</font></h2>
 <form class="form-inline" role="form">
 </form>
 </div>
@@ -11,39 +11,39 @@
 	<div class="form-group">
 		<label class="col-sm-1 control-label">Prob ID:</label>
 		<div class="col-xs-1">
-			<input id = "pid" type="text" class="form-control" placeholder="PID">
+			<input id = "pid" type="text" class="form-control" <%if(fselected.pid){%>value="<%-fselected.pid%>"<%}else{%>placeholder="PID"<%}%>>
 		</div>
 		<label class="col-sm-1 control-label">User:</label>
 		<div class="col-xs-2">
-			<input id = "user" type="text" class="form-control" placeholder="username">
+			<input id = "user" type="text" class="form-control" <%if(fselected.username){%>value="<%-fselected.username%>"<%}else{%>placeholder="username"<%}%>>
 		</div>
 		<label class="col-sm-1 control-label">Result:</label>
 		<div class="col-xs-2">
 			<select id = "result" class="form-control">
-				<option value="">All</option>
-				<option value="0">Accepted</option>
-				<option value="1">Wrong Answer</option>
-				<option value="2">Presentation Error</option>
-				<option value="3">Compilation Error</option>
-				
-				<option value="4">Runtime Error</option>
-				<option value="5">TimeLimit Exceed</option>
-				<option value="6">MemoryLimit Exceed</option>
-				<option value="7">OutputLimit Exceed</option>
-				<option value="8">Judge Error</option>
+				<option value="" <%if(!fselected.result){%>selected<%}%>>All</option>
+				<option value="0"<%if(fselected.result=="Accepted"){%>selected<%}%>>Accepted</option>
+				<option value="1"<%if(fselected.result=="Wrong Answer"){%>selected<%}%>>Wrong Answer</option>
+				<option value="2"<%if(fselected.result=="Presentation Error"){%>selected<%}%>>Presentation Error</option>
+				<option value="3"<%if(fselected.result=="Compilation Error"){%>selected<%}%>>Compilation Error</option>
+				<option value="4"<%if(fselected.result=="Runtime Error"){%>selected<%}%>>Runtime Error</option>
+				<option value="5"<%if(fselected.result=="TimeLimit Exceeded"){%>selected<%}%>>TimeLimit Exceeded</option>
+				<option value="6"<%if(fselected.result=="MemoryLimit Exceeded"){%>selected<%}%>>MemoryLimit Exceeded</option>
+				<option value="7"<%if(fselected.result=="OutputLimit Exceeded"){%>selected<%}%>>OutputLimit Exceeded</option>
+				<option value="8"<%if(fselected.result=="Judge Error"){%>selected<%}%>>Judge Error</option>
 			</select>
 		</div>
 		<label class="col-sm-1 control-label">Language:</label>
 		<div class="col-xs-2">
 			<select id = "lang" class="form-control">
-				<option value="">All</option>
-				<option value="12">C++</option>
-				<option value="1">G++</option>
-				<option value="3">Java</option>
-				<option value="13">C</option>
-				<option value="4">Pascal</option>
-				<option value="">Perl</option>
-				<option value="">Python</option>
+				<option value=""<%if(!fselected.lang){%>selected<%}%>>All</option>
+				<option value="12"<%if(fselected.lang=='12'){%>selected<%}%>>C++</option>
+				<option value="1"<%if(fselected.lang=='1'){%>selected<%}%>>G++</option>
+				<option value="3"<%if(fselected.lang=='3'){%>selected<%}%>>Java</option>
+				<option value="2"<%if(fselected.lang=='2'){%>selected<%}%>>GCC</option>
+				<option value="13"<%if(fselected.lang=='13'){%>selected<%}%>>C</option>
+				<option value="4"<%if(fselected.lang=='4'){%>selected<%}%>>Pascal</option>
+				<option value="15"<%if(fselected.lang=='15'){%>selected<%}%>>Perl</option>
+				<option value="16"<%if(fselected.lang=='16'){%>selected<%}%>>Python</option>
 			</select>
 		</div>
 		<button type="button" class="btn btn-primary" onclick="Search()">Search</button>
@@ -89,7 +89,7 @@
 					<td><%- stat.submit_time %></td>
 					<% if(stat.result == "Accepted") {%>
 					<td><font color="red"><%- stat.result %></font></td>
-					<% } else if(stat.result == "Compile Error") {%>
+					<% } else if(stat.result == "Compilation Error") {%>
 					<td><font color="#6633FF"><a href=/ShowCEError?runid=<%- stat.run_ID%>><%- stat.result %></a></font></td>
 					<% } else if(stat.result == "Presentation Error") {%>
 					<td><font color="orange"><%- stat.result %></font></td>

@@ -2299,3 +2299,61 @@ Received a judge request, runid:40
 Sending result of runid:40
 Sent.
 
+Received a command.
+
+Received a judge request, runid:41
+Logined
+Submitted
+Sending result of runid:41
+Sent.
+
+Received a command.
+
+Received a judge request, runid:42
+Logined
+Submitted
+Sending result of runid:42
+Sent.
+
+Received a command.
+
+Received a judge request, runid:43
+Logined
+Submitted
+Sending result of runid:43
+Sent.
+
+Received a command.
+
+Received a judge request, runid:44
+Logined
+Submitted
+Sending result of runid:44
+Sent.
+
+ERROR in network connection!
+Reconnecting...
+Connected!
+Connected!
+ERROR in network connection!
+Reconnecting...
+Connected!
+Received a command.
+
+Received a judge request, runid:45
+Logined
+Submitted
+Sending result of runid:45
+Sent.
+
+Connected!
+Received a command.
+
+Received a judge request, runid:47
+Logined
+Submitted
+Sending result of runid:47
+Sent.
+
+connect() error!
+Connected!

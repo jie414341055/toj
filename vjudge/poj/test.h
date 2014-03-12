@@ -1,6 +1,7 @@
 #ifndef PKUHANDLER_H_INCLUDED
 #define PKUHANDLER_H_INCLUDED
 
+#include "mongo/client/dbclient.h"
 #include "curl/curl.h"
 #include <stdio.h>
 #include <string>
@@ -31,6 +32,8 @@
 #define MAX_WAIT_TIME 120
 
 using namespace std;
+using namespace mongo;
+
 
 extern "C" size_t decode_html_entities_utf8(char *dest, const char *src);
 
@@ -106,7 +109,7 @@ void init() {
 	FILE * fin=fopen("config.ini","r");
 	fscanf(fin,"%s%d%s%s%s%s",judger_string,&lowprivid,logfile,username,password,tfilename);
 	fclose(fin);
-	strcat(judger_string,"\nPKU");
+	strcat(judger_string,"\nPOJ");
 	corrlang["1"]="0";
 	corrlang["2"]="1";
 	corrlang["3"]="2";

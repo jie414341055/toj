@@ -1,8 +1,20 @@
 <type> 3
-<runid> 40
+<runid> 47
 <memory_used> 0
 <time_used> 0
-<result> Compile Error
+<result> Compilation Error
 __COMPILE-INFO-BEGIN-LABLE__
+0_0_10278799_20804.cpp
+0_0_10278799_20804.cpp(4) : error C2146: 语法错误 : 缺少“;”(在标识符“sdfjlkdjlkdsjfl”的前面)
+0_0_10278799_20804.cpp(4) : error C2501: “sdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjfl” : 缺少存储类或类型说明符
+0_0_10278799_20804.cpp(5) : error C2146: 语法错误 : 缺少“;”(在标识符“sdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjfl”的前面)
+0_0_10278799_20804.cpp(5) : error C2501: “sdfjlkdjlkdsjfl” : 缺少存储类或类型说明符
+0_0_10278799_20804.cpp(6) : error C2146: 语法错误 : 缺少“;”(在标识符“sdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjfl”的前面)
+0_0_10278799_20804.cpp(6) : error C2501: “sdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjfl” : 缺少存储类或类型说明符
+0_0_10278799_20804.cpp(7) : error C2146: 语法错误 : 缺少“;”(在标识符“sdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjfl”的前面)
+0_0_10278799_20804.cpp(7) : error C2501: “sdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjfl” : 缺少存储类或类型说明符
+0_0_10278799_20804.cpp(8) : error C2146: 语法错误 : 缺少“;”(在标识符“sdfjlkdjlkdsjflsdfjlkdjlkdsjfl”的前面)
+0_0_10278799_20804.cpp(8) : error C2501: “sdfjlkdjlkdsjflsdfjlkdjlkdsjflsdfjlkdjlkdsjfl” : 缺少存储类或类型说明符
+0_0_10278799_20804.cpp(8) : fatal error C1004: 遇到意外的文件结束
 
 __COMPILE-INFO-END-LABLE__

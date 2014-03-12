@@ -246,21 +246,7 @@ bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu
 		}
 		runid=getRunid(ts);
 		result=getResult(ts);
-		/* minjie
-		auto_ptr<DBClientCursor> cursor = db_client.query("toj.Status",
-				mongo::Query().sort("Run_ID",-1),1,0);
-		if(!cursor->more()) Run_ID = 1;
-		else Run_ID = cursor->next().getIntField("Run_ID");
-		cursor = db_client.query("toj.Status",
-				BSON("vRun_ID"<<runid<<"OJ"<<"HDU"));
-		if(!cursor->more()) Run_ID ++;
-		*/
-		if (result!="Accepted"&&result[result.length()-1]=='d') {
-			result.erase(result.end()-2,result.end());
-		} else if (result=="Compilation Error") {
-			result="Compile Error";
-			ce_info=getCEinfo(runid);
-		}
+		/* minjie */
 		db_client.update("toj.Status",
 				BSON("run_ID" << temp.runid),
 				BSON("$set" << BSON("result"<<result)),
@@ -283,26 +269,18 @@ bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu
 				&&result.find("Judging")==string::npos
 				&&result.find("Queuing")==string::npos
 				&&result.find("Compiling")==string::npos)) return false;
-	/*
-	if (result=="Compilation Error") {
-		result="Compile Error";
-		ce_info=getCEinfo(runid);
-	}
-	else ce_info="";
-	*/
-	if(result!="Compile Error") ce_info="";
+
+	if(result=="Compilation Error") ce_info = getCEinfo(runid);
+	else	ce_info="";
 	tu=getUsedTime(ts);
 	mu=getUsedMem(ts);
-	/* minjie*/
-	/*
-	if (result!="Accepted"&&result[result.length()-1]=='d') {
-		result.erase(result.end()-2,result.end());
-	}
-	*/
+
+	/* minjie update Status */
 	db_client.update("toj.Status",
 			BSON("run_ID" << temp.runid),
-			BSON("$set" << BSON("result"<<result<<"time_used"<<tu<<"mem_used"<<mu<<"ce_info"<<ce_info)),
+			BSON("$set" << BSON("vrun_ID" << runid << "oj" << "HDU" << "result"<<result<<"time_used"<<tu<<"mem_used"<<mu<<"ce_info"<<ce_info)),
 			true, false);
+	/* minjie update User */
 	db_client.update("toj.User",
 			BSON("username" << temp.user),
 			BSON("$inc"<<BSON("total_submit"<<1)),
@@ -350,7 +328,7 @@ void judge(string pid,string lang,string runid,string src) {
 	/* minjie*/
 	db_client.insert("toj.Status",
 			BSON("run_ID" << temp.runid << "result" << "Queuing" << "submit_time" << temp.submit_time
-				<< "pid"<<pid<<"lang"<<lang<<"username"<<temp.user<<"code_len"<< covert(src.length())));
+				<< "pid"<<covert(temp.pid)<<"lang"<<lang<<"username"<<temp.user<<"code_len"<< covert(src.length())));
 
 	if (src.length()<51) {
 		toBottFile(runid,"0","0","Compile Error","");
@@ -420,11 +398,13 @@ void reconnect()
 
 void convert()
 {
-	/*	fuffer format
+	/*	buffer format
 	 *	hdu 2 __SOURCE-CODE-BEGIN-LABLE__
 	 *	  source code here...
 	 *	__SOURCE-CODE-END-LABLE__
-	 *	runid lang pid vid ss mm
+	 *	runid 
+	 *	submit_time
+	 *	pid lang user vid ss mm
 	 */
 	FILE *server_offer=fopen("temp.bott","r");
 	int offer_type;
