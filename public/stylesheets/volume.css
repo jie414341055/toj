@@ -12,6 +12,32 @@
 .form-group {
 	margin-bottom: 0px;
 }
+.search-bar {
+	width: 25%;
+	float: left;
+	position: relative;
+	min-height: 1px;
+	padding-right: 15px;
+	padding-left: 15px;
+}
+.search-btn {
+	width: 5%;
+	float: left;
+	position: relative;
+	right: -220px;
+	min-height: 1px;
+	padding-right: 15px;
+	padding-left: 15px;
+}
+.oj-select {
+	width: 12%;
+	float: right;
+	position: relative;
+	right: 220px;
+	min-height: 1px;
+	padding-right: 15px;
+	padding-left: 15px;
+}
 .ac {
 	display: inline-block;
 	height: 16px;
@@ -45,35 +71,5 @@
 }
 .header-hard {
 	width: 3%;
-}
-.toTop {
-	position: fixed;
-	bottom: 113px;
-	z-index: 20;
-	left: 80%;
-	width: 38px;
-	height: 38px;
-	background-color: #ddd;
-	border-radius:3px;
-	cursor: pointer;
-}
-.toTop>.stick {
-	position: absolute;
-	width: 8px;
-	height: 14px;
-	display: block;
-	left: 15px;
-	top: 15px;
-	border-radius: 1px;
-	background-color: #aaa
-}
-.toTop>.arrow {
-	position:absolute;
-	left:10px;
-	top:-1px;
-	width:0;
-	height:0;
-	border: 9px solid rgba(126, 27, 27, 0);		
-	border-bottom-color:#aaa
 }
 </style>

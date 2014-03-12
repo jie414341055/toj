@@ -56,20 +56,16 @@
 </center>
 <div id="form-horizontal" role="form">
 	<div class="form-group">
-		<div class="col-xs-3">
-			<input id = "pid_or_title" type="text" class="form-control" placeholder="PID or Title">
+		<div class="search-bar">
+			<input id = "pid_or_title" type="text" class="form-control" placeholder="ID or Title">
 		</div>
-		<label class="col-sm-1 control-label">OJ:</label>
-		<div class="col-xs-2">
+		<button type="button" class="btn btn-primary" onclick="SearchProb()">Search</button>
+
+		<div class="oj-select">
 			<select id = "oj" class="form-control">
-				<option value="">All</option>
-				<option value="0">TOJ</option>
-				<option value="1">HDU</option>
-				<option value="2">POJ</option>
+				<option value="0">All</option>
 			</select>
 		</div>
-		<button type="button" class="btn btn-primary" onclick="Search()">Search</button>
-
 	</div>
 	<div class="form-group">
 		<table id="problemList" class="table table-striped table-centered">
