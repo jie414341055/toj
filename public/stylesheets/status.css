@@ -50,4 +50,8 @@ tr,td,th {
 	font-size: 13.5px;
 	text-align: center;
 }
+.col-xs-1 {
+	padding-left: 0;
+	padding-right: 0;
+}
 </style>

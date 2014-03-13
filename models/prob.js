@@ -104,7 +104,6 @@ Prob.get = function get(PID, callback) {
 				mongodb.close();
 				if(doc) {
 					var prob = new Prob(doc);
-					//console.log(prob);
 					callback(err, prob);
 				} else {
 					callback(err, null);
@@ -125,7 +124,7 @@ Prob.page = function page(pageID, callback) {
 				return callback(err);
 			}
 			pageID = parseInt(pageID);
-			collection.find().sort({pid:1}).limit(50).skip((pageID - 1) * 50).toArray(function(err, docs) {
+			collection.find().sort({pid:1}).limit(100).skip((pageID - 1) * 100).toArray(function(err, docs) {
 				mongodb.close();
 				if(err) {
 					callback(err, null);
@@ -137,6 +136,37 @@ Prob.page = function page(pageID, callback) {
 					probs.push(pp);
 				});
 				callback(null, probs);
+			});
+		});
+	});
+};
+
+Prob.search = function search(info, callback) {
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+		db.collection('Problem', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			var probs = [];
+			var reg = '.*' + info + '.*';
+			collection.findOne({pid:parseInt(info)}, function(err, doc) {
+				if(doc) probs.push(doc);
+				collection.find({$or:[{title:new RegExp(reg)},{source:new RegExp(reg)}]},{desc:0,input:0,output:0,sample_in:0,sample_out:0}).limit(100).sort({pid:1}).toArray(function(err, docs) {
+					mongodb.close();
+					if(err) {
+						callback(err, null);
+					}
+				
+					docs.forEach(function(doc, index) {
+						var pp = new Prob(doc);
+						probs.push(pp);
+					});
+					callback(null, probs);
+				});
 			});
 		});
 	});

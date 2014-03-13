@@ -1,8 +1,8 @@
 <type> 3
-<runid> 52
-<memory_used> 
-<time_used> 
-<result> Runtime Error
+<runid> 54
+<memory_used> 180
+<time_used> 0
+<result> Accepted
 __COMPILE-INFO-BEGIN-LABLE__
 
 __COMPILE-INFO-END-LABLE__

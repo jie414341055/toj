@@ -66,7 +66,7 @@ module.exports = function(app) {
 				res.render('Volume', {
 					title:'Problems',
 					fvol_num: vol_num,
-					ftotal_vol: Math.ceil(total_prob_num/50),
+					ftotal_vol: Math.ceil(total_prob_num/100),
 					fprobs: probs,
 				});
 			});
@@ -95,6 +95,24 @@ module.exports = function(app) {
 				sample_out:	prob.sample_out,
 			});
 		});
+	});
+
+	app.post('/ProblemSearch', function(req, res) {
+		var info = req.body['info'];
+		//res.send(req.body['info']);
+		Prob.search(info, function(err, probs) {
+			if(err) {
+				req.flash('error', 'Something happened...');
+				return res.redirect('/Problems');
+			}
+			res.render('SearchProblems', {
+				title:'Search Result',
+				fprobs: probs,
+				fnum: probs.length,
+			});
+			
+		});
+
 	});
 
 	app.get('/ProbSubmit', checkLogin);

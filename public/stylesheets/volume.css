@@ -1,4 +1,3 @@
-<style>
 .form-horizontal {
 	margin: 0 auto !important;
 	float: none !important;
@@ -29,8 +28,9 @@
 	padding-right: 15px;
 	padding-left: 15px;
 }
-.oj-select {
-	width: 12%;
+/*
+.ojn {
+	width: 2%;
 	float: right;
 	position: relative;
 	right: 220px;
@@ -38,6 +38,16 @@
 	padding-right: 15px;
 	padding-left: 15px;
 }
+.oj-select {
+	width: 12%;
+	float: right;
+	position: relative;
+	right: 60px;
+	min-height: 1px;
+	padding-right: 15px;
+	padding-left: 15px;
+}
+*/
 .ac {
 	display: inline-block;
 	height: 16px;
@@ -72,4 +82,12 @@
 .header-hard {
 	width: 3%;
 }
-</style>
+.btn-circle {
+	width: 30px;
+	height: 30px;
+	text-align: center;
+	padding: 6px 0;
+	font-size: 12px;
+	line-height: 1.42;
+	border-radius: 15px;
+}
