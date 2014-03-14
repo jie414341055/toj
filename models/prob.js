@@ -112,7 +112,7 @@ Prob.get = function get(PID, callback) {
 		});
 	});
 };
-Prob.page = function page(pageID, callback) {
+Prob.page = function page(query, pageID, callback) {
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -124,7 +124,7 @@ Prob.page = function page(pageID, callback) {
 				return callback(err);
 			}
 			pageID = parseInt(pageID);
-			collection.find().sort({pid:1}).limit(100).skip((pageID - 1) * 100).toArray(function(err, docs) {
+			collection.find(query).sort({pid:1}).limit(100).skip((pageID - 1) * 100).toArray(function(err, docs) {
 				mongodb.close();
 				if(err) {
 					callback(err, null);
@@ -141,7 +141,7 @@ Prob.page = function page(pageID, callback) {
 	});
 };
 
-Prob.search = function search(info, callback) {
+Prob.search = function search(query, info, callback) {
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -153,9 +153,12 @@ Prob.search = function search(info, callback) {
 			}
 			var probs = [];
 			var reg = '.*' + info + '.*';
-			collection.findOne({pid:parseInt(info)}, function(err, doc) {
-				if(doc) probs.push(doc);
-				collection.find({$or:[{title:new RegExp(reg)},{source:new RegExp(reg)}]},{desc:0,input:0,output:0,sample_in:0,sample_out:0}).limit(100).sort({pid:1}).toArray(function(err, docs) {
+			collection.find({$and:[query,{$or:[{pid:parseInt(info)},{vid:parseInt(info)}]}]}).toArray(function(err, docs) {
+				docs.forEach(function(doc, index) {
+					var pp = new Prob(doc);
+					probs.push(pp);
+				});
+				collection.find({$and:[query,{$or:[{title:new RegExp(reg)},{source:new RegExp(reg)}]}]},{desc:0,input:0,output:0,sample_in:0,sample_out:0}).limit(100).sort({pid:1}).toArray(function(err, docs) {
 					mongodb.close();
 					if(err) {
 						callback(err, null);

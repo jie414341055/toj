@@ -1,6 +1,6 @@
 <type> 3
-<runid> 54
-<memory_used> 180
+<runid> 56
+<memory_used> 148
 <time_used> 0
 <result> Accepted
 __COMPILE-INFO-BEGIN-LABLE__

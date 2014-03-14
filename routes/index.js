@@ -50,15 +50,26 @@ module.exports = function(app) {
 	});
 	//app.get(/\/Problem(\?Volume=(\d+)?)?/, function(req, res) {
 	app.get('/Problems', function(req, res) {
+
+
 		var vol_num = req.query.Volume;
 		if(!vol_num || vol_num == "") vol_num = 1;
 		else vol_num = parseInt(vol_num);
-		Prob.getCount({}, function(err, total_prob_num) {
+
+		var query = {};
+		var oj = req.query.oj;
+		if(oj) query.oj = oj;
+
+		var url = "/Problems?oj=";
+		if(oj) url += oj;
+		url += "&Volume=";
+
+		Prob.getCount(query, function(err, total_prob_num) {
 			if(err) {
 				req.flash('error', err);
 				return res.redirect('/');
 			}
-			Prob.page(vol_num, function(err, probs) {
+			Prob.page(query, vol_num, function(err, probs) {
 				if (err) {
 					req.flash('error', err);
 					return res.redirect('/');
@@ -68,6 +79,8 @@ module.exports = function(app) {
 					fvol_num: vol_num,
 					ftotal_vol: Math.ceil(total_prob_num/100),
 					fprobs: probs,
+					furl: url,
+					foj: oj,
 				});
 			});
 		});
@@ -84,23 +97,19 @@ module.exports = function(app) {
 			}
 			
 			res.render('ShowProblem', {
-				pid: 	prob.pid,
-				oj: 	prob.oj,
-				title: 	prob.title,
-				rates: 	prob.rates,
-				desc: 	prob.desc,
-				input:	prob.input,
-				output:	prob.output,
-				sample_in:	prob.sample_in,
-				sample_out:	prob.sample_out,
+				title: prob.title,
+				fprob: prob,
 			});
 		});
 	});
 
 	app.post('/ProblemSearch', function(req, res) {
 		var info = req.body['info'];
+		var oj = req.body['oj'];
 		//res.send(req.body['info']);
-		Prob.search(info, function(err, probs) {
+		var query = {};
+		if(oj) query.oj = oj;
+		Prob.search(query, info, function(err, probs) {
 			if(err) {
 				req.flash('error', 'Something happened...');
 				return res.redirect('/Problems');
@@ -108,6 +117,7 @@ module.exports = function(app) {
 			res.render('SearchProblems', {
 				title:'Search Result',
 				fprobs: probs,
+				foj: oj,
 				fnum: probs.length,
 			});
 			
@@ -201,6 +211,7 @@ module.exports = function(app) {
 			client.write(data);
 		});
 	};
+
 	app.get('/Status', function(req, res) {
 	//Status?pid=&username=&lang=&result=&page=
 		var query = {};
@@ -254,6 +265,14 @@ module.exports = function(app) {
 					ftotal_page: Math.ceil(total_num/15),
 				});
 			});
+		});
+	});
+
+	app.get('/Contests', function(req, res) {
+		var type = req.query.type;
+		res.render('Contests', {
+			title: 'Contests',
+			fconts: [],
 		});
 	});
 

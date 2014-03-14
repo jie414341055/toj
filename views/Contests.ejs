@@ -1,0 +1,59 @@
+<script src="/javascripts/contests.js"></script>
+<link href="/stylesheets/contests.css" rel="stylesheet">
+<script>
+</script>
+<div id="title">
+	<h2 style="text-align:center"><font color="#428BCA">Contests</font></h2>
+	<form class="form-inline" role="form"></form>
+</div>
+
+<div id="form-horizontal" role="form">
+	<div class="form-group">
+		<div class="search-bar">
+			<input id = "pid_or_title" type="text" class="form-control" placeholder="CID, Title" onkeydown="if(event.keyCode==13 && (document.getElementById('pid_or_title').value)) document.getElementById('searchbtn').click()">
+		</div>
+		<button id = "searchbtn" type="submit" class="btn btn-primary" onclick="SearchContest()">Search</button>
+	</div>
+	<div class="form-group">
+		<table id="problemList" class="table table-striped table-centered">
+			<thead>
+				<tr>
+					<th class="header-cid">
+						<div id="searchTitleBtn" class="" order='asc'><a href="#">CID</a></div>
+					</th>
+					<th class="header-title">
+						<div id="searchTitleBtn" class="" order='asc'><a href="#">Title</a></div>
+					</th>
+					<th class="header-st_time">
+						<div id="searchTitleBtn" class="" order='asc'><a href="#">Start Time</a></div>
+					</th>
+					<th class="header-ed_time">
+						<div id="searchTitleBtn" class="" order='asc'><a href="#">End Time</a></div>
+					</th>
+					<th class="header-status">
+						<div id="searchTitleBtn" class="" order='asc'><a href="#">Status</a></div>
+					</th>
+					<th class="header-access">
+						<div id="searchTitleBtn" class="" order='asc'><a href="#">Access</a></div>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% fconts.forEach(function(cont, index) { %>
+				<tr>
+					<!--<span class="ac"> </span>-->
+					<td>
+						<td><%= cont.cid %></td>
+						<td><a href="/Contests?cid=<%= cont.cid %>"><%- cont.title %></a></td>
+						<td><%= cont.start_time %></td>
+						<td><%= cont.end_time %></td>
+						<td><%= cont.status %></td>
+						<td><%= cont.access %></td>
+					</td>
+				</tr>
+				<% }); %>
+
+			</tbody>
+		</table>
+	</div>
+</div>

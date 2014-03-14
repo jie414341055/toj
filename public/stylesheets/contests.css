@@ -1,20 +1,20 @@
 .form-horizontal {
 	margin: 0 auto !important;
 	float: none !important;
-	max-width: 820px;
+	max-width: 920px;
 	width: auto;
 	margin: 0 auto;
 }
 .table-centered {
 	margin: 0 auto !important;
 	float: none !important;
-	max-width: 820px;
+	max-width: 920px;
 	width: auto;
 	margin: 0 auto;
 }
 .form-group {
 	margin-bottom: 0px;
-	max-width: 820px;
+	max-width: 920px;
 	width: auto;
 	margin: 0 auto;
 }
@@ -55,39 +55,24 @@
 	padding-left: 15px;
 }
 */
-.ac {
-	display: inline-block;
-	height: 16px;
-	width: 16px;
-	background-image: url('/static/images/correct.png');
-	background-repeat: no-repeat;
-	display: inline-block;
-	height: 16px;
-	width: 16px;
-	background-image: url('/static/images/question.png');
-	background-repeat: no-repeat;
-}
-.header-status {
-	width: 5%;
-}
-.header-id {
-	width: 5%;
-}
-.header-title {
-	width: 50%;
-}
-.header-oj {
+.header-cid {
 	width: 7%;
 }
-.header-vid {
-	width: 5%;
+.header-title {
+	width: 40%;
 }
-.header-ac {
-	width: 23%;
+.header-st_time {
+	width: 15%;
+}
+.header-ed_time {
+	width: 15%;
+}
+.header-status {
+	width: 10%;
 	min-width: 100px;
 }
-.header-hard {
-	width: 3%;
+.header-access {
+	width: 13%;
 }
 .oj-form {
 	display: block;

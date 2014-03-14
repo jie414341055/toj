@@ -1,5 +1,7 @@
 <script src="/javascripts/volume.js"></script>
 <link href="/stylesheets/volume.css" rel="stylesheet">
+<script>
+</script>
 <div id="Problem Achieve">
 	<h2 style="text-align:center"><font color="#428BCA">Problem Archive</font></h2>
 	<form class="form-inline" role="form"></form>
@@ -12,30 +14,30 @@
 		<% if(fvol_num == 4) { %>
 		<li class="disabled"><a href="#">&laquo;</a></li>
 		<% } else { %>
-		<li><a href="/Problems?Volume=<%= fvol_num-4%>">&laquo;</a></li>
+		<li><a href="<%= furl %><%= fvol_num-4%>">&laquo;</a></li>
 		<% } %>
-		<li><a href="/Problems?Volume=<%= fvol_num-3 %>"><%= fvol_num-3 %></a></li>
-		<li><a href="/Problems?Volume=<%= fvol_num-2 %>"><%= fvol_num-2 %></a></li>
-		<li><a href="/Problems?Volume=<%= fvol_num-1 %>"><%= fvol_num-1 %></a></li>
-		<li class="active"><a href="/Problems?Volume=<%= fvol_num %>"><%= fvol_num %></a></li>
-		<li><a href="/Problems?Volume=<%= fvol_num+1 %>"><%= fvol_num+1 %></a></li>
-		<li><a href="/Problems?Volume=<%= fvol_num+2 %>"><%= fvol_num+2 %></a></li>
-		<li><a href="/Problems?Volume=<%= fvol_num+3 %>"><%= fvol_num+3 %></a></li>
+		<li><a href="<%= furl %><%= fvol_num-3 %>"><%= fvol_num-3 %></a></li>
+		<li><a href="<%= furl %><%= fvol_num-2 %>"><%= fvol_num-2 %></a></li>
+		<li><a href="<%= furl %><%= fvol_num-1 %>"><%= fvol_num-1 %></a></li>
+		<li class="active"><a href="<%= furl %><%= fvol_num %>"><%= fvol_num %></a></li>
+		<li><a href="<%= furl %><%= fvol_num+1 %>"><%= fvol_num+1 %></a></li>
+		<li><a href="<%= furl %><%= fvol_num+2 %>"><%= fvol_num+2 %></a></li>
+		<li><a href="<%= furl %><%= fvol_num+3 %>"><%= fvol_num+3 %></a></li>
 		<li><a href="#">...</a></li>
-		<li><a href="/Problems?Volume=<%= ftotal_vol-2 %>"><%= ftotal_vol-2 %></a></li>
-		<li><a href="/Problems?Volume=<%= ftotal_vol-1 %>"><%= ftotal_vol-1 %></a></li>
-		<li><a href="/Problems?Volume=<%= ftotal_vol %>"><%= ftotal_vol %></a></li>
-		<li><a href="/Problems?Volume=<%= fvol_num+4%>">&raquo;</a></li>
+		<li><a href="<%= furl %><%= ftotal_vol-2 %>"><%= ftotal_vol-2 %></a></li>
+		<li><a href="<%= furl %><%= ftotal_vol-1 %>"><%= ftotal_vol-1 %></a></li>
+		<li><a href="<%= furl %><%= ftotal_vol %>"><%= ftotal_vol %></a></li>
+		<li><a href="<%= furl %><%= fvol_num+4%>">&raquo;</a></li>
 		<% } else {%>
 		<li class="disabled"><a href="#">&laquo;</a></li>
-		<li><a href="/Problems?Volume=">1</a></li>
-		<li><a href="/Problems?Volume=">2</a></li>
-		<li><a href="/Problems?Volume=">3</a></li>
+		<li><a href="<%= furl %>">1</a></li>
+		<li><a href="<%= furl %>">2</a></li>
+		<li><a href="<%= furl %>">3</a></li>
 		<li><a href="#">...</a></li>
 		<% for(var i=ftotal_vol-6;i<=ftotal_vol;++i){ %>
 		<%if(i==fvol_num){%> <li class="active"><%}else { %>
 		<li><%}%>
-		<a href="/Problems?Volume=<%= i %>"><%= i %></a></li>
+		<a href="<%= furl %><%= i %>"><%= i %></a></li>
 		<%}%>
 		<li class="disabled"><a href="#">&laquo;</a></li>
 		<% } %>
@@ -44,13 +46,13 @@
 		<%for(var i=1;i<=7;++i){%>
 		<%if(i==fvol_num){%> <li class="active"><%}else{%>
 		<li><%}%>
-		<a href="/Problems?Volume=<%= i %>"><%= i %></a></li>
+		<a href="<%= furl %><%= i %>"><%= i %></a></li>
 		<%}%>
 		<li><a href="#">...</a></li>
-		<li><a href="/Problems?Volume=<%= ftotal_vol-2 %>"><%= ftotal_vol-2 %></a></li>
-		<li><a href="/Problems?Volume=<%= ftotal_vol-1 %>"><%= ftotal_vol-1 %></a></li>
-		<li><a href="/Problems?Volume=<%= ftotal_vol %>"><%= ftotal_vol %></a></li>
-		<li><a href="/Problems?Volume=8">&raquo;</a></li>
+		<li><a href="<%= furl %><%= ftotal_vol-2 %>"><%= ftotal_vol-2 %></a></li>
+		<li><a href="<%= furl %><%= ftotal_vol-1 %>"><%= ftotal_vol-1 %></a></li>
+		<li><a href="<%= furl %><%= ftotal_vol %>"><%= ftotal_vol %></a></li>
+		<li><a href="<%= furl %>8">&raquo;</a></li>
 		<%}%>
 
 	</ul>
@@ -85,7 +87,15 @@
 						<div id="searchTitleBtn" class="" order='asc'><a href="#">Title</a></div>
 					</th>
 					<th class="header-oj">
-						<div id="titleBtn" class="" order='asc'><a href="#">OJ</a></div>
+						<!--<div id="titleBtn" class="" order='asc'><a href="#">OJ</a></div>-->
+						<div class="oj-select">
+						<select id = "ojs" class="oj-form">
+							<option value="0">All</option>
+							<option value="TOJ"<%if(foj=="TOJ"){%>selected<%}%>>TOJ</option>
+							<option value="HDU"<%if(foj=="HDU"){%>selected<%}%>>HDU</option>
+							<option value="POJ"<%if(foj=="POJ"){%>selected<%}%>>POJ</option>
+						</select>
+						</div>
 					</th>
 					<th class="header-vid">
 						<div id="searchTitleBtn" class="" order='asc'><a href="#">vID</a></div>
@@ -98,7 +108,7 @@
 			<tbody>
 				<% fprobs.forEach(function(prob, index) { %>
 				<tr>
-					<span class="ac"> </span>
+					<!--<span class="ac"> </span>-->
 					<td>
 						<td><%= prob.pid %></td>
 						<td><a href="/ShowProblems?pid=<%= prob.pid %>"><%- prob.title %></a></td>
@@ -120,30 +130,30 @@
 		<% if(fvol_num == 4) { %>
 		<li class="disabled"><a href="#">&laquo;</a></li>
 		<% } else { %>
-		<li><a href="/Problems?Volume=<%= fvol_num-4%>">&laquo;</a></li>
+		<li><a href="<%= furl %><%= fvol_num-4%>">&laquo;</a></li>
 		<% } %>
-		<li><a href="/Problems?Volume=/vol<%= fvol_num-3 %>"><%= fvol_num-3 %></a></li>
-		<li><a href="/Problems?Volume=vol<%= fvol_num-2 %>"><%= fvol_num-2 %></a></li>
-		<li><a href="/Problems?Volume=<%= fvol_num-1 %>"><%= fvol_num-1 %></a></li>
-		<li class="active"><a href="/Problems?Volume=<%= fvol_num %>"><%= fvol_num %></a></li>
-		<li><a href="/Problems?Volume=<%= fvol_num+1 %>"><%= fvol_num+1 %></a></li>
-		<li><a href="/Problems?Volume=<%= fvol_num+2 %>"><%= fvol_num+2 %></a></li>
-		<li><a href="/Problems?Volume=<%= fvol_num+3 %>"><%= fvol_num+3 %></a></li>
+		<li><a href="<%= furl %>/vol<%= fvol_num-3 %>"><%= fvol_num-3 %></a></li>
+		<li><a href="<%= furl %>vol<%= fvol_num-2 %>"><%= fvol_num-2 %></a></li>
+		<li><a href="<%= furl %><%= fvol_num-1 %>"><%= fvol_num-1 %></a></li>
+		<li class="active"><a href="<%= furl %><%= fvol_num %>"><%= fvol_num %></a></li>
+		<li><a href="<%= furl %><%= fvol_num+1 %>"><%= fvol_num+1 %></a></li>
+		<li><a href="<%= furl %><%= fvol_num+2 %>"><%= fvol_num+2 %></a></li>
+		<li><a href="<%= furl %><%= fvol_num+3 %>"><%= fvol_num+3 %></a></li>
 		<li><a href="#">...</a></li>
-		<li><a href="/Problems?Volume=<%= ftotal_vol-2 %>"><%= ftotal_vol-2 %></a></li>
-		<li><a href="/Problems?Volume=<%= ftotal_vol-1 %>"><%= ftotal_vol-1 %></a></li>
-		<li><a href="/Problems?Volume=<%= ftotal_vol %>"><%= ftotal_vol %></a></li>
-		<li><a href="/Problems?Volume=<%= fvol_num+4%>">&raquo;</a></li>
+		<li><a href="<%= furl %><%= ftotal_vol-2 %>"><%= ftotal_vol-2 %></a></li>
+		<li><a href="<%= furl %><%= ftotal_vol-1 %>"><%= ftotal_vol-1 %></a></li>
+		<li><a href="<%= furl %><%= ftotal_vol %>"><%= ftotal_vol %></a></li>
+		<li><a href="<%= furl %><%= fvol_num+4%>">&raquo;</a></li>
 		<% } else {%>
 		<li class="disabled"><a href="#">&laquo;</a></li>
-		<li><a href="/Problems?Volume=1">1</a></li>
-		<li><a href="/Problems?Volume=2">2</a></li>
-		<li><a href="/Problems?Volume=3">3</a></li>
+		<li><a href="<%= furl %>1">1</a></li>
+		<li><a href="<%= furl %>2">2</a></li>
+		<li><a href="<%= furl %>3">3</a></li>
 		<li><a href="#">...</a></li>
 		<% for(var i=ftotal_vol-6;i<=ftotal_vol;++i){ %>
 		<%if(i==fvol_num){%> <li class="active"><%}else{%>
 		<li><%}%>
-		<a href="/Problems?Volume=<%= i %>"><%= i %></a></li>
+		<a href="<%= furl %><%= i %>"><%= i %></a></li>
 		<%}%>
 		<li class="disabled"><a href="#">&laquo;</a></li>
 		<% } %>
@@ -152,13 +162,13 @@
 		<%for(var i=1;i<=7;++i){%>
 		<%if(i==fvol_num){%> <li class="active"><%}else{%>
 		<li><%}%>
-		<a href="/Problems?Volume=<%= i %>"><%= i %></a></li>
+		<a href="<%= furl %><%= i %>"><%= i %></a></li>
 		<%}%>
 		<li><a href="#">...</a></li>
-		<li><a href="/Problems?Volume=<%= ftotal_vol-2 %>"><%= ftotal_vol-2 %></a></li>
-		<li><a href="/Problems?Volume=<%= ftotal_vol-1 %>"><%= ftotal_vol-1 %></a></li>
-		<li><a href="/Problems?Volume=<%= ftotal_vol %>"><%= ftotal_vol %></a></li>
-		<li><a href="/Problems?Volume=8">&raquo;</a></li>
+		<li><a href="<%= furl %><%= ftotal_vol-2 %>"><%= ftotal_vol-2 %></a></li>
+		<li><a href="<%= furl %><%= ftotal_vol-1 %>"><%= ftotal_vol-1 %></a></li>
+		<li><a href="<%= furl %><%= ftotal_vol %>"><%= ftotal_vol %></a></li>
+		<li><a href="<%= furl %>8">&raquo;</a></li>
 		<%}%>
 
 	</ul>
