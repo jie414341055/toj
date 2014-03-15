@@ -4,6 +4,9 @@ var Post = require('../models/post.js');
 var Prob = require('../models/prob.js');
 var Rcont = require('../models/rcont.js');
 var Status = require('../models/status.js');
+var Contest = require('../models/contest.js');
+var Contest_user = require('../models/contest_user.js');
+var Contest_status = require('../models/contest_status.js');
 var net = require('net');
 var fs = require('fs');
 
@@ -58,10 +61,10 @@ module.exports = function(app) {
 
 		var query = {};
 		var oj = req.query.oj;
-		if(oj) query.oj = oj;
+		if(oj && oj != 'All') query.oj = oj;
 
 		var url = "/Problems?oj=";
-		if(oj) url += oj;
+		if(oj && oj != 'All') url += oj;
 		url += "&Volume=";
 
 		Prob.getCount(query, function(err, total_prob_num) {
@@ -270,9 +273,73 @@ module.exports = function(app) {
 
 	app.get('/Contests', function(req, res) {
 		var type = req.query.type;
-		res.render('Contests', {
-			title: 'Contests',
-			fconts: [],
+		var pageID = req.query.page;
+		if(pageID) pageID = parseInt(pageID);
+		else pageID = 1;
+		Contest.page({type:parseInt(type)}, pageID, function(err, conts) {
+			if(err) {
+				res.flash('error', err);
+				res.redirect('/Contests?type'+type);
+			}
+			res.render('Contests', {
+				title: 'Contests',
+				fconts: conts,
+			});
+		});
+	});
+	app.get('/ArrangeContest', checkLogin);
+	app.get('/ArrangeContest', function(req, res) {
+		var currentUser = req.session.user;
+		res.render('Arrange', {
+			title: 'Arrange a Contest',
+			fuser: currentUser,
+		});
+	});
+	/*
+	var now_date = new Date();
+	now_date.setHours(now_date.getHours()+8);
+	now_date = now_date.toISOString().replace(/T/,' ').replace(/\..+/,'');
+	*/
+	app.post('/ArrangeContest', function(req, res) {
+		var currentUser = req.session.user;
+		var type = req.body['type'];
+		var title = req.body['title'];
+		var desc = req.body['desc'];
+		var st_time = req.body['sttime'];
+		var ed_time = req.body['edtime'];
+		var passwd = req.body['passwd'];
+		var prob = JSON.parse(req.body['prob']);
+		Contest.getCount({}, function(err, cnt) {
+			if(err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			}
+			var cont = {
+				"cid": cnt + 1,
+				"type": parseInt(type),
+				"title": title,
+				"start_time": st_time,
+				"end_time": ed_time,
+				"author": currentUser.username,
+				"access": passwd=="",
+				"passwd": passwd,
+				"problem": prob,
+			};
+			var Cont = new Contest(cont);
+			Cont.save(function(err) {
+				if (err) {
+					req.flash('error', err);
+					return res.redirect('/');
+				}
+				res.redirect('/Contests?type='+type);
+			});
+		});
+
+	});
+
+	app.get('test', function(req, res) {
+		res.render('Arrange', {
+			title: 'arrange',
 		});
 	});
 

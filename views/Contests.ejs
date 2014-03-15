@@ -10,12 +10,13 @@
 <div id="form-horizontal" role="form">
 	<div class="form-group">
 		<div class="search-bar">
-			<input id = "pid_or_title" type="text" class="form-control" placeholder="CID, Title" onkeydown="if(event.keyCode==13 && (document.getElementById('pid_or_title').value)) document.getElementById('searchbtn').click()">
+			<input id = "title_source" type="text" class="form-control" placeholder="Title, Source, Author" onkeydown="if(event.keyCode==13 && (document.getElementById('title_source').value)) document.getElementById('searchbtn').click()">
 		</div>
 		<button id = "searchbtn" type="submit" class="btn btn-primary" onclick="SearchContest()">Search</button>
+		<button id = "arrange" type="submit" class="btn btn-success" onclick="window.location.replace('/ArrangeContest'+location.search);">Arrange</button>
 	</div>
 	<div class="form-group">
-		<table id="problemList" class="table table-striped table-centered">
+		<table id="problemList" class="table table-condensed table-bordered table-striped table-centered">
 			<thead>
 				<tr>
 					<th class="header-cid">
@@ -36,20 +37,22 @@
 					<th class="header-access">
 						<div id="searchTitleBtn" class="" order='asc'><a href="#">Access</a></div>
 					</th>
+					<th class="header-author">
+						<div id="searchTitleBtn" class="" order='asc'><a href="#">Author</a></div>
+					</th>
 				</tr>
 			</thead>
 			<tbody>
 				<% fconts.forEach(function(cont, index) { %>
 				<tr>
 					<!--<span class="ac"> </span>-->
-					<td>
-						<td><%= cont.cid %></td>
-						<td><a href="/Contests?cid=<%= cont.cid %>"><%- cont.title %></a></td>
-						<td><%= cont.start_time %></td>
-						<td><%= cont.end_time %></td>
-						<td><%= cont.status %></td>
-						<td><%= cont.access %></td>
-					</td>
+					<td><%- cont.cid %></td>
+					<td><a href="/ShowContests?cid=<%= cont.cid %>"><%- cont.title %></a></td>
+					<td><%= cont.start_time %></td>
+					<td><%= cont.end_time %></td>
+					<td><%= cont.status %></td>
+					<td><%= cont.access %></td>
+					<td><%= cont.author%></td>
 				</tr>
 				<% }); %>
 
