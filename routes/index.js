@@ -318,6 +318,7 @@ module.exports = function(app) {
 				"cid": cnt + 1,
 				"type": parseInt(type),
 				"title": title,
+				"desc": desc,
 				"start_time": st_time,
 				"end_time": ed_time,
 				"author": currentUser.username,

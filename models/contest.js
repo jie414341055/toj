@@ -5,6 +5,7 @@ function Contest(cont) {
 	this.cid = cont.cid;
 	this.type = cont.type;
 	this.title = cont.title;
+	this.desc = cont.desc;
 	this.start_time = cont.start_time;
 	this.end_time = cont.end_time;
 	this.author = cont.author;
@@ -19,6 +20,7 @@ Contest.prototype.save = function save(callback) {
 		cid:		this.cid,
 		type:		this.type,
 		title:		this.title,
+		desc:		this.desc,
 		start_time:	this.start_time,
 		end_time:	this.end_time,
 		author:		this.author,
