@@ -5,6 +5,7 @@ function CheckArrange() {
 	return false;
 }
 
+
 function Submit() {
 	var aform = document.createElement('form');
 	aform.method = 'post';
@@ -13,6 +14,15 @@ function Submit() {
 	a.type='hidden';
 	a.name='title';
 	a.value = document.getElementById('inputTitle').value;
+	if(a.value == "") {
+		var msg = document.getElementById('errmsg')
+		msg.className ="alert alert-danger alert dismissable";
+		msg.innerHTML="Title can not be empty.";
+		setTimeout(function() {
+			$("#errmsg").slideUp();
+		}, 2000);
+		return; 
+	}
 
 	var b=document.createElement('input');
 	b.type='hidden';
