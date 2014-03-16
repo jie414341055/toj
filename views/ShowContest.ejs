@@ -1,0 +1,17 @@
+<script>
+	setInterval("go()", 1000);
+	function go() {
+		var now = new Date();
+		var y = now.getFullYear();
+		var m = now.getMonth();
+		var d = now.getDate();
+		var h = now.getHours();
+		var mu = now.getMinutes();
+		var se = now.getSeconds();
+		var tm = y+"-"+m+"-"+d+" "+h+":"+mu+":"+se;
+		document.getElementById("server_tm").innerText = tm;
+
+	}
+</script>
+
+<span id="server_tm"></span>

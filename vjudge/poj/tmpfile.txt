@@ -1,8 +1,8 @@
 <type> 3
-<runid> 56
-<memory_used> 148
-<time_used> 0
-<result> Accepted
+<runid> 60
+<memory_used> 
+<time_used> 
+<result> Time Limit Exceeded
 __COMPILE-INFO-BEGIN-LABLE__
 
 __COMPILE-INFO-END-LABLE__

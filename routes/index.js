@@ -36,22 +36,22 @@ Judger_server['POJ'] = 6971;
 
 
 module.exports = function(app) {
+	app.get('/test', function(req, res) {
+		res.render('test', {
+			title: "test",
+		});
+	});
 	app.get('/', function(req, res) {
 		Rcont.get(function(err, rconts) {
 			if (err) {
 				rconts = [];
 			}
-			/*
-			var contests = fs.readFileSync('/home/minjie/project/toj/server/contests.json', "utf-8");
-			contests = JSON.parse(contests);
-			*/
 			res.render('index', {
 				title: 'Home',
 				fcontests: rconts,
 			});
 		});
 	});
-	//app.get(/\/Problem(\?Volume=(\d+)?)?/, function(req, res) {
 	app.get('/Problems', function(req, res) {
 
 
@@ -180,6 +180,7 @@ module.exports = function(app) {
 
 
 				var now_date = new Date();
+				console.log(now_date);
 				now_date.setHours(now_date.getHours()+8);
 				var sub_time = now_date.toISOString().replace(/T/,' ').replace(/\..+/,'');
 
@@ -284,6 +285,7 @@ module.exports = function(app) {
 			res.render('Contests', {
 				title: 'Contests',
 				fconts: conts,
+				ftm: new Date(),
 			});
 		});
 	});
@@ -319,8 +321,8 @@ module.exports = function(app) {
 				"type": parseInt(type),
 				"title": title,
 				"desc": desc,
-				"start_time": st_time,
-				"end_time": ed_time,
+				"start_time": new Date(st_time),
+				"end_time": new Date(ed_time),
 				"author": currentUser.username,
 				"access": passwd=="",
 				"passwd": passwd,
@@ -337,12 +339,15 @@ module.exports = function(app) {
 		});
 
 	});
+	app.get('/ShowContests', function(req, res) {
+		var CID = req.query.cid;
 
-	app.get('test', function(req, res) {
-		res.render('Arrange', {
-			title: 'arrange',
+		res.render('ShowContest', {
+			title: 'test',
 		});
+
 	});
+
 
 	app.get('/Ranklist', function(req, res) {
 		page = req.query.page;

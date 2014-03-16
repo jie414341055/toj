@@ -48,11 +48,23 @@
 					<!--<span class="ac"> </span>-->
 					<td><%- cont.cid %></td>
 					<td><a href="/ShowContests?cid=<%= cont.cid %>"><%- cont.title %></a></td>
-					<td><%= cont.start_time %></td>
-					<td><%= cont.end_time %></td>
-					<td><%= cont.status %></td>
-					<td><%= cont.access %></td>
-					<td><%= cont.author%></td>
+					<% var st = new Date(cont.start_time); st.setHours(cont.start_time.getHours()+8);%>
+					<td><%= st.toISOString().replace(/T/,' ').replace( /\..+/,'') %></td>
+					<% var ed = new Date(cont.end_time); ed.setHours(cont.end_time.getHours()+8);%>
+					<td><%= ed.toISOString().replace(/T/,' ').replace( /\..+/,'') %></td>
+					<% if(cont.start_time > new Date()){ %>
+					<td style="color:#EE7600;">Pending</td>
+					<% } else if(cont.start_time < new Date() && new Date() < cont.end_time) { %>
+					<td style="color:#EE0000;">Running</td>
+					<%} else {%>
+					<td style="color:#008B00;">Passed</td>
+					<% } %>
+					<% if(cont.access) {%>
+					<td style="color:#0000FF;">Public</td>
+					<%} else {%>
+					<td style="color:#EE0000;">Private</td>
+					<%}%>
+					<td><a href="/Profile/<%- cont.author %>"><%= cont.author%></a></td>
 				</tr>
 				<% }); %>
 

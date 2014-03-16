@@ -1,33 +1,91 @@
 <link href="/stylesheets/arrange.css" rel="stylesheet">
 <script src="/javascripts/arrange.js"></script>
-<div id="errmsg" class="hide">
-</div> 
+<script src="/javascripts/jquery.validate.js"></script>
+<script>
+$.validator.setDefaults({
+	submitHandler: function() { alert("submitted!"); }
+});
+$().ready(function() {
+	$("#arrange").validate({
+		rules: {
+			csttime: {
+				required: true,
+				dateISO: true
+			},
+			cedtime: {
+				required: true,
+				dateISO: true
+			},
+			ctitle: {
+				required: true,
+				minlength: 5,
+				maxlength: 50
+			},
+			cdesc: {
+				required: false,
+				maxlength: 500
+			}
+		},
+		messages: {
+			ctitle: {
+				required: "Please enter a title.",
+				minlength: "Title must consist of at least 5 characters."
+			},
+			csttime: {
+				required: "Start time is required."
+			},
+			cedtime: {
+				required: "End time is required."
+			}
+		}
+	});
+});
+</script>
+<style type="text/css">
+#arrange label.error {
+	font-weight: normal;
+	color: red;
+}
+</style>
+
 <div class="modal-header">
 	<h3 style="text-align:center"><font color="#428BCA">Arrange Contest</font></h3>
 </div>
 <div class="modal-body">
 	<div class="info">
 		<form  id="arrange" method="post" class="form-horizontal" role="form">
+
 			<div class="form-group">
-				<label for="inputTitle" class="col-sm-2 control-label">Title:</label>
-				<div class="col-sm-7"><input id="inputTitle" type="text" class="form-control" placeholder="Contest Title" ></div>
-					<div class="col-sm-1" style="color:red; padding-top:7px;">*</div>
+				<label for="ctitle" class="col-sm-2 control-label">Title:</label>
+				<div class="col-sm-7"><input id="ctitle" name="ctitle" type="text" class="form-control" placeholder="Contest Title" ></div>
+				<div class="col-sm-1" style="color:red; padding-left:3px; padding-top:7px;">*</div>
 			</div>
+
 			<div class="form-group">
-				<label for="inputDesc" class="col-sm-2 control-label">Desc:</label>
-				<div class="col-sm-7"><textarea class="form-control" rows="6" id="inputDesc" placeholder="This is a ICPC format Contest, the contest will last 5 hours."></textarea></div>
+				<label for="cdesc" class="col-sm-2 control-label">Desc:</label>
+				<div class="col-sm-7"><textarea id="cdesc" name="cdesc "class="form-control" rows="6" placeholder="This is a ICPC format Contest, the contest will last 5 hours."></textarea></div>
 			</div>
+
+
 			<div class="form-group">
-				<label for="inputSTtime" class="col-sm-2 control-label">Start Time:</label>
-				<div class="col-sm-7"><input class="form-control" id="inputSTtime" placeholder="0000-00-00 00:00:00"></div>*
+				<label for="csttime" class="col-sm-2 control-label">Start Time:</label>
+				<div class="col-sm-7"><input id="csttime" name="csttime" class="form-control" placeholder="0000-00-00 00:00:00"></div>
+				<div class="col-sm-1" style="color:red; padding-left:3px; padding-top:7px;">*</div>
 			</div>
+
+
+
 			<div class="form-group">
-				<label for="inputEDtime" class="col-sm-2 control-label">End Time:</label>
-				<div class="col-sm-7"><input class="form-control" id="inputEDtime" placeholder="0000-00-00 00:00:00"></div>*
+				<label for="cedtime" class="col-sm-2 control-label">End Time:</label>
+				<div class="col-sm-7"><input id="cedtime" name="cedtime" class="form-control" placeholder="0000-00-00 00:00:00"></div>
+				<div class="col-sm-1" style="color:red; padding-left:3px; padding-top:7px;">*</div>
 			</div>
+
+
+
 			<div class="form-group">
-				<label for="inputPasswd" class="col-sm-2 control-label">Password:</label>
-				<div class="col-sm-7"><input class="form-control" id="inputPasswd" placeholder="Leave it blank if no need."></div>
+				<label for="cpasswd" class="col-sm-2 control-label">Password:</label>
+				<div class="col-sm-7"><input id="cpasswd" name="cpasswd" class="form-control" placeholder="Leave it blank if no need."></div>
 			</div><br>
 		</form>
 	</div>
@@ -45,8 +103,7 @@
 			<%}%>
 		</form>
 	</div>
-
 </div>
 <div ><center>
-		<button type="submit" class="btn btn-primary" onclick="Submit()">Submit</button>
+		<button type="submit" id="submit" name="submit" class="btn btn-primary" onclick="Submit()">Submit</button>
 </center></div>

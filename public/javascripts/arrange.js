@@ -1,10 +1,7 @@
-function getURLParameter(name) {
-	  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
-}
-function CheckArrange() {
-	return false;
-}
 
+function getURLParameter(name) {
+	return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+}
 
 function Submit() {
 	var aform = document.createElement('form');
@@ -13,39 +10,26 @@ function Submit() {
 	var a=document.createElement('input');
 	a.type='hidden';
 	a.name='title';
-	a.value = document.getElementById('inputTitle').value;
-	if(a.value == "" || a.value.length > 100) {
-		var msg = document.getElementById('errmsg')
-		msg.className ="alert alert-danger alert dismissable";
-		if(a.value == "") {
-			msg.innerHTML="Please input title.";
-		} else {
-			msg.innerHTML="Input title is too long.(No more than 100 characters)";
-		}
-		setTimeout(function() {
-			$("#errmsg").slideUp();
-		}, 2000);
-		return; 
-	}
+	a.value = document.getElementById('ctitle').value;
 
 	var b=document.createElement('input');
 	b.type='hidden';
 	b.name='desc';
-	b.value = document.getElementById('inputDesc').value;
+	b.value = document.getElementById('cdesc').value;
 
 	var c=document.createElement('input');
 	c.type='hidden';
 	c.name='sttime';
-	c.value = document.getElementById('inputSTtime').value;
+	c.value = document.getElementById('csttime').value;
 	var d=document.createElement('input');
 	d.type='hidden';
 	d.name='edtime';
-	d.value = document.getElementById('inputEDtime').value;
+	d.value = document.getElementById('cedtime').value;
 
 	var e=document.createElement('input');
 	e.type='hidden';
 	e.name='passwd';
-	e.value = document.getElementById('inputPasswd').value;
+	e.value = document.getElementById('cpasswd').value;
 
 	var f=document.createElement('input');
 	f.type='hidden';
@@ -58,11 +42,11 @@ function Submit() {
 
 	var x = [];
 	for(var id=1001;id<=1011;++id) {
-			var tmp={};
-			tmp.oj = document.getElementById("oj"+id).value;
-			tmp.pid =document.getElementById("pid"+id).value;
-			if(tmp.pid=="") break;
-			x.push(tmp);
+		var tmp={};
+		tmp.oj = document.getElementById("oj"+id).value;
+		tmp.pid =document.getElementById("pid"+id).value;
+		if(tmp.pid=="") break;
+		x.push(tmp);
 	}
 	prob.value = JSON.stringify(x);
 	aform.appendChild(a);
