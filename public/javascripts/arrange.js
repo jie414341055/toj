@@ -14,10 +14,14 @@ function Submit() {
 	a.type='hidden';
 	a.name='title';
 	a.value = document.getElementById('inputTitle').value;
-	if(a.value == "") {
+	if(a.value == "" || a.value.length > 100) {
 		var msg = document.getElementById('errmsg')
 		msg.className ="alert alert-danger alert dismissable";
-		msg.innerHTML="Title can not be empty.";
+		if(a.value == "") {
+			msg.innerHTML="Please input title.";
+		} else {
+			msg.innerHTML="Input title is too long.(No more than 100 characters)";
+		}
 		setTimeout(function() {
 			$("#errmsg").slideUp();
 		}, 2000);
