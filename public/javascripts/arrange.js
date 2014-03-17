@@ -4,6 +4,8 @@ function getURLParameter(name) {
 }
 
 function Submit() {
+	return;
+
 	var aform = document.createElement('form');
 	aform.method = 'post';
 	aform.action='/ArrangeContest';

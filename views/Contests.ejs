@@ -48,9 +48,9 @@
 					<!--<span class="ac"> </span>-->
 					<td><%- cont.cid %></td>
 					<td><a href="/ShowContests?cid=<%= cont.cid %>"><%- cont.title %></a></td>
-					<% var st = new Date(cont.start_time); st.setHours(cont.start_time.getHours()+8);%>
+					<% var st = new Date(cont.start_time); st.setHours(st.getHours()+8); %>
 					<td><%= st.toISOString().replace(/T/,' ').replace( /\..+/,'') %></td>
-					<% var ed = new Date(cont.end_time); ed.setHours(cont.end_time.getHours()+8);%>
+					<% var ed = new Date(cont.end_time);  ed.setHours(ed.getHours()+8); %>
 					<td><%= ed.toISOString().replace(/T/,' ').replace( /\..+/,'') %></td>
 					<% if(cont.start_time > new Date()){ %>
 					<td style="color:#EE7600;">Pending</td>

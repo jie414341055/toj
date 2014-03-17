@@ -1,1 +1,63 @@
-<%= new Date() %>
+<style>
+.show {
+	display: block;
+}
+.hide {
+	display: none;
+};
+</style>
+<form id="form">
+	<div>
+		<select id="sx1">
+			<option> 1</option>
+			<option> 2</option>
+		</select>
+		<input id="x1">
+		<span id="err_x1"></span>
+		<select id="sx3">
+			<option> 1</option>
+			<option> 2</option>
+		</select>
+		<input id="x1">
+		<span id="err_x1"></span>
+	</div>
+
+	<div id="control">
+		<a href="javascript:change()">More</a>
+	</div>
+	<div class="hide" id="xx">
+		hahah
+	</div>
+
+</form>
+<script>
+	$("#form select[id^=sx]").change(function() {
+		alert(this.id);
+	});
+	function change() {
+		$("#xx").removeClass('hide');
+		$("#xx").addClass('show');
+	}
+		
+function check(id) {
+		var id = id;
+		var pid = $("#"+id).val();
+		alert(id);
+		$.ajax({
+			url: '/posttest',
+			type: 'POST',
+			data:{pid: pid},
+			datatype:'json',
+			async: false,
+			success:function(json){
+				if (json.error=='0'){
+					alert("haha");	
+				}
+			}
+		});
+			
+}
+		
+
+
+</script>

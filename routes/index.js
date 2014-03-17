@@ -41,6 +41,13 @@ module.exports = function(app) {
 			title: "test",
 		});
 	});
+	app.post('/posttest', function(req, res) {
+		var pid = req.body['pid'];
+		//....
+		res.send({error:0});
+
+	});
+
 	app.get('/', function(req, res) {
 		Rcont.get(function(err, rconts) {
 			if (err) {
