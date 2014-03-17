@@ -1,13 +1,13 @@
 .info {
 	position: relative;
 	float: left;
-	width: 55%;
+	width: 50%;
 }
 
 .prob {
 	position: relative;
 	float: right;
-	width: 45%;
+	width: 50%;
 }
 .form-group {
 	margin-bottom: 5px;

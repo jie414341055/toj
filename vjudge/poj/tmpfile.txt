@@ -1,8 +1,8 @@
 <type> 3
-<runid> 60
-<memory_used> 
-<time_used> 
-<result> Time Limit Exceeded
+<runid> 61
+<memory_used> 0
+<time_used> 0
+<result> Judge Error
 __COMPILE-INFO-BEGIN-LABLE__
 
 __COMPILE-INFO-END-LABLE__

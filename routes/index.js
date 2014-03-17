@@ -9,6 +9,7 @@ var Contest_user = require('../models/contest_user.js');
 var Contest_status = require('../models/contest_status.js');
 var net = require('net');
 var fs = require('fs');
+var querystring = require('querystring');
 
 var digit2result = new Array();
 var corrlang = new Array();
@@ -100,7 +101,7 @@ module.exports = function(app) {
 		var pid = req.query.pid;
 		if(!pid || pid == "") pid = "1001";
 		pid = parseInt(pid);
-		Prob.get(pid, function(err, prob) {
+		Prob.get({pid:pid}, function(err, prob) {
 			if (!prob) {
 				req.flash('error', 'No such problem!');
 				return res.redirect('/Problems');
@@ -140,7 +141,8 @@ module.exports = function(app) {
 		var currentUser = req.session.user;
 		var pid = req.query.pid;
 	
-		Prob.get(pid, function(err, prob) {
+		pid = parseInt(pid);
+		Prob.get({pid:pid}, function(err, prob) {
 			if(err) {
 				req.flash('error', err);
 				return res.redirect('/ShowProblem?pid=' + pid);
@@ -165,7 +167,8 @@ module.exports = function(app) {
 	//	if(!currentUser) {
 	//		return res.redirect('/login');
 	//	}
-		Prob.get(pid, function(err, prob) {
+		pid = parseInt(pid);
+		Prob.get({pid:pid}, function(err, prob) {
 			if(err) {
 				req.flash('error', err);
 				return res.redirect('/ShowProblem?pid=' + pid);
@@ -299,9 +302,12 @@ module.exports = function(app) {
 	app.get('/ArrangeContest', checkLogin);
 	app.get('/ArrangeContest', function(req, res) {
 		var currentUser = req.session.user;
+		var type = req.query.type;
+
 		res.render('Arrange', {
 			title: 'Arrange a Contest',
 			fuser: currentUser,
+			ftype: type,
 		});
 	});
 	/*
@@ -309,14 +315,34 @@ module.exports = function(app) {
 	now_date.setHours(now_date.getHours()+8);
 	now_date = now_date.toISOString().replace(/T/,' ').replace(/\..+/,'');
 	*/
+	app.post('/CheckPid', function(req, res) {
+		var oj = req.body['oj'];
+		var vid = req.body['pid'];
+		vid = parseInt(vid);
+		Prob.get({vid:vid, oj:oj}, function(err, prob) {
+			if(err || !prob) {
+				res.send({error:1, title:''});
+			} else {
+				res.send({error:0, title:prob.title});
+			}
+		});
+
+	});
+
 	app.post('/ArrangeContest', function(req, res) {
 		var currentUser = req.session.user;
-		var type = req.body['type'];
-		var title = req.body['title'];
-		var desc = req.body['desc'];
-		var st_time = req.body['sttime'];
-		var ed_time = req.body['edtime'];
-		var passwd = req.body['passwd'];
+		var type = req.query.type;
+		var title = req.body['ctitle'];
+		var desc = req.body['cdesc'];
+		var st_time = req.body['csttime'];
+		var ed_time = req.body['cedtime'];
+		var passwd = req.body['cpasswd'];
+
+		console.log(req.body['oj1001']);
+		console.log(req.body['oj1002']);
+		console.log(req.body['pid1001']);
+
+		/*
 		var prob = JSON.parse(req.body['prob']);
 		Contest.getCount({}, function(err, cnt) {
 			if(err) {
@@ -344,6 +370,7 @@ module.exports = function(app) {
 				res.redirect('/Contests?type='+type);
 			});
 		});
+		*/
 
 	});
 	app.get('/ShowContests', function(req, res) {

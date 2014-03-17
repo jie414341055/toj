@@ -70,15 +70,12 @@ Prob.prototype.save = function save(callback) {
 		if (err) {
 			return callback(err);
 		}
-		// 读取 problem 集合
 		db.collection('Problem', function(err, collection) {
 			if (err) {
 				mongodb.close();
 				return callback(err);
 			}
-			// 为 pid 属性添加索引
 			collection.ensureIndex('uid', {unique: true});
-			// 写入 problem 文档
 			collection.insert(prob, {safe: true}, function(err, prob) {
 				mongodb.close();
 				callback(err, prob);
@@ -87,20 +84,17 @@ Prob.prototype.save = function save(callback) {
 	});
 };
 
-Prob.get = function get(PID, callback) {
+Prob.get = function get(query, callback) {
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
 		}
-		// 读取 problem 集合
 		db.collection('Problem', function(err, collection) {
 			if (err) {
 				mongodb.close();
 				return callback(err);
 			}
-			// 查找 pid 属性为 PID 的文档，如果 PID 是 null 则匹配全部
-			PID = parseInt(PID);
-			collection.findOne({pid: PID}, function(err, doc){
+			collection.findOne(query, function(err, doc){
 				mongodb.close();
 				if(doc) {
 					var prob = new Prob(doc);
@@ -117,7 +111,6 @@ Prob.page = function page(query, pageID, callback) {
 		if (err) {
 			return callback(err);
 		}
-		// 读取 problem 集合
 		db.collection('Problem', function(err, collection) {
 			if (err) {
 				mongodb.close();

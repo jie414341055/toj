@@ -1,7 +1,6 @@
 #!/bin/bash
+node server/hdu/hduserver.js &
+node server/poj/pojserver.js &
+vjudge/hdu/hduvjudge 127.0.0.1 6970 &
+vjudge/poj/pojvjudge 127.0.0.1 6972 &
 
-sudo su
-mongod
-supervisor app.js
-node ./server/server.js
-./vjudge/hdu/a.out 127.0.0.1 6970

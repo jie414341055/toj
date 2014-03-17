@@ -262,6 +262,8 @@ bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu
 				&&result.find("\n")&&result!="") {
 			break;
 		}
+		/* minjie */
+		//if (time(NULL)-begin>30) sleep(500);
 		if (time(NULL)-begin>MAX_WAIT_TIME) break;
 	}
 	if (!(result.find("Waiting")==string::npos

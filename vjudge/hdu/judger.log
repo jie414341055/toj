@@ -2370,3 +2370,27 @@ Sent.
 
 Connected!
 Connected!
+Connected!
+Connected!
+ERROR in network connection!
+Reconnecting...
+Successfully reconnected.
+ERROR in network connection!
+Reconnecting...
+Successfully reconnected.
+Received a command.
+
+Received a judge request, runid:62
+Logined
+Submitted
+Sending result of runid:62
+Sent.
+
+Received a command.
+
+Received a judge request, runid:63
+Logined
+Submitted
+Sending result of runid:63
+Sent.
+
