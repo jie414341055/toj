@@ -68,6 +68,8 @@
 			async: false,
 			success: function(json) {
 				$("#"+i + " .title").html('<a href=/Contest/ShowProblems?cid='+cid+'&pid='+(i+1001)+'>'+json.title+'</a>');
+				$("#"+i + " .ac-ratio").html(json.ac+'/'+json.all);
+				
 			}
 		});
 	}

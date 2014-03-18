@@ -385,9 +385,14 @@ module.exports = function(app) {
 	app.post('/Contest/GetProblems', function(req, res) {
 		var CID = req.body['cid'];
 		var index = req.body['index'];
+		var nid = parseInt(index) + 1001;
 		Contest.get(CID, function(err, cont) {
 			Prob.get({oj: cont.problem[index].oj, vid:parseInt(cont.problem[index].vid)}, function(err, prob) {
-				res.send({title:prob.title});
+				Contest_Status.getCount({cid:parseInt(CID), nid:""+nid}, function(err, all) {
+					Contest_Status.getCount({cid:parseInt(CID), nid:""+nid, result:"Accepted"}, function(err, ac) {
+						res.send({title:prob.title, all:all, ac: ac});
+					});
+				});
 			});
 		});
 	});
@@ -397,7 +402,7 @@ module.exports = function(app) {
 		Contest.get(CID, function(err, cont) {
 			if(err) {
 				req.flash('error', err);
-				return res.redirect('/Contest/Contests');
+				return res.redirect('/Contest/Contests?cid='+CID);
 			}
 			res.render('Contest_Problem', {
 				title: 'Problems',
@@ -499,17 +504,22 @@ module.exports = function(app) {
 	app.get('/Contest/Status', function(req, res) {
 	//Status?cid=&pid=&username=&lang=&result=&page=
 		var query = {};
-		var url = "/Status?";
+		var url = "/Contest/Status?";
 		var cid = req.query.cid;
 		var pid = req.query.pid;
 		var username = req.query.username;
 		var lang = req.query.lang;
 		var result = req.query.result;
 		var pageID = req.query.page;
+		
+		if(!cid) res.redirect('/Contest/Contests');
+
+		url += "cid="+cid;
+		query.cid = parseInt(cid);
 		if(pid) {
 			query.nid = pid;
-			url += "pid="+pid;
-		} else url += "pid=";
+			url += "&pid="+pid;
+		} else url += "&pid=";
 		if(username) {
 			query.username = username;
 			url += "&username=" + username;
