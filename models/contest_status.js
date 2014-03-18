@@ -1,10 +1,11 @@
 var mongodb = require('./db');
 
-function Contest_status(cont) {
+function Contest_Status(cont) {
 	this.cid = cont.cid;
-	this.runid = cont.runid;
+	this.run_ID = cont.run_ID;
 	this.username = cont.username;
-	this.problem = cont.problem;
+	this.pid = cont.pid;
+	this.nid = cont.nid;
 	this.submit_time = cont.submit_time;
 	this.lang = cont.lang;
 	this.result = cont.result;
@@ -12,14 +13,15 @@ function Contest_status(cont) {
 	this.mem_used = cont.mem_used;
 	this.code_len = cont.code_len;
 };
-module.exports = Contest_status;
+module.exports = Contest_Status;
 
-Contest_status.prototype.save = function save(callback) {
+Contest_Status.prototype.save = function save(callback) {
 	var cont_status = {
 		cid:		this.cid,
-		runid:		this.runid,
+		run_ID:		this.run_ID,
 		username:	this.username,
-		problem:	this.problem,
+		pid: 		this.pid,
+		nid:		this.nid,
 		submit_time:	this.submit_time,
 		lang:		this.lang,
 		result:		this.result,
@@ -31,12 +33,12 @@ Contest_status.prototype.save = function save(callback) {
 		if (err) {
 			return callback(err);
 		}
-		db.collection('Contest_status', function(err, collection) {
+		db.collection('Contest_Status', function(err, collection) {
 			if (err) {
 				mongodb.close();
 				return callback(err);
 			}
-			collection.ensureIndex({cid:-1, runid:-1}, {unique: true});
+			collection.ensureIndex({cid:-1, run_ID:-1}, {unique: true});
 			collection.insert(cont_status, {safe: true}, function(err, cont_status) {
 				mongodb.close();
 				callback(err, cont_status);
@@ -45,22 +47,20 @@ Contest_status.prototype.save = function save(callback) {
 	});
 };
 
-Contest_status.get = function get(CID, RUNID, callback) {
+Contest_Status.get = function get(query, callback) {
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
 		}
-		db.collection('Contest_status', function(err, collection) {
+		db.collection('Contest_Status', function(err, collection) {
 			if (err) {
 				mongodb.close();
 				return callback(err);
 			}
-			CID = parseInt(CID);
-			RUNID = parseInt(RUNID);
-			collection.findOne({cid: CID, runid: RUNID}, function(err, doc){
+			collection.findOne(query, function(err, doc){
 				mongodb.close();
 				if(doc) {
-					var cont_status = new Contest_status(doc);
+					var cont_status = new Contest_Status(doc);
 					callback(err, cont_status);
 				} else {
 					callback(err, null);
@@ -69,19 +69,19 @@ Contest_status.get = function get(CID, RUNID, callback) {
 		});
 	});
 };
-Contest_status.page = function page(query, pageID, callback) {
+Contest_Status.page = function page(query, pageID, callback) {
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
 		}
-		// read Contest_status collection
-		db.collection('Contest_status', function(err, collection) {
+		// read Contest_Status collection
+		db.collection('Contest_Status', function(err, collection) {
 			if (err) {
 				mongodb.close();
 				return callback(err);
 			}
 			pageID = parseInt(pageID);
-			collection.find(query).sort({cid:-1}).limit(15).skip((pageID - 1) * 15).toArray(function(err, docs) {
+			collection.find(query).sort({run_ID:-1}).limit(15).skip((pageID - 1) * 15).toArray(function(err, docs) {
 				mongodb.close();
 				if(err) {
 					callback(err, null);
@@ -89,7 +89,7 @@ Contest_status.page = function page(query, pageID, callback) {
 
 				var cont_status = [];
 				docs.forEach(function(doc, index) {
-					var cc = new Contest_status(doc);
+					var cc = new Contest_Status(doc);
 					cont_status.push(cc);
 				});
 				callback(null, cont_status);
@@ -98,12 +98,12 @@ Contest_status.page = function page(query, pageID, callback) {
 	});
 };
 
-Contest_status.getCount = function getCount(query, callback) {
+Contest_Status.getCount = function getCount(query, callback) {
 	mongodb.open(function(err, db) {
 		if(err) {
 			return callback(err);
 		}
-		db.collection('Contest_status', function(err, collection) {
+		db.collection('Contest_Status', function(err, collection) {
 			if(err) {
 				mongodb.close();
 				return callback(err);

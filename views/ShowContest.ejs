@@ -1,13 +1,16 @@
 <ul class="nav nav-tabs" id="ctab">
 	<li class="active"><a href="#" >Info</a></li>
 	<li><a href="/Contest/Problems?cid=<%= fcont.cid %>">Problem</a></li>
-	<li><a href="#Status">Status</a></li>
+	<li><a href="/Contest/Status?cid=<%= fcont.cid %>">Status</a></li>
 	<li><a href="#Standing">Standing</a></li>
 </ul>
+
 <h2 class="text-center" style="color:#428BCA; margin-top: 20px;"><%- fcont.title %></h2>
 <% var st = new Date(fcont.start_time); st.setHours(st.getHours()+8); %>
 <% var ed = new Date(fcont.end_time); ed.setHours(ed.getHours()+8); %>
-<div class="text-center tcenter well">
+
+
+<div id="cinfo" class="text-center tcenter well">
 	Start Time: <%= st.toISOString().replace(/T/,' ').replace( /\..+/,'') %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	End Time: <%= ed.toISOString().replace(/T/,' ').replace( /\..+/,'') %><br/><br/>
 	Status: 
@@ -38,6 +41,7 @@ function DisplayTime(){
 	timeElement.innerHTML="<font style='font-family:verdana, arial,tahoma;font-size:12px;color:red; font-weight:bold;'>"+currentTime+"</b>";
 	setTimeout("DisplayTime()",1000);
 }
-	window.onload=DisplayTime;
+
+window.onload=DisplayTime;
 </script>
 

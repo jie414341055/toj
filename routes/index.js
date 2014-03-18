@@ -6,7 +6,7 @@ var Rcont = require('../models/rcont.js');
 var Status = require('../models/status.js');
 var Contest = require('../models/contest.js');
 var Contest_user = require('../models/contest_user.js');
-var Contest_status = require('../models/contest_status.js');
+var Contest_Status = require('../models/contest_status.js');
 var net = require('net');
 var fs = require('fs');
 var querystring = require('querystring');
@@ -35,6 +35,9 @@ Judger_server = {};
 Judger_server['HDU'] = 6969;
 Judger_server['POJ'] = 6971;
 
+Contest_Judger_server = {};
+Contest_Judger_server['HDU'] = 7070;
+Contest_Judger_server['POJ'] = 7072;
 
 module.exports = function(app) {
 	app.get('/test', function(req, res) {
@@ -219,12 +222,6 @@ module.exports = function(app) {
 			});
 		});
 	});
-	function SendCode(HOST, PORT, data) {
-		var client = new net.Socket();
-		client.connect(PORT, HOST, function() {
-			client.write(data);
-		});
-	};
 
 	app.get('/Status', function(req, res) {
 	//Status?pid=&username=&lang=&result=&page=
@@ -342,7 +339,7 @@ module.exports = function(app) {
 
 		for(var i = 1001;i <= 1011; ++i) {
 			if(req.body['pid'+i] == "") break;
-			prob.push({"oj":req.body['oj'+i], "vid":req.body['pid'+i]});
+			prob.push({"oj":req.body['oj'+i], "vid":req.body['pid'+i], "id":""+i});
 		}
 		Contest.getCount({}, function(err, cnt) {
 			if(err) {
@@ -367,7 +364,7 @@ module.exports = function(app) {
 					req.flash('error', err);
 					return res.redirect('/');
 				}
-				res.redirect('/Contests?type='+type);
+				res.redirect('/Contest/Contests?type='+type);
 			});
 		});
 
@@ -377,24 +374,188 @@ module.exports = function(app) {
 		Contest.get(CID, function(err, cont) {
 			if(err) {
 				req.flash('error', err);
-				return res.redirect('/Contest');
+				return res.redirect('/Contest/Contests');
 			}
 			res.render('ShowContest', {
-				title: 'test',
+				title: cont.title,
 				fcont: cont,
 			});
 		});
 	});
+	app.post('/Contest/GetProblems', function(req, res) {
+		var CID = req.body['cid'];
+		var index = req.body['index'];
+		Contest.get(CID, function(err, cont) {
+			Prob.get({oj: cont.problem[index].oj, vid:parseInt(cont.problem[index].vid)}, function(err, prob) {
+				res.send({title:prob.title});
+			});
+		});
+	});
+		
 	app.get('/Contest/Problems', function(req, res) {
 		var CID = req.query.cid;
 		Contest.get(CID, function(err, cont) {
 			if(err) {
 				req.flash('error', err);
-				return res.redirect('/Contest');
+				return res.redirect('/Contest/Contests');
 			}
 			res.render('Contest_Problem', {
 				title: 'Problems',
 				fcont: cont,
+			});
+		});
+	});
+	app.get('/Contest/ShowProblems', function(req, res) {
+		var CID = req.query.cid;
+		var index = parseInt(req.query.pid) - 1001;
+		Contest.get(CID, function(err, cont) {
+			if(err || !cont) {
+				req.flash('error', err);
+				return res.redirect('/Contest/Contests');
+			} else if(index < 0 || index >= cont.problem.length) {
+				return res.redirect('/Contest/Contests');
+			}
+			Prob.get({oj:cont.problem[index].oj, vid:parseInt(cont.problem[index].vid)}, function(err, prob) {
+				if(err || !prob) {
+					req.flash('error', err);
+					return res.redirect('/Contest/Contests');
+				}
+				res.render('Contest_ShowProblem', {
+					title: req.query.pid + '-' + prob.title,
+					fcont: cont,
+					findex: index,
+					fprob: prob,
+				});
+
+			});
+		});
+	});
+
+	app.get('/Contest/ProbSubmit', function(req, res) {
+		var CID = req.query.cid;
+		var index = parseInt(req.query.pid) - 1001;
+		Contest.get(CID, function(err, cont) {
+			if(err || !cont) {
+				req.flash('error', err);
+				return res.redirect('/Contest/Contests');
+			} else if(index < 0 || index >= cont.problem.length) {
+				return res.redirect('/Contest/Contests');
+			}
+			Prob.get({oj:cont.problem[index].oj, vid:parseInt(cont.problem[index].vid)}, function(err, prob) {
+				if(err || !prob) {
+					req.flash('error', err);
+					return res.redirect('/Contest/Contests');
+				}
+				res.render('Contest_ProbSubmit', {
+					title: 'Submit',
+					fcid: CID,
+					findex: index,
+					fprob: prob,
+
+				});
+			});
+		});
+	});
+	app.post('/Contest/ProbSubmit', function(req, res) {
+		var CID = req.query.cid;
+		var index = parseInt(req.query.pid) - 1001;
+		var code = req.body['code'];
+		var lang = req.body['lang'];
+		var currentUser = req.session.user;
+		Contest.get(CID, function(err, cont) {
+			if(err || !cont) {
+				req.flash('error', err);
+				return res.redirect('/Contest/ShowContests?cid='+CID);
+			}
+			Prob.get({oj:cont.problem[index].oj, vid:parseInt(cont.problem[index].vid)}, function(err, prob) {
+				if(err || !prob) {
+					req.flash('error', err);
+					return res.redirect('/Contest/ShowContests?cid='+CID);
+				}
+				Contest_Status.getCount({cid:parseInt(CID)}, function(err, runID) {
+					if(err) {
+						req.flash('error', 'Database error!');
+						return res.redirect('/Contest/ShowContests?cid='+CID);
+					}
+
+					var oj = prob.oj;
+					var HOST = '127.0.0.1';
+					var PORT = Contest_Judger_server[oj];
+					var runid = parseInt(runID) + 1;
+
+					var now_date = new Date();
+
+					now_date.setHours(now_date.getHours()+8);
+					var sub_time = now_date.toISOString().replace(/T/,' ').replace(/\..+/,'');
+
+					var data = prob.oj + " 2  __SOURCE-CODE-BEGIN-LABLE__\n" + code + "\n__SOURCE-CODE-END-LABLE__\n" + runid + "\n" + sub_time + "\n" + prob.pid + " " + lang + " " + currentUser.username + " " + prob.vid + " " + CID + " " + req.query.pid + " ss mm\n";
+
+					SendCode(HOST, PORT, data);
+					res.redirect('/Contest/Status?cid='+CID+'&page=1');
+				});
+			});
+		});
+	});
+	app.get('/Contest/Status', function(req, res) {
+	//Status?cid=&pid=&username=&lang=&result=&page=
+		var query = {};
+		var url = "/Status?";
+		var cid = req.query.cid;
+		var pid = req.query.pid;
+		var username = req.query.username;
+		var lang = req.query.lang;
+		var result = req.query.result;
+		var pageID = req.query.page;
+		if(pid) {
+			query.nid = pid;
+			url += "pid="+pid;
+		} else url += "pid=";
+		if(username) {
+			query.username = username;
+			url += "&username=" + username;
+		} else url += "&username=";
+		if(lang) {
+			query.lang = lang;
+			url += "&lang=" + lang;
+		} else url += "&lang=";
+		if(result) {
+			query.result = digit2result[result];
+			url += "&result=" + result;
+		} else url += "&result=";
+		if(pageID) pageID = parseInt(pageID);
+		else pageID = 1;
+
+		Contest.get(cid, function(err, cont) {
+			if(err || !cont) {
+				req.flash('error', err);
+				return res.redirect('/Contest/ShowContests?cid='+cid);
+			}
+			Contest_Status.getCount(query, function(err, total_num) {
+				if(err) {
+					req.flash('error', err);
+					return res.redirect('/');
+				}
+				Contest_Status.page(query, pageID, function(err, stats) {
+					if(err) {
+						req.flash('error', err);
+						return res.redirect('/');
+					}
+					res.render('Contest_Status', {
+						title:'Status',
+						fcont: cont,
+						fstats: stats,
+						fcorrlang: corrlang,
+						fpageID: pageID,
+						fselected:{
+							"pid":pid,
+						"username":username,
+						"lang":lang,
+						"result":digit2result[result],
+						},
+						furl: url,
+						ftotal_page: Math.ceil(total_num/15),
+					});
+				});
 			});
 		});
 	});
@@ -587,6 +748,12 @@ module.exports = function(app) {
 			req.flash('success', 'post success.');
 			res.redirect('/u/' + currentUser.username);
 		});
+	});
+};
+function SendCode(HOST, PORT, data) {
+	var client = new net.Socket();
+	client.connect(PORT, HOST, function() {
+		client.write(data);
 	});
 };
 

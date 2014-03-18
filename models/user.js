@@ -8,6 +8,7 @@ function User(user) {
   this.email = user.email;
   this.total_submit = user.total_submit;
   this.total_ac = user.total_ac;
+  this.solved_contest = user.solved_contest;
   this.register_time = new Date();
   this.last_login = new Date();
   this.ipaddr = user.ipaddr;
@@ -25,6 +26,7 @@ User.prototype.save = function save(callback) {
 		email:	this.email,
 		total_submit:	this.total_submit,
 		total_ac:	this.total_ac,
+		solved_contest:	this.solved_contest,
 		register_time:	this.register_time,
   		last_login:	this.last_login,
 		ipaddr:	this.ipaddr,

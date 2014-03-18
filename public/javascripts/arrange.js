@@ -8,7 +8,7 @@ function CheckPID(id) {
 	var oj = $("#"+oj_id).val();
 	var pid = $("#"+prob_id).val();
 	$.ajax ({
-		url: '/CheckPid',
+		url: '/Contest/CheckPid',
 		type: 'POST',
 		data:{oj:oj, pid:pid},
 		async: false,
