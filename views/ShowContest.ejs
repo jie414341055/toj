@@ -1,17 +1,43 @@
+<ul class="nav nav-tabs" id="ctab">
+	<li class="active"><a href="#" >Info</a></li>
+	<li><a href="/Contest/Problems?cid=<%= fcont.cid %>">Problem</a></li>
+	<li><a href="#Status">Status</a></li>
+	<li><a href="#Standing">Standing</a></li>
+</ul>
+<h2 class="text-center" style="color:#428BCA; margin-top: 20px;"><%- fcont.title %></h2>
+<% var st = new Date(fcont.start_time); st.setHours(st.getHours()+8); %>
+<% var ed = new Date(fcont.end_time); ed.setHours(ed.getHours()+8); %>
+<div class="text-center tcenter well">
+	Start Time: <%= st.toISOString().replace(/T/,' ').replace( /\..+/,'') %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	End Time: <%= ed.toISOString().replace(/T/,' ').replace( /\..+/,'') %><br/><br/>
+	Status: 
+	<% if(new Date() > fcont.end_time) { %>
+		<a>Passed</a>	
+	<% } else if(new Date() > fcont.start_time && new Date() < fcont.end_time) { %>
+		<a style="color:red;">Running</a>
+	<% } else {%>
+		<a style="color:EE7600;">Pending</a>
+	<% } %>
+	<br/><br/>
+	Count Down: <span id="curTime"></span><br/><br/>
+	<p><%= fcont.desc %></p>
+</div>
 <script>
-	setInterval("go()", 1000);
-	function go() {
-		var now = new Date();
-		var y = now.getFullYear();
-		var m = now.getMonth();
-		var d = now.getDate();
-		var h = now.getHours();
-		var mu = now.getMinutes();
-		var se = now.getSeconds();
-		var tm = y+"-"+m+"-"+d+" "+h+":"+mu+":"+se;
-		document.getElementById("server_tm").innerText = tm;
-
-	}
+function DisplayTime(){
+	if (!document.all && !document.getElementById)
+		return
+	timeElement=document.getElementById? document.getElementById("curTime"): document.all.tick2;
+	var CurrentDate=new Date();
+	var hours=CurrentDate.getHours();
+	var minutes=CurrentDate.getMinutes();
+	var seconds=CurrentDate.getSeconds();
+	if (hours==0) hours=0;
+	if (minutes<=9) minutes="0"+minutes;
+	if (seconds<=9) seconds="0"+seconds;
+	var currentTime=hours+":"+minutes+":"+seconds;
+	timeElement.innerHTML="<font style='font-family:verdana, arial,tahoma;font-size:12px;color:red; font-weight:bold;'>"+currentTime+"</b>";
+	setTimeout("DisplayTime()",1000);
+}
+	window.onload=DisplayTime;
 </script>
 
-<span id="server_tm"></span>

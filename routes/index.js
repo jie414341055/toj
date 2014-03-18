@@ -282,8 +282,9 @@ module.exports = function(app) {
 		});
 	});
 
-	app.get('/Contests', function(req, res) {
+	app.get('/Contest/Contests', function(req, res) {
 		var type = req.query.type;
+		if(!type) type = 0;
 		var pageID = req.query.page;
 		if(pageID) pageID = parseInt(pageID);
 		else pageID = 1;
@@ -299,8 +300,8 @@ module.exports = function(app) {
 			});
 		});
 	});
-	app.get('/ArrangeContest', checkLogin);
-	app.get('/ArrangeContest', function(req, res) {
+	app.get('/Contest/ArrangeContest', checkLogin);
+	app.get('/Contest/ArrangeContest', function(req, res) {
 		var currentUser = req.session.user;
 		var type = req.query.type;
 
@@ -315,7 +316,7 @@ module.exports = function(app) {
 	now_date.setHours(now_date.getHours()+8);
 	now_date = now_date.toISOString().replace(/T/,' ').replace(/\..+/,'');
 	*/
-	app.post('/CheckPid', function(req, res) {
+	app.post('/Contest/CheckPid', function(req, res) {
 		var oj = req.body['oj'];
 		var vid = req.body['pid'];
 		vid = parseInt(vid);
@@ -329,7 +330,7 @@ module.exports = function(app) {
 
 	});
 
-	app.post('/ArrangeContest', function(req, res) {
+	app.post('/Contest/ArrangeContest', function(req, res) {
 		var currentUser = req.session.user;
 		var type = req.query.type;
 		var title = req.body['ctitle'];
@@ -337,13 +338,12 @@ module.exports = function(app) {
 		var st_time = req.body['csttime'];
 		var ed_time = req.body['cedtime'];
 		var passwd = req.body['cpasswd'];
+		var prob = [];
 
-		console.log(req.body['oj1001']);
-		console.log(req.body['oj1002']);
-		console.log(req.body['pid1001']);
-
-		/*
-		var prob = JSON.parse(req.body['prob']);
+		for(var i = 1001;i <= 1011; ++i) {
+			if(req.body['pid'+i] == "") break;
+			prob.push({"oj":req.body['oj'+i], "vid":req.body['pid'+i]});
+		}
 		Contest.getCount({}, function(err, cnt) {
 			if(err) {
 				req.flash('error', err);
@@ -370,16 +370,33 @@ module.exports = function(app) {
 				res.redirect('/Contests?type='+type);
 			});
 		});
-		*/
 
 	});
-	app.get('/ShowContests', function(req, res) {
+	app.get('/Contest/ShowContests', function(req, res) {
 		var CID = req.query.cid;
-
-		res.render('ShowContest', {
-			title: 'test',
+		Contest.get(CID, function(err, cont) {
+			if(err) {
+				req.flash('error', err);
+				return res.redirect('/Contest');
+			}
+			res.render('ShowContest', {
+				title: 'test',
+				fcont: cont,
+			});
 		});
-
+	});
+	app.get('/Contest/Problems', function(req, res) {
+		var CID = req.query.cid;
+		Contest.get(CID, function(err, cont) {
+			if(err) {
+				req.flash('error', err);
+				return res.redirect('/Contest');
+			}
+			res.render('Contest_Problem', {
+				title: 'Problems',
+				fcont: cont,
+			});
+		});
 	});
 
 

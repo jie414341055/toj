@@ -47,7 +47,7 @@
 				<tr>
 					<!--<span class="ac"> </span>-->
 					<td><%- cont.cid %></td>
-					<td><a href="/ShowContests?cid=<%= cont.cid %>"><%- cont.title %></a></td>
+					<td><a href="/Contest/ShowContests?cid=<%= cont.cid %>"><%- cont.title %></a></td>
 					<% var st = new Date(cont.start_time); st.setHours(st.getHours()+8); %>
 					<td><%= st.toISOString().replace(/T/,' ').replace( /\..+/,'') %></td>
 					<% var ed = new Date(cont.end_time);  ed.setHours(ed.getHours()+8); %>

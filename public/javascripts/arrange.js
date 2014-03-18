@@ -1,81 +1,43 @@
-
 function getURLParameter(name) {
 	return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
 }
 
+function CheckPID(id) {
+	var oj_id = "oj" + id;
+	var prob_id = "pid" + id;
+	var oj = $("#"+oj_id).val();
+	var pid = $("#"+prob_id).val();
+	$.ajax ({
+		url: '/CheckPid',
+		type: 'POST',
+		data:{oj:oj, pid:pid},
+		async: false,
+		success: function(json) {
+			if (json.error == "1") {
+				$("#"+prob_id).focus();
+				$("#title"+id).html('Error!Problem doesn\'t exists.');
+			} else {
+				$("#title"+id).html(json.title);
+			}
+		}
+	});
+}
 $(function () {
-		$('#datetimepicker1').datetimepicker();
-		$('#datetimepicker2').datetimepicker();
-		var today = new Date();
-		$("#datetimepicker1").data("DateTimePicker").setMinDate(today);
-		$("#datetimepicker2").data("DateTimePicker").setMinDate(today);
-		$("#datetimepicker2").data("DateTimePicker").setMaxDate(today.setDate(today.getDate()+10));
+	$('#datetimepicker1').datetimepicker();
+	$('#datetimepicker2').datetimepicker();
+	var today = new Date();
+	$("#datetimepicker1").data("DateTimePicker").setMinDate(today);
+	$("#datetimepicker2").data("DateTimePicker").setMinDate(today);
+	$("#datetimepicker2").data("DateTimePicker").setMaxDate(today.setDate(today.getDate()+10));
 
-		$('#datetimepicker1').on("dp.change", function(e) {
-				$("#datetimepicker2").data("DateTimePicker").setMinDate(e.date);
-		});
-		$('#datetimepicker2').on("dp.change", function(e) {
-				$("#datetimepicker1").data("DateTimePicker").setMaxDate(e.date);
-		});
+	$('#datetimepicker1').on("dp.change", function(e) {
+		$("#datetimepicker2").data("DateTimePicker").setMinDate(e.date);
+	});
+	$('#datetimepicker2').on("dp.change", function(e) {
+		$("#datetimepicker1").data("DateTimePicker").setMaxDate(e.date);
+	});
 });
 
 function Submit() {
-		$("#carrange").submit();
-
-		/*
-	var aform = document.createElement('form');
-	aform.method = 'post';
-	aform.action='/ArrangeContest';
-	var a=document.createElement('input');
-	a.type='hidden';
-	a.name='title';
-	a.value = document.getElementById('ctitle').value;
-
-	var b=document.createElement('input');
-	b.type='hidden';
-	b.name='desc';
-	b.value = document.getElementById('cdesc').value;
-
-	var c=document.createElement('input');
-	c.type='hidden';
-	c.name='sttime';
-	c.value = document.getElementById('csttime').value;
-	var d=document.createElement('input');
-	d.type='hidden';
-	d.name='edtime';
-	d.value = document.getElementById('cedtime').value;
-
-	var e=document.createElement('input');
-	e.type='hidden';
-	e.name='passwd';
-	e.value = document.getElementById('cpasswd').value;
-
-	var f=document.createElement('input');
-	f.type='hidden';
-	f.name='type';
-	f.value = getURLParameter('type');
-
-	var prob=document.createElement('input');
-	prob.type='hidden';
-	prob.name='prob';
-
-	var x = [];
-	for(var id=1001;id<=1011;++id) {
-		var tmp={};
-		tmp.oj = document.getElementById("oj"+id).value;
-		tmp.pid =document.getElementById("pid"+id).value;
-		if(tmp.pid=="") break;
-		x.push(tmp);
-	}
-	prob.value = JSON.stringify(x);
-	aform.appendChild(a);
-	aform.appendChild(b);
-	aform.appendChild(c);
-	aform.appendChild(d);
-	aform.appendChild(e);
-	aform.appendChild(f);
-	aform.appendChild(prob);
-	document.body.appendChild(aform);
-	aform.submit();
-	*/
+	$("#carrange").submit();
 }

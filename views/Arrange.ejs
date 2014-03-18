@@ -117,25 +117,3 @@ $().ready(function() {
 
 
 
-<script>
-		function CheckPID(id) {
-			var oj_id = "oj" + id;
-			var prob_id = "pid" + id;
-			var oj = $("#"+oj_id).val();
-			var pid = $("#"+prob_id).val();
-			$.ajax ({
-					url: '/CheckPid',
-					type: 'POST',
-					data:{oj:oj, pid:pid},
-					async: false,
-					success: function(json) {
-						if (json.error == "1") {
-							$("#"+prob_id).focus();
-							$("#title"+id).html('Error!Problem doesn\'t exists.');
-						} else {
-							$("#title"+id).html(json.title);
-						}
-					}
-			});
-		}
-</script>
