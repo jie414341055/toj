@@ -20,11 +20,11 @@
 	<% } else if(new Date() > fcont.start_time && new Date() < fcont.end_time) { %>
 		<span style="color:red;">Running</span>
 		<br/><br/>
-		Time Remaining:<br/><br/> <span style="color:red;" id="curTime"><span><br/><br/>
-	<% } else {%>
+		Time Remaining:<br/><br/> <span style="color:red;" id="curTime"></span><br/><br/>
+	<% } else { %>
 		<span style="color:#EE7600;">Pending</span><br/>
 		<br/>
-		Before Start:<br/><br/> <span style="color:red;" id="curTime"><span><br/><br/>
+		Before Start:<br/><br/> <span style="color:red;" id="curTime"></span><br/><br/>
 	<% } %>
 	<p><%= fcont.desc %></p>
 </div>
