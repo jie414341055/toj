@@ -12,22 +12,13 @@
 
 <!-- Status -->
 <p class="text-center">Status:
-<% if(new Date() > fcont.end_time) { %>
-	<a>Passed</a>	
-<% } else if(new Date() > fcont.start_time && new Date() < fcont.end_time) { %>
-	<a style="color:red;">Running</a>
-	</p>
-	<p class="text-center">Time Remaining:
-	<a class="tm_remain" style="color:red;">
-	</a>
-	</p>
-<% } else {%>
-	<a style="color:EE7600;">Pending</a>
-<% } %>
+	<span id="cstatus">xx</span><br/>
+	<span id="tm_remain"></span>
 </p>
 
 <!-- Problem List -->
 <div class="form-group">
+	<% if(new Date() > fcont.start_time) { %>
 	<table id="problemList" class="table table-striped table-centered">
 		<thead>
 			<th class="header-status">
@@ -55,22 +46,40 @@
 
 		</tbody>
 	</table>
+	<% } %>
 </div>
 <script>
-	var fcont = <%- JSON.stringify(fcont) %>;
-	var cid = fcont.cid;
-	var cnt = fcont.problem.length;
-	for(var i = 0;i < cnt; ++i) {
-		$.ajax ({
-			url: '/Contest/GetProblems',
-			type: 'POST',
-			data: {cid:cid, index:i},
-			async: false,
-			success: function(json) {
-				$("#"+i + " .title").html('<a href=/Contest/ShowProblems?cid='+cid+'&pid='+(i+1001)+'>'+json.title+'</a>');
-				$("#"+i + " .ac-ratio").html(json.ac+'/'+json.all);
-				
-			}
-		});
+	var st = <%- JSON.stringify(fcont.start_time)%>;
+	var ed = <%- JSON.stringify(fcont.end_time)%>;
+	var now = new Date();
+	st = new Date(st);
+	ed = new Date(ed);
+	if(now < st) {
+		$("#cstatus").css({'color':'#EE7600'});
+		$("#cstatus").html('Pending');
+	} else if(now > ed) {
+		$("#cstatus").css({'color':'green'});
+		$("#cstatus").html('Passed');
+	} else {
+		$("#cstatus").css({'color':'red'});
+		$("#cstatus").html('Running');
+	}
+	if(now > st) {
+		var fcont = <%- JSON.stringify(fcont) %>;
+		var cid = fcont.cid;
+		var cnt = fcont.problem.length;
+		for(var i = 0;i < cnt; ++i) {
+			$.ajax ({
+				url: '/Contest/GetProblems',
+				type: 'POST',
+				data: {cid:cid, index:i},
+				async: false,
+				success: function(json) {
+					$("#"+i + " .title").html('<a href=/Contest/ShowProblems?cid='+cid+'&pid='+(i+1001)+'>'+json.title+'</a>');
+					$("#"+i + " .ac-ratio").html(json.ac+'/'+json.all);
+
+				}
+			});
+		}
 	}
 </script>

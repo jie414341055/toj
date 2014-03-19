@@ -377,7 +377,7 @@ void convert()
 		fgets(temp.submit_time, 50, server_offer);
 		if(temp.submit_time[strlen(temp.submit_time)-1] == '\n')
 			temp.submit_time[strlen(temp.submit_time)-1] = '\0';
-		fscanf(server_offer, "%d%d%s%s%s%s", &temp.pid, &temp.lang, temp.user, temp.vid,ts[0],ts[1]);
+		fscanf(server_offer, "%d%d%s%s%d%s%s%s", &temp.pid, &temp.lang, temp.user, temp.vid, &temp.cid, temp.nid, ts[0],ts[1]);
 
 		//fscanf(server_offer,"%s%d%s%d%s%d%s%d%s%d%s%d%s%d%s%d%*s%s%*s%s",ts[0],&temp.runid,ts[1],&temp.lang,ts[2],
 		//	&temp.pid,ts[3],&temp.number_of_cases,ts[4],&temp.time_limit,ts[5],&temp.case_limit,ts[6],

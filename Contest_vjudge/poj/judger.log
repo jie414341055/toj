@@ -142,3 +142,48 @@ Connected!
 connect() error!
 connect() error!
 Connected!
+Connected!
+Received a command.
+
+Received a judge request, runid:4
+Logged in.
+Submitted.
+Get Error!
+Sending result of runid:4
+Sent.
+
+ERROR in network connection!
+Reconnecting...
+Connected!
+Received a command.
+
+Received a judge request, runid:4
+Logged in.
+Submitted.
+Sending result of runid:4
+Sent.
+
+Received a command.
+
+Received a judge request, runid:5
+Logged in.
+Submitted.
+Sending result of runid:5
+Sent.
+
+Received a command.
+
+Received a judge request, runid:6
+Logged in.
+Submitted.
+Sending result of runid:6
+Sent.
+
+Received a command.
+
+Received a judge request, runid:7
+Logged in.
+Submitted.
+Sending result of runid:7
+Sent.
+

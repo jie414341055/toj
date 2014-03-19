@@ -15,33 +15,33 @@
 	End Time: <%= ed.toISOString().replace(/T/,' ').replace( /\..+/,'') %><br/><br/>
 	Status: 
 	<% if(new Date() > fcont.end_time) { %>
-		<a>Passed</a>	
+		<span style="color:green;">Passed</span>	
+		<br/><br/>
 	<% } else if(new Date() > fcont.start_time && new Date() < fcont.end_time) { %>
-		<a style="color:red;">Running</a>
+		<span style="color:red;">Running</span>
+		<br/><br/>
+		Time Remaining:<br/><br/> <span style="color:red;" id="curTime"><span><br/><br/>
 	<% } else {%>
-		<a style="color:EE7600;">Pending</a>
+		<span style="color:#EE7600;">Pending</span><br/>
+		<br/>
+		Before Start:<br/><br/> <span style="color:red;" id="curTime"><span><br/><br/>
 	<% } %>
-	<br/><br/>
-	Count Down: <span id="curTime"></span><br/><br/>
 	<p><%= fcont.desc %></p>
 </div>
 <script>
-function DisplayTime(){
-	if (!document.all && !document.getElementById)
-		return
-	timeElement=document.getElementById? document.getElementById("curTime"): document.all.tick2;
-	var CurrentDate=new Date();
-	var hours=CurrentDate.getHours();
-	var minutes=CurrentDate.getMinutes();
-	var seconds=CurrentDate.getSeconds();
-	if (hours==0) hours=0;
-	if (minutes<=9) minutes="0"+minutes;
-	if (seconds<=9) seconds="0"+seconds;
-	var currentTime=hours+":"+minutes+":"+seconds;
-	timeElement.innerHTML="<font style='font-family:verdana, arial,tahoma;font-size:12px;color:red; font-weight:bold;'>"+currentTime+"</b>";
-	setTimeout("DisplayTime()",1000);
-}
-
-window.onload=DisplayTime;
+	function cd() {
+		var st = <%- JSON.stringify(fcont.start_time) %>;
+		var ed = <%- JSON.stringify(fcont.end_time) %>;
+		st = new Date(st);
+		ed = new Date(ed);
+		var ss;
+		if(new Date() < st) {
+			ss = countdown(null, st,  countdown.HOURS|countdown.MINUTES|countdown.SECONDS);
+		} else {
+			ss = countdown(null, ed,  countdown.HOURS|countdown.MINUTES|countdown.SECONDS);
+		}
+		document.getElementById('curTime').innerHTML = ss.toString();
+		setTimeout("cd()",1000);
+	}
+	window.onload = cd;
 </script>
-

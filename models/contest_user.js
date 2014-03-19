@@ -1,12 +1,12 @@
 var mongodb = require('./db');
 
-function Contest_user(cont_user) {
+function Contest_User(cont_user) {
 	this.cid = cont_user.cid;
 	this.username = cont_user.username;
 };
-module.exports = Contest_user;
+module.exports = Contest_User;
 
-Contest_user.prototype.save = function save(callback) {
+Contest_User.prototype.save = function save(callback) {
 	var cont_user = {
 		cid:		this.cid,
 		username:	this.username,
@@ -15,7 +15,7 @@ Contest_user.prototype.save = function save(callback) {
 		if (err) {
 			return callback(err);
 		}
-		db.collection('Contest_user', function(err, collection) {
+		db.collection('Contest_User', function(err, collection) {
 			if (err) {
 				mongodb.close();
 				return callback(err);
@@ -29,12 +29,12 @@ Contest_user.prototype.save = function save(callback) {
 	});
 };
 
-Contest_user.get = function get(CID, USERNAME, callback) {
+Contest_User.get = function get(CID, USERNAME, callback) {
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
 		}
-		db.collection('Contest_user', function(err, collection) {
+		db.collection('Contest_User', function(err, collection) {
 			if (err) {
 				mongodb.close();
 				return callback(err);
