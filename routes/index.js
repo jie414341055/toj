@@ -619,7 +619,7 @@ module.exports = function(app) {
 				req.flash('error', err);
 				return res.redirect('/Contest/ShowContests?cid='+cid);
 			}
-			Contest_Status.getMulti({}, function(err, stats) {
+			Contest_Status.getMulti({cid:parseInt(CID)}, function(err, stats) {
 				res.render('Contest_Standing', {
 					title:'Standing',
 					fcont: cont,

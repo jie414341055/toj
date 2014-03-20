@@ -1,6 +1,6 @@
 <script src="/javascripts/animator.js"></script>
 <script src="/javascripts/rankingTableUpdate.js"></script>
-<script src="/javascripts/test.js"></script>
+<script src="/javascripts/contest_standing.js"></script>
 <link href="/stylesheets/contest_standing.css" rel="stylesheet">
 <ul class="nav nav-tabs" id="ctab">
 	<li><a href="/Contest/ShowContests?cid=<%= fcont.cid %>">Info</a></li>
@@ -17,19 +17,19 @@
 
 <!-- Standing -->
 <table id="standing" class="table table-hover table-striped table-centered">
-	<thead>
+	<thead id="ranking_head">
 		<tr>
-			<th class="header-rank">
+			<th class="header-rank anim:position">
 				<div id="searchTitleBtn" class="" order='asc'><a href="#">#</a></div>
 			</th>
-			<th class="header-username">
+			<th class="header-username anim:id">
 				<div id="searchTitleBtn" class="" order='asc'><a href="#">User</a></div>
 			</th>
 			<th class="header-AC">
 				<div id="titleBtn" class="" order='asc'><a href="#">AC</a></div>
 			</th>
 			<% for(var i = 0;i < fcont.problem.length; ++i) {%>
-			<th class="header-<%= 1001+i %>">
+			<th class="header-<%= 1001+i %> anim:update" style="width:<%= 70.0/fcont.problem.length %>%;">
 				<div id="titleBtn" class="" order='asc'><a href="#"><%= String.fromCharCode(65 + i) %></a></div>
 			</th>
 			<% } %>
@@ -38,60 +38,17 @@
 			</th>
 		</tr>
 	</thead>
-	<tbody>
+	<tbody id="ranking_body">
 
-	</tbody>
-</table>
-
-<table class="x1 ">
-	<thead>
-		<tr>
-			<th class="anim:position">Pos</th>
-			<th class="anim:id">Name</th>
-			<th class="anim:update">Value</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>1</td>
-			<td>B</td>
-			<td>2</td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td>A</td>
-			<td>4</td>
-		</tr>
-	</tbody>
-</table>
-<table class="x2">
-	<thead>
-		<tr>
-			<th class="anim:position">Pos</th>
-			<th class="anim:id">Name</th>
-			<th class="anim:update">Value</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>1</td>
-			<td>A</td>
-			<td>4</td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td>B</td>
-			<td>5</td>
-		</tr>
 	</tbody>
 </table>
 
 <script>
 	$(function() {
-		var currentTable = $(".x1");
-		var nextTable = $('.x2');
-		//$("#tmp").append(currentTable.clone().hide());
-		currentTable.rankingTableUpdate(nextTable);
+		var stats = <%- JSON.stringify(fstats)%>;
+		var cont = <%- JSON.stringify(fcont)%>;
+		get_result(stats, cont);
+		//currentTable.rankingTableUpdate(nextTable);
 		$("#prob").click(function() {
 			$("#loader").addClass('show');
 		});
