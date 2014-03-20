@@ -188,3 +188,30 @@ Prob.getCount = function getCount(query, callback) {
 		});
 	});
 };
+
+Prob.getContestProb = function getContestProb(query, callback) {
+	mongodb.open(function(err, db) {
+		if(err) {
+			return callback(err);
+		}
+		db.collection('Problem', function(err, collection) {
+			if(err) {
+				mongodb.close();
+				return callback(err);
+			}
+			collection.find({$or:query}).toArray(function(err, docs) {
+				mongodb.close();
+				if(err) {
+					callback(err, null);
+				}
+
+				var probs = [];
+				docs.forEach(function(doc, index) {
+					var pp = new Prob(doc);
+					probs.push(pp);
+				});
+				callback(null, probs);
+			});
+		});
+	});
+}

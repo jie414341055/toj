@@ -3,10 +3,13 @@
 
 <ul class="nav nav-tabs" id="ctab">
 	<li><a href="/Contest/ShowContests?cid=<%= fcont.cid %>">Info</a></li>
-	<li><a href="/Contest/Problems?cid=<%- fcont.cid %>">Problem</a></li>
+	<li id="prob"><a href="/Contest/Problems?cid=<%- fcont.cid %>">Problem</a></li>
 	<li class="active"><a href="/Contest/Status?cid=<%= fcont.cid %>">Status</a></li>
-	<li><a href="#Standing">Standing</a></li>
+	<li><a href="/Contest/Standing?cid=<%= fcont.cid %>">Standing</a></li>
 </ul>
+<div id="loader" class="text-center hide">
+	<img src="/icon/ajax-loader.gif"/>
+</div>
 
 
 <div class="form-horizontal" style="padding-top: 30px;" role="form">
@@ -128,3 +131,8 @@
 		</center>
 	</div>
 </div>
+<script>
+$("#prob").click(function() {
+	$("#loader").addClass('show');
+});
+</script>

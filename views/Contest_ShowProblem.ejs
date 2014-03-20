@@ -3,7 +3,7 @@
 	<li><a href="/Contest/ShowContests?cid=<%= fcont.cid %>">Info</a></li>
 	<li class="active"><a href="/Contest/Problems?cid=<%- fcont.cid %>">Problem</a></li>
 	<li><a href="/Contest/Status?cid=<%= fcont.cid %>">Status</a></li>
-	<li><a href="#Standing">Standing</a></li>
+	<li><a href="/Contest/Standing?cid=<%= fcont.cid %>">Standing</a></li>
 </ul>
 	<div style="margin-top: 15px; margin-bottom: -25px;">
 	<% for(var i = 0;i < fcont.problem.length; ++i) { %>

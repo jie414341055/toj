@@ -1,0 +1,100 @@
+<script src="/javascripts/animator.js"></script>
+<script src="/javascripts/rankingTableUpdate.js"></script>
+<script src="/javascripts/test.js"></script>
+<link href="/stylesheets/contest_standing.css" rel="stylesheet">
+<ul class="nav nav-tabs" id="ctab">
+	<li><a href="/Contest/ShowContests?cid=<%= fcont.cid %>">Info</a></li>
+	<li id="prob"><a href="/Contest/Problems?cid=<%= fcont.cid %>">Problem</a></li>
+	<li><a href="/Contest/Status?cid=<%= fcont.cid %>">Status</a></li>
+	<li class="active"><a href="#">Standing</a></li>
+</ul>
+<div id="loader" class="text-center hide">
+	<img src="/icon/ajax-loader.gif"/>
+</div>
+
+<!-- Title -->
+<h2 class="text-center" style="color:#428BCA; margin-top: 20px;"><%- fcont.title %></h2>
+
+<!-- Standing -->
+<table id="standing" class="table table-hover table-striped table-centered">
+	<thead>
+		<tr>
+			<th class="header-rank">
+				<div id="searchTitleBtn" class="" order='asc'><a href="#">#</a></div>
+			</th>
+			<th class="header-username">
+				<div id="searchTitleBtn" class="" order='asc'><a href="#">User</a></div>
+			</th>
+			<th class="header-AC">
+				<div id="titleBtn" class="" order='asc'><a href="#">AC</a></div>
+			</th>
+			<% for(var i = 0;i < fcont.problem.length; ++i) {%>
+			<th class="header-<%= 1001+i %>">
+				<div id="titleBtn" class="" order='asc'><a href="#"><%= String.fromCharCode(65 + i) %></a></div>
+			</th>
+			<% } %>
+			<th class="header-Penalty">
+				<div id="searchAcrateBtn" class="" order='asc'><a href="#">Penalty</a></div>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+
+	</tbody>
+</table>
+
+<table class="x1 ">
+	<thead>
+		<tr>
+			<th class="anim:position">Pos</th>
+			<th class="anim:id">Name</th>
+			<th class="anim:update">Value</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>1</td>
+			<td>B</td>
+			<td>2</td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td>A</td>
+			<td>4</td>
+		</tr>
+	</tbody>
+</table>
+<table class="x2">
+	<thead>
+		<tr>
+			<th class="anim:position">Pos</th>
+			<th class="anim:id">Name</th>
+			<th class="anim:update">Value</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>1</td>
+			<td>A</td>
+			<td>4</td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td>B</td>
+			<td>5</td>
+		</tr>
+	</tbody>
+</table>
+
+<script>
+	$(function() {
+		var currentTable = $(".x1");
+		var nextTable = $('.x2');
+		//$("#tmp").append(currentTable.clone().hide());
+		currentTable.rankingTableUpdate(nextTable);
+		$("#prob").click(function() {
+			$("#loader").addClass('show');
+		});
+
+	});
+</script>

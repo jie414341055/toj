@@ -1,9 +1,12 @@
 <ul class="nav nav-tabs" id="ctab">
 	<li class="active"><a href="#" >Info</a></li>
-	<li><a href="/Contest/Problems?cid=<%= fcont.cid %>">Problem</a></li>
+	<li id="prob"><a href="/Contest/Problems?cid=<%= fcont.cid %>">Problem</a></li>
 	<li><a href="/Contest/Status?cid=<%= fcont.cid %>">Status</a></li>
-	<li><a href="#Standing">Standing</a></li>
+	<li><a href="/Contest/Standing?cid=<%= fcont.cid %>">Standing</a></li>
 </ul>
+<div id="loader" class="text-center hide">
+	<img src="/icon/ajax-loader.gif"/>
+</div>
 
 <h2 class="text-center" style="color:#428BCA; margin-top: 20px;"><%- fcont.title %></h2>
 <% var st = new Date(fcont.start_time); st.setHours(st.getHours()+8); %>
@@ -44,4 +47,8 @@
 		setTimeout("cd()",1000);
 	}
 	window.onload = cd;
+
+	$("#prob").click(function() {
+		$("#loader").addClass('show');
+	});
 </script>

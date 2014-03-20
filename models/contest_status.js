@@ -118,3 +118,31 @@ Contest_Status.getCount = function getCount(query, callback) {
 		});
 	});
 };
+
+Contest_Status.getMulti= function page(query, callback) {
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+		db.collection('Contest_Status', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			collection.find(query).sort({username:1,run_ID:1}).toArray(function(err, docs) {
+				mongodb.close();
+				if(err) {
+					callback(err, null);
+				}
+
+				var cont_status = [];
+				docs.forEach(function(doc, index) {
+					var cc = new Contest_Status(doc);
+					cont_status.push(cc);
+				});
+				callback(null, cont_status);
+			});
+		});
+	});
+};
+

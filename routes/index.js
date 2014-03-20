@@ -419,6 +419,7 @@ module.exports = function(app) {
 		});
 	});
 	app.post('/Contest/GetProblems', function(req, res) {
+		//query multi times
 		var CID = req.body['cid'];
 		var index = req.body['index'];
 		var nid = parseInt(index) + 1001;
@@ -431,6 +432,7 @@ module.exports = function(app) {
 				});
 			});
 		});
+
 	});
 
 	app.get('/Contest/Problems', checkAccess);
@@ -610,6 +612,22 @@ module.exports = function(app) {
 			});
 		});
 	});
+	app.get('/Contest/Standing', function(req, res) {
+		var CID = req.query.cid;
+		Contest.get(CID, function(err, cont) {
+			if(err || !cont) {
+				req.flash('error', err);
+				return res.redirect('/Contest/ShowContests?cid='+cid);
+			}
+			Contest_Status.getMulti({}, function(err, stats) {
+				res.render('Contest_Standing', {
+					title:'Standing',
+					fcont: cont,
+					fstats: stats,
+				});
+			});
+		});
+	});
 
 
 	app.get('/Ranklist', function(req, res) {
@@ -661,7 +679,7 @@ module.exports = function(app) {
 					req.flash('error', err);
 					return res.redirect('/');
 				}
-				res.render('profile', {
+				res.render('edit_profile', {
 					title: 'My profile',
 					fuser: user,
 				});

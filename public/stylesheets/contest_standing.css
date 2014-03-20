@@ -1,0 +1,20 @@
+.table th, .table td {
+	text-align: center;
+}
+.table-centered {
+	margin: 0 auto !important;
+	float: none !important;
+	width: 1000px;
+}
+.header-rank{
+	width: 8%;
+}
+.header-username{
+	width: 12%;
+}
+.header-AC{
+	width: 8%;
+}
+.header-Penalty{
+	width: 10%;
+}
