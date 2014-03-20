@@ -39,15 +39,10 @@
 					<td><a href=/Status?username=<%= user.username%>&result=0><%= user.total_ac %></a></td>
 					<td><a href=/Status?username=<%= user.username%>&result=><%= user.total_submit %></a></td>
 					<td><%= user.ac/user.total_submit %></td>
+					<td><%= user.ac/user.total_submit %></td>
 			</tr>
 			<% }); %>
 
 		</tbody>
 	</table>
-	<center>
-	</center>
-	<div class='toTop' style="opacity: 1;" title="Back To Top">
-		<div class="arrow"></div>
-		<div class="stick"></div>
-	</div>
 </div>

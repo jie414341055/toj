@@ -261,6 +261,8 @@ module.exports = function(app) {
 					req.flash('error', err);
 					return res.redirect('/');
 				}
+				var total_page = Math.ceil(total_num / 15);
+				if(total_page == 0) total_page = 1;
 				res.render('Status', {
 					title:'Status',
 					fstats: stats,
@@ -273,7 +275,7 @@ module.exports = function(app) {
 						"result":digit2result[result],
 					},
 					furl: url,
-					ftotal_page: Math.ceil(total_num/15),
+					ftotal_page: total_page,
 				});
 			});
 		});
