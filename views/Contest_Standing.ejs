@@ -16,6 +16,31 @@
 <h2 class="text-center" style="color:#428BCA; margin-top: 20px;"><%- fcont.title %></h2>
 
 <!-- Standing -->
+<table id="standing0" class="table table-bordered table-hover table-striped table-centered">
+	<thead id="ranking_head0">
+		<tr>
+			<th class="header-rank anim:position">
+				<div id="searchTitleBtn" class="" order='asc'><a href="#">#</a></div>
+			</th>
+			<th class="header-username anim:id">
+				<div id="searchTitleBtn" class="" order='asc'><a href="#">User</a></div>
+			</th>
+			<th class="header-AC anim:update">
+				<div id="titleBtn" class="" order='asc'><a href="#">AC</a></div>
+			</th>
+			<% for(var i = 0;i < fcont.problem.length; ++i) {%>
+			<th class="header-<%= 1001+i %> anim:update" style="width:<%= 70.0/fcont.problem.length %>%;">
+				<div id="titleBtn" class="" order='asc'><a href="#"><%= String.fromCharCode(65 + i) %></a></div>
+			</th>
+			<% } %>
+			<th class="header-Penalty anim:update">
+				<div id="searchAcrateBtn" class="" order='asc'><a href="#">Penalty</a></div>
+			</th>
+		</tr>
+	</thead>
+	<tbody id="ranking_body0"></tbody>
+</table>
+
 <table id="standing" class="table table-bordered table-hover table-striped table-centered">
 	<thead id="ranking_head">
 		<tr>
@@ -25,7 +50,7 @@
 			<th class="header-username anim:id">
 				<div id="searchTitleBtn" class="" order='asc'><a href="#">User</a></div>
 			</th>
-			<th class="header-AC">
+			<th class="header-AC anim:update">
 				<div id="titleBtn" class="" order='asc'><a href="#">AC</a></div>
 			</th>
 			<% for(var i = 0;i < fcont.problem.length; ++i) {%>
@@ -33,14 +58,12 @@
 				<div id="titleBtn" class="" order='asc'><a href="#"><%= String.fromCharCode(65 + i) %></a></div>
 			</th>
 			<% } %>
-			<th class="header-Penalty">
+			<th class="header-Penalty anim:update">
 				<div id="searchAcrateBtn" class="" order='asc'><a href="#">Penalty</a></div>
 			</th>
 		</tr>
 	</thead>
-	<tbody id="ranking_body">
-
-	</tbody>
+	<tbody id="ranking_body"></tbody>
 </table>
 <script>
 	$(function() {

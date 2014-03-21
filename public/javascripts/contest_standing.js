@@ -1,4 +1,5 @@
 function getPenalty(st, submit_time) {
+	submit_time = submit_time.replace(' ','T');
 	var start = new Date(st);
 	var sub = new Date(submit_time);
 	return Math.ceil((sub - start)/60000);
@@ -47,19 +48,28 @@ function get_result(stats, cont) {
 		else return a[0] < b[0];
 	});
 	var unum = result.length;
-	var table = ""; //"<tbody id='ranking_body'>";
+	var table = "<table id='standing' class='table table-bordered table-hover table-striped table-centered'>";
+	table += $('#ranking_head').html();
+	table += "<tbody id='ranking_body'>";
 	for(var i = 0;i < unum; ++i) {
 		table += "<tr>";
 		table += "<td>" + (i+1+"") + "</td>";
 		table += "<td>" + result[i][3] + "</td>";
 		table += "<td>" + result[i][0] + "</td>";
 		for(var j = 0;j < prob_num; ++j) {
-			table += "<td>" + result[i][2][j] + "</td>";
+			if(result[i][2][j] > 0) {
+				table += "<td class='prob-ac'>+"
+			} else if(result[i][2][j] < 0) {
+				table += "<td class='prob-wa'>"
+			} else table += "<td>";
+			table += result[i][2][j] + "</td>";
 		}
 		table += "<td>" + result[i][1] + "</td>";
 		table += "</tr>";
 	}
-	//table += "</tbody>";
+	table += "</tbody></table>";
 	//$('#ranking_body').html(table);
-	$('#ranking_body').rankingTableUpdate(table);
+	$('#standing0').html($('#standing').html());
+	$('#standing').html(table);
+	$($('#standing')).rankingTableUpdate($('#standing0'));
 }

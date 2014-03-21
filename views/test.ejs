@@ -1,63 +1,41 @@
-<style>
-.show {
-	display: block;
-}
-.hide {
-	display: none;
-};
-</style>
-<form id="form">
-	<div>
-		<select id="sx1">
-			<option> 1</option>
-			<option> 2</option>
-		</select>
-		<input id="x1" onchange="check('x1')">
-		<span id="err_x1"></span>
-		<select id="sx3">
-			<option> 1</option>
-			<option> 2</option>
-		</select>
-		<input id="x2">
-		<span id="err_x1"></span>
-	</div>
-
-	<div id="control">
-		<a href="javascript:change()">More</a>
-	</div>
-	<div class="hide" id="xx">
-		hahah
-	</div>
-
-</form>
+<script src="/javascripts/animator.js"></script>
+<script src="/javascripts/rankingTableUpdate.js"></script>
+<table id="t1">
+	<thead>
+		<tr>
+			<td class="anim:position">#</td>
+			<td class="anim:id">User</td>
+			<td class="anim:update">AC</td>
+			<td class="anim:update">ALL</td>
+		</tr>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+<table id="t2">
+	<thead>
+		<tr>
+			<td class="anim:position">#</td>
+			<td class="anim:id">User</td>
+			<td class="anim:update">AC</td>
+			<td class="anim:update">ALL</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>1</td>
+			<td>sb</td>
+			<td>13</td>
+			<td>190</td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td>mj</td>
+			<td>12</td>
+			<td>100</td>
+		</tr>
+	</tbody>
+</table>
 <script>
-	$("#form select[id^=sx]").change(function() {
-		alert(this.id);
-	});
-	function change() {
-		$("#xx").removeClass('hide');
-		$("#xx").addClass('show');
-	}
-		
-function check(id) {
-		var id = id;
-		var pid = $("#"+id).val();
-		alert(id);
-		$.ajax({
-			url: '/posttest',
-			type: 'POST',
-			data:{pid: pid},
-			datatype:'json',
-			async: false,
-			success:function(json){
-				if (json.error=='0'){
-					alert("haha");	
-				}
-			}
-		});
-			
-}
-		
-
-
+//$($('#t1')).rankingTableUpdate($('#t2'));
 </script>
