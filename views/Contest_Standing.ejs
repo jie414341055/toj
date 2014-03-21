@@ -16,7 +16,7 @@
 <h2 class="text-center" style="color:#428BCA; margin-top: 20px;"><%- fcont.title %></h2>
 
 <!-- Standing -->
-<table id="standing" class="table table-hover table-striped table-centered">
+<table id="standing" class="table table-bordered table-hover table-striped table-centered">
 	<thead id="ranking_head">
 		<tr>
 			<th class="header-rank anim:position">
@@ -42,8 +42,6 @@
 
 	</tbody>
 </table>
-<script>
-
 <script>
 	$(function() {
 		var stats = <%- JSON.stringify(fstats)%>;

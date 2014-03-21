@@ -47,9 +47,7 @@ function get_result(stats, cont) {
 		else return a[0] < b[0];
 	});
 	var unum = result.length;
-	var table = "<table id='standing' class='table table-hover table-striped table-centered'><thead id='ranking_head'>";
-	table += $('#ranking_head').html();
-	table += "</thead><tbody id='ranking_body'>";
+	var table = ""; //"<tbody id='ranking_body'>";
 	for(var i = 0;i < unum; ++i) {
 		table += "<tr>";
 		table += "<td>" + (i+1+"") + "</td>";
@@ -61,6 +59,7 @@ function get_result(stats, cont) {
 		table += "<td>" + result[i][1] + "</td>";
 		table += "</tr>";
 	}
-	table += "</tbody></table>";
-	$('#standing').html(table);
+	//table += "</tbody>";
+	//$('#ranking_body').html(table);
+	$('#ranking_body').rankingTableUpdate(table);
 }
