@@ -1,8 +1,8 @@
 <type> 3
-<runid> 66
-<memory_used> 0
-<time_used> 0
-<result> Compile Error
+<runid> 76
+<memory_used> 256
+<time_used> 15
+<result> Accepted
 __COMPILE-INFO-BEGIN-LABLE__
 
 __COMPILE-INFO-END-LABLE__

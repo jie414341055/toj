@@ -1,124 +1,79 @@
-<div class="container">
-	<div class="row">
-		<div class="span6">
-			<ul class="nav nav-pills">
-				<li class="active">
-				<a href="#">首页</a>
-				</li>
-				<li>
-				<a href="#">资料</a>
-				</li>
-				<li class="disabled">
-				<a href="#">信息</a>
-				</li>
-			</ul>
-			<br />
-			<img class="img-circle" alt="140x140" height="82" width="82" src="/avatar/minjie.jpg" /> 
-			<br /><br />
-			<address> 
-				<strong>School/Company:</strong> Tianjin University<br /> 
-				School of Computer Science and Technology<br /> 
-				<strong>Email:</strong> minjie#tju.edu.cn<br /> 
-			</address>
-			<p class="text-left">
-			<em>Git</em>是一个分布式的版本控制系统，最初由<strong>Linus Torvalds</strong>编写，用作Linux内核代码的管理。在推出后，Git在其它项目中也取得了很大成功，尤其是在Ruby社区中。
-			</p>
-		</div>
-		<div class="span6">
-			<table class="table table-striped">
-				<thead>
-					<tr>
-						<th>
-							RunID
-						</th>
-						<th>
-							Prob ID
-						</th>
-						<th>
-							Submit Time
-						</th>
-						<th>
-							Result
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>
-							1
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							01/04/2012
-						</td>
-						<td>
-							Default
-						</td>
-					</tr>
-					<tr class="success">
-						<td>
-							1
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							01/04/2012
-						</td>
-						<td>
-							Approved
-						</td>
-					</tr>
-					<tr class="error">
-						<td>
-							2
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							02/04/2012
-						</td>
-						<td>
-							Declined
-						</td>
-					</tr>
-					<tr class="warning">
-						<td>
-							3
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							03/04/2012
-						</td>
-						<td>
-							Pending
-						</td>
-					</tr>
-					<tr class="info">
-						<td>
-							4
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							04/04/2012
-						</td>
-						<td>
-							Call in to confirm
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<div class="progress">
-				<div class="bar">
-				</div>
-			</div>
-		</div>
-	</div>
+<script src="/javascripts/mindmup-editabletable.js"></script>
+<script src="/javascripts/profile.js"></script>
+<link href="/stylesheets/profile.css"rel="stylesheet">
+<h2 class="text-center"><%= fuser.username %></h2>
+<div id="show-info">
+	<h3 class="text-center">Information</h3>
+	<table id="info" class="table table-hover table-bordered table-striped">
+		<tr>
+			<th width=20%>Rank</th>
+			<th width=30%>1</th>
+		</tr>
+		<tr>
+			<th>UserName</th>
+			<th><%- fuser.username %></th>
+		</tr>
+		<tr>
+			<th>NickName</th>
+			<td id="nickname" class="editable"><%- fuser.nickname %></td>
+		</tr>
+		<tr>
+			<th>Accepted</th>
+			<th><%= fuser.total_ac %></th>
+		</tr>
+		<tr>
+			<th>Submitted</th>
+			<th><%= fuser.total_submit %></th>
+		</tr>
+		<tr>
+			<th>AC_Ratio</th>
+			<th>
+				<%= Math.round((fuser.total_ac/fuser.total_submit*10000)/100) %>&#37;
+			</th>
+		</tr>
+		<tr>
+			<th>Rating</th>
+			<th></th>
+		</tr>
+		<tr>
+			<th>Email</th>
+			<td id="email" class="editable"><%- fuser.email %></td>
+		</tr>
+		<tr>
+			<th>University</th>
+			<td id="univer" class="editable">
+				<%- fuser.school %>
+			</td>
+		</tr>
+		<tr>
+			<th>Country</th>
+			<td id="country" class="editable"><%- fuser.country %></td>
+		</tr>
+		<tr>
+			<th>Declaration</th>
+			<td id="decl" class="editable" height="100" align="left">
+				<%- fuser.decl %>
+			</td>
+		</tr>
+	</table>
+	<% if(fusername == fuser.username) { %>
+	<button id="editbtn" type="button" class="btn btn-primary" onclick="edit_profile()">Edit my profile</button>
+	<% } %>
 </div>
+<!---solved-problem-->
+
+<div id="solved-problem">
+		<div class="phead">
+			<h3 class="text-center">Problem Solved</h3>
+		</div>
+		<div class="pbody">
+			<% fpids.forEach(function(pid, index) {%>
+			<a href=/ShowProblems?pid=<%- pid%>><%= pid %></a>
+			<% }) %>
+		</div>
+</div>
+<script>
+$('.editable').change(function() {
+	$('#editbtn').html('Save');
+});
+</script>

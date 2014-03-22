@@ -173,3 +173,25 @@ Status.getCount = function getCount(query, callback) {
 		});
 	});
 };
+Status.getMulti = function page(query, callback) {
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+		db.collection('Status', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			//collection.distinct('pid', query).sort({pid:1}).toArray(function(err, docs) {
+			collection.distinct('pid', query, function(err, docs) {
+				mongodb.close();
+				if(err) {
+					callback(err, null);
+				}
+				docs.sort();
+				callback(null, docs);
+			});
+		});
+	});
+};

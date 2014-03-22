@@ -251,6 +251,28 @@ bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu
 				BSON("username" << temp.user),
 				BSON("$inc"<<BSON("total_ac"<<1)),
 				false,true);
+
+	/* minjie update Problem */
+	db_client.update("toj.Problem",
+			BSON("pid" << temp.pid),
+			BSON("$inc"<<BSON("total_submit"<<1)),
+			false,true);
+			//upsert,multi
+	string dbresult;
+	if(result == "Accepted") dbresult = "total_ac";
+	else if(result == "Wrong Answer") dbresult = "total_wa";
+	else if(result == "Presentation Error") dbresult = "total_pe";
+	else if(result == "Compilation Error") dbresult = "total_ce";
+	else if(result == "Runtime Error") dbresult = "total_re";
+	else if(result == "Time Limit Exceeded") dbresult = "total_tle";
+	else if(result == "Memory Limit Exceeded") dbresult = "total_mle";
+	else if(result == "Output Limit Exceeded") dbresult = "total_ole";
+	db_client.update("toj.Problem",
+			BSON("pid" << temp.pid),
+			BSON("$inc"<<BSON(dbresult<<1)),
+			false,true);
+			//upsert,multi
+
 	return true;
 }
 
@@ -288,7 +310,7 @@ void judge(string pid,string lang,string runid,string src) {
 	/* minjie*/
 	db_client.insert("toj.Status",
 			BSON("run_ID" << temp.runid << "result" << "Queuing" << "submit_time" << temp.submit_time
-				<< "pid"<<covert(temp.pid)<<"lang"<<lang<<"username"<<temp.user<<"code_len"<< covert(src.length())));
+				<< "pid"<<temp.pid<<"lang"<<lang<<"username"<<temp.user<<"code_len"<< covert(src.length())));
 
 	if (src.length()<15) {
 		toBottFile(runid,"0","0","Compile Error","");

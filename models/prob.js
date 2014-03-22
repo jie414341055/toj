@@ -117,7 +117,7 @@ Prob.page = function page(query, pageID, callback) {
 				return callback(err);
 			}
 			pageID = parseInt(pageID);
-			collection.find(query).sort({pid:1}).limit(100).skip((pageID - 1) * 100).toArray(function(err, docs) {
+			collection.find(query,{pid:1,title:1,oj:1,vid:1,vtotal_submit:1,vtotal_ac:1,total_submit:1,total_ac:1 }).sort({pid:1}).limit(100).skip((pageID - 1) * 100).toArray(function(err, docs) {
 				mongodb.close();
 				if(err) {
 					callback(err, null);

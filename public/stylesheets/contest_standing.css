@@ -1,30 +1,33 @@
 .table th, .table td {
 	text-align: center;
 }
+.table tr, .table td {
+	border-left: 1px solid rgb(221, 221, 221);
+}
 .table-centered {
 	margin: 0 auto !important;
-	float: none !important;
+	float: none !important; 
 	width: 1000px;
 }
 .header-rank{
-	width: 5%;
+	width: 3%;
 }
 .header-username{
-	width: 10%;
+	width: 7%;
 }
 .header-AC{
 	width: 5%;
 }
 .header-Penalty{
-	width: 10%;
+	width: 7%;
 }
 .prob-ac {
-	background: none repeat scroll 0% 0% rgb(102, 255, 102) !important;
+	background: none repeat scroll 0% 0% rgb(171, 255, 88) !important;
 }
 .prob-wa {
-	background: none repeat scroll 0% 0% rgb(255, 85, 85) !important;
+	background: none repeat scroll 0% 0% rgb(218, 88, 82) !important;
 }
 .prob-fb {
-	background: none repeat scroll 0% 0% rgb(0, 127, 0) !important;
+	background: none repeat scroll 0% 0% rgb(83, 135, 28) !important;
 	color: rgb(255, 255, 255);
 }

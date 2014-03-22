@@ -233,7 +233,7 @@ module.exports = function(app) {
 		var result = req.query.result;
 		var pageID = req.query.page;
 		if(pid) {
-			query.pid = pid;
+			query.pid = parseInt(pid);
 			url += "pid="+pid;
 		} else url += "pid=";
 		if(username) {
@@ -257,6 +257,7 @@ module.exports = function(app) {
 				return res.redirect('/');
 			}
 			Status.page(query, pageID, function(err, stats) {
+				console.log(stats);
 				if(err) {
 					req.flash('error', err);
 					return res.redirect('/');
@@ -669,21 +670,36 @@ module.exports = function(app) {
 	});
 
 	app.get('/profile/:user', function(req, res) {
+		var currentUser = req.session.user;
+		var username = "";
+		if(currentUser) username = currentUser.username;
 		User.get(req.params.user, function(err, user) {
 			if(!user) {
 				req.flash('error', 'user doesn\'t exists.');
 				return res.redirect('/');
 			}
-			User.get(user.username, function(err, user) {
-				if(err) {
-					req.flash('error', err);
-					return res.redirect('/');
-				}
-				res.render('edit_profile', {
-					title: 'My profile',
+			Status.getMulti({username:req.params.user}, function(err, pids) {
+				res.render('profile', {
+					title: 'Profile',
 					fuser: user,
+					fusername: username,
+					fpids: pids,
 				});
 			});
+		});
+	});
+	app.post('/SaveProfile', function(req, res) {
+		var currentUser = req.session.user;
+		var info = {
+			'nickname': req.body['nickname'],
+			'email':	req.body['email'],
+			'school':	req.body['univer'],
+			'country':	req.body['country'],
+			'decl':	req.body['decl'],
+		};
+		User.update(currentUser.username, info, function(err) {
+			res.redirect('/profile/'+currentUser.username);
+
 		});
 	});
 
