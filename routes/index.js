@@ -293,12 +293,17 @@ module.exports = function(app) {
 		var runid = req.query.runid;
 		Status.get(runid, function(err, stat) {
 			if(err || !stat) {
-				req.flash('error', err);
+				req.flash('error', 'The code does not exists!');
 				return res.redirect('/Status');
+			}
+			var currentUser = req.session.user;
+			if(!currentUser || currentUser.username != stat.username) {
+					req.flash('error', 'You don\' have the permission!');
+					return res.redirect('/Status');
 			}
 			Code.get(runid, function(err, code) {
 				if(err || !code) {
-					req.flash('error', err);
+					req.flash('error', 'The code does not exists!');
 					return res.redirect('/Status');
 				}
 				res.render('ShowCode', {
@@ -470,6 +475,8 @@ module.exports = function(app) {
 
 	});
 
+
+	//GET_CONTEST_PROB
 	app.get('/Contest/Problems', checkAccess);
 	app.get('/Contest/Problems', function(req, res) {
 		var CID = req.query.cid;
@@ -484,6 +491,10 @@ module.exports = function(app) {
 			});
 		});
 	});
+
+
+	//GET_CONTEST_SHOWPROB
+	app.get('/Contest/ShowProblems', checkAccess);
 	app.get('/Contest/ShowProblems', function(req, res) {
 		var CID = req.query.cid;
 		var index = parseInt(req.query.pid) - 1001;
@@ -510,6 +521,8 @@ module.exports = function(app) {
 		});
 	});
 
+
+	//GET_CONTEST_SUBMIT
 	app.get('/Contest/ProbSubmit', checkLogin);
 	app.get('/Contest/ProbSubmit', checkAccess);
 	app.get('/Contest/ProbSubmit', function(req, res) {
@@ -537,6 +550,9 @@ module.exports = function(app) {
 			});
 		});
 	});
+
+
+	//POST_CONTEST_SUBMIT
 	app.post('/Contest/ProbSubmit', function(req, res) {
 		var CID = req.query.cid;
 		var index = parseInt(req.query.pid) - 1001;
@@ -579,6 +595,7 @@ module.exports = function(app) {
 	});
 
 	//GET_CONTEST_STATUS
+	app.get('/Contest/Status', checkAccess);
 	app.get('/Contest/Status', function(req, res) {
 		//Status?cid=&pid=&username=&lang=&result=&page=
 		var query = {};
@@ -656,18 +673,25 @@ module.exports = function(app) {
 	});
 
 	//GET_CONTEST_SHOWCODE
+	app.get('/Contest/ShowCode', checkLogin);
+	app.get('/Contest/ShowCode', checkAccess);
 	app.get('/Contest/ShowCode', function(req, res) {
 		var cid = req.query.cid;
 		var runid = req.query.runid;
 
 		Contest_Status.get({cid:parseInt(cid),run_ID:parseInt(runid)}, function(err, stat) {
 			if(err || !stat) {
-				req.flash('error', err);
+				req.flash('error', 'You don\' have the permission!');
 				return res.redirect('/Status');
+			}
+			var currentUser = req.session.user;
+			if(!currentUser || currentUser.username != stat.username) {
+					req.flash('error', 'You don\' have the permission!');
+					return res.redirect('/Status');
 			}
 			Contest_Code.get(cid, runid, function(err, code) {
 				if(err || !code) {
-					req.flash('error', err);
+					req.flash('error', 'You don\' have the permission!');
 					return res.redirect('/Status');
 				}
 				res.render('Contest_ShowCode', {
@@ -680,6 +704,9 @@ module.exports = function(app) {
 			});
 		});
 	});
+
+	//GET_CONTEST_STANDING
+	app.get('/Contest/Standing', checkAccess);
 	app.get('/Contest/Standing', function(req, res) {
 		var CID = req.query.cid;
 		Contest.get(CID, function(err, cont) {
@@ -698,6 +725,7 @@ module.exports = function(app) {
 	});
 
 
+	//GET_RANKING
 	app.get('/Ranklist', function(req, res) {
 		page = req.query.page;
 		if(page) page = parseInt(page);
@@ -738,6 +766,8 @@ module.exports = function(app) {
 	});
 
 	//GET_CONTEST_CE
+	app.get('/Contest/showceerror', checkLogin);
+	app.get('/Contest/showceerror', checkAccess);
 	app.get('/Contest/showceerror', function(req, res) {
 		var cid = req.query.cid;
 		var runid = req.query.runid;
@@ -754,6 +784,7 @@ module.exports = function(app) {
 	});
 
 
+	//GET_PROFILE
 	app.get('/profile/:user', function(req, res) {
 		var currentUser = req.session.user;
 		var username = "";
