@@ -65,7 +65,7 @@ function get_result(stats, cont) {
 		}
 		if(blood != -1) result[blood].prob[i].fb = 1;
 	}
-	var table = "<table id='standing' class='table table-bordered table-hover table-striped table-centered'>";
+	var table = "<table id='standing' class='table table-condensed table-hover table-striped table-centered'>";
 	table += $('#ranking_head').html();
 	table += "<tbody id='ranking_body'>";
 	for(var i = 0;i < user_num; ++i) {
@@ -87,7 +87,6 @@ function get_result(stats, cont) {
 	}
 	table += "</tbody></table>";
 	$('#standing').html(table);
-
 
 }
 

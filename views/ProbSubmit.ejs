@@ -2,16 +2,28 @@
 
 <style type="text/css" media="screen">
 	#embedded_ace_code {
-		height: 455px;
+		height: 435px;
 		width: 650px;
 		border: 1px solid #DDD;
 		border-radius: 4px;
 		border-bottom-right-radius: 0px;
-		margin-top: 85px;
+		margin-top: 65px;
+		margin-left: 150px;
+	}
+	#langselect {
+		margin-top: 15px;
+		margin-left: 135px;
+	}
+	#submit-btn {
+		margin-left: 450px;
+		margin-top: 20px;
 	}
 
 </style>
 
+<div id="title">
+	<h2 style="text-align:center"><font color="#428BCA">Submit Your Solution</font></h2>
+</div>
 <div class="col-md-2" id="langselect">
 	<select class="form-control" name="lang" id="lang" onchange="SelectLang(this)">
 		<% if(fprob.oj == "HDU" || fprob.oj == "POJ") { %>
@@ -27,7 +39,9 @@
 </div>
 <div id="embedded_ace_code" style="opacity:1" >
 </div>
+<div id="submit-btn">
 <button type="submit" class="btn btn-primary" onclick="Submit()"> Submit </button>
+</div>
 
 <script src="/javascripts/ace.js" type="text/javascript" charset="utf-8"></script>
 <script src="/javascripts/mode-java.js" type="text/javascript" charset="utf-8"></script>
@@ -36,6 +50,8 @@
 	var editor = ace.edit("embedded_ace_code");
 	editor.setTheme("ace/theme/chrome");
 	editor.getSession().setMode("ace/mode/c_cpp");
+	editor.focus();
+	document.getElementById('embedded_ace_code').style.fontSize='12px';
 	function SelectLang(choose) {
 		var obj = choose.value;
 		var editor = ace.edit("embedded_ace_code");
@@ -47,10 +63,7 @@
 		} else {
 			editor.getSession().setMode("ace/mode/pascal");
 		}
-
 	}
-</script>
-<script>
 	function Submit() {
 		var editor = ace.edit("embedded_ace_code");
 		var code = editor.getValue();

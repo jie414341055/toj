@@ -288,6 +288,8 @@ void judge(string pid,string lang,string runid,string src) {
 			BSON("run_ID" << temp.runid << "result" << "Queuing" << "submit_time" << temp.submit_time
 				<< "cid" << temp.cid << "pid"<< temp.pid << "nid" << temp.nid <<"lang"<<lang<<"username"<<temp.user<<"code_len"<< covert(src.length())));
 
+	db_client.insert("toj.Contest_Code", BSON("cid" << temp.cid << "run_ID" << temp.runid << "code" << src));
+
 	if (src.length()<15) {
 		toBottFile(runid,"0","0","Compile Error","");
 		return;

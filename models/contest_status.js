@@ -119,7 +119,7 @@ Contest_Status.getCount = function getCount(query, callback) {
 	});
 };
 
-Contest_Status.getMulti= function page(query, callback) {
+Contest_Status.getMulti= function getMulti(query, callback) {
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);

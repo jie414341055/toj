@@ -312,6 +312,8 @@ void judge(string pid,string lang,string runid,string src) {
 			BSON("run_ID" << temp.runid << "result" << "Queuing" << "submit_time" << temp.submit_time
 				<< "pid"<<temp.pid<<"lang"<<lang<<"username"<<temp.user<<"code_len"<< covert(src.length())));
 
+	db_client.insert("toj.Code", BSON("run_ID" << temp.runid << "code" << src));
+
 	if (src.length()<15) {
 		toBottFile(runid,"0","0","Compile Error","");
 		return;

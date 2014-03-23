@@ -4,6 +4,8 @@ var Post = require('../models/post.js');
 var Prob = require('../models/prob.js');
 var Rcont = require('../models/rcont.js');
 var Status = require('../models/status.js');
+var Code = require('../models/code.js');
+var Contest_Code = require('../models/contest_code.js');
 var Contest = require('../models/contest.js');
 var Contest_User = require('../models/contest_user.js');
 var Contest_Status = require('../models/contest_status.js');
@@ -193,7 +195,6 @@ module.exports = function(app) {
 
 
 				var now_date = new Date();
-				console.log(now_date);
 				now_date.setHours(now_date.getHours()+8);
 				var sub_time = now_date.toISOString().replace(/T/,' ').replace(/\..+/,'');
 
@@ -223,6 +224,7 @@ module.exports = function(app) {
 		});
 	});
 
+	//GET_STATUS
 	app.get('/Status', function(req, res) {
 	//Status?pid=&username=&lang=&result=&page=
 		var query = {};
@@ -250,6 +252,10 @@ module.exports = function(app) {
 		} else url += "&result=";
 		if(pageID) pageID = parseInt(pageID);
 		else pageID = 1;
+
+
+		var loginUser = "";
+		if(req.session.user)  loginUser = req.session.user.username;
 		
 		Status.getCount(query, function(err, total_num) {
 			if(err) {
@@ -257,7 +263,6 @@ module.exports = function(app) {
 				return res.redirect('/');
 			}
 			Status.page(query, pageID, function(err, stats) {
-				console.log(stats);
 				if(err) {
 					req.flash('error', err);
 					return res.redirect('/');
@@ -266,6 +271,7 @@ module.exports = function(app) {
 				if(total_page == 0) total_page = 1;
 				res.render('Status', {
 					title:'Status',
+					floginUser: loginUser,
 					fstats: stats,
 					fcorrlang: corrlang,
 					fpageID: pageID,
@@ -281,7 +287,32 @@ module.exports = function(app) {
 			});
 		});
 	});
+	
+	//GET_SHOWCODE
+	app.get('/ShowCode', function(req, res) {
+		var runid = req.query.runid;
+		Status.get(runid, function(err, stat) {
+			if(err || !stat) {
+				req.flash('error', err);
+				return res.redirect('/Status');
+			}
+			Code.get(runid, function(err, code) {
+				if(err || !code) {
+					req.flash('error', err);
+					return res.redirect('/Status');
+				}
+				res.render('ShowCode', {
+					title: 'View Code',
+					fstat: stat,
+					fcode: code,
+					fcorrlang: corrlang,
+				});
 
+			});
+		});
+	});
+
+	//GET_CONTEST
 	app.get('/Contest/Contests', function(req, res) {
 		var type = req.query.type;
 		if(!type) type = 0;
@@ -290,8 +321,8 @@ module.exports = function(app) {
 		else pageID = 1;
 		Contest.page({type:parseInt(type)}, pageID, function(err, conts) {
 			if(err) {
-				res.flash('error', err);
-				res.redirect('/Contests?type'+type);
+				req.flash('error', err);
+				return res.redirect('/Contests?type'+type);
 			}
 			res.render('Contests', {
 				title: 'Contests',
@@ -300,6 +331,8 @@ module.exports = function(app) {
 			});
 		});
 	});
+
+	//GET_ARRANGE
 	app.get('/Contest/ArrangeContest', checkLogin);
 	app.get('/Contest/ArrangeContest', function(req, res) {
 		var currentUser = req.session.user;
@@ -330,6 +363,7 @@ module.exports = function(app) {
 
 	});
 
+	//POST_ARRANGE
 	app.post('/Contest/ArrangeContest', function(req, res) {
 		var currentUser = req.session.user;
 		var type = req.query.type;
@@ -543,6 +577,8 @@ module.exports = function(app) {
 			});
 		});
 	});
+
+	//GET_CONTEST_STATUS
 	app.get('/Contest/Status', function(req, res) {
 		//Status?cid=&pid=&username=&lang=&result=&page=
 		var query = {};
@@ -553,6 +589,10 @@ module.exports = function(app) {
 		var lang = req.query.lang;
 		var result = req.query.result;
 		var pageID = req.query.page;
+
+		var loginUser = "";
+		if(req.session.user)  loginUser = req.session.user.username;
+
 
 		if(!cid) res.redirect('/Contest/Contests');
 
@@ -596,6 +636,7 @@ module.exports = function(app) {
 					if(total_page == 0) total_page = 1;
 					res.render('Contest_Status', {
 						title:'Status',
+						floginUser: loginUser,
 						fcont: cont,
 						fstats: stats,
 						fcorrlang: corrlang,
@@ -610,6 +651,32 @@ module.exports = function(app) {
 						ftotal_page: total_page,
 					});
 				});
+			});
+		});
+	});
+
+	//GET_CONTEST_SHOWCODE
+	app.get('/Contest/ShowCode', function(req, res) {
+		var cid = req.query.cid;
+		var runid = req.query.runid;
+
+		Contest_Status.get({cid:parseInt(cid),run_ID:parseInt(runid)}, function(err, stat) {
+			if(err || !stat) {
+				req.flash('error', err);
+				return res.redirect('/Status');
+			}
+			Contest_Code.get(cid, runid, function(err, code) {
+				if(err || !code) {
+					req.flash('error', err);
+					return res.redirect('/Status');
+				}
+				res.render('Contest_ShowCode', {
+					title: 'View Code',
+					fstat: stat,
+					fcode: code,
+					fcorrlang: corrlang,
+				});
+
 			});
 		});
 	});
@@ -655,6 +722,7 @@ module.exports = function(app) {
 		});
 	});
 
+	//GET_CE
 	app.get('/showceerror', function(req, res) {
 		var runid = req.query.runid;
 		Status.get(runid, function(err, stat) {
@@ -668,6 +736,23 @@ module.exports = function(app) {
 			});
 		});
 	});
+
+	//GET_CONTEST_CE
+	app.get('/Contest/showceerror', function(req, res) {
+		var cid = req.query.cid;
+		var runid = req.query.runid;
+		Contest_Status.get(cid, runid, function(err, stat) {
+			if(err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			}
+			res.render('Contest_ShowCEError', {
+				title: 'Error',
+				fce_info: stat.ce_info,
+			});
+		});
+	});
+
 
 	app.get('/profile/:user', function(req, res) {
 		var currentUser = req.session.user;

@@ -91,6 +91,8 @@
 				<% fstats.forEach(function(stat, index) { %>
 				<tr>
 					<td><%- stat.run_ID %></td>
+					
+					
 					<td><%- stat.submit_time %></td>
 					<% if(stat.result == "Accepted") {%>
 					<td><font color="red"><%- stat.result %></font></td>
@@ -101,12 +103,27 @@
 					<% } else { %>
 					<td><font color="green"><%- stat.result %></font></td>
 					<% } %>
+
+
 					<td><a href=/Contest/ShowProblems?cid=<%= fcont.cid %>&&pid=<%= stat.nid %>> <%= stat.nid %></a></td>
-					<td><%- stat.time_used %></td>
-					<td><%- stat.mem_used %></td>
-					<td><%- stat.code_len %></td>
+
+
+					<td><%- stat.time_used %>
+					<% if(stat.time_used) {%>MS<% } %>
+					</td>
+
+					<td><%- stat.mem_used %>
+					<% if(stat.mem_used) {%>K<% } %>
+					</td>
+
+					<% if(floginUser == stat.username) { %>
+					<td><a href=/Contest/ShowCode?cid=<%- stat.cid %>&runid=<%- stat.run_ID %>><%- stat.code_len %>B</a></td>
+					<% } else {%>
+					<td><%- stat.code_len %>B</td>
+					<% } %>
+
 					<td><%- fcorrlang[stat.lang]%></td>
-					<td><%- stat.username %></td>
+					<td><a href=/profile/<%- stat.username %>><%- stat.username %></a></td>
 				</tr>
 				<% }) %>
 			</tbody>
