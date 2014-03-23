@@ -10,23 +10,25 @@ tr,td{
 }
 #sidebar{
 	width: 300px;
-	font-size: 14px;
+	font-size: 15px;
 	float: right;
 	margin-bottom: 20px;
 }
 
 #sidebar .header {
-	color: rgb(81, 88, 91);
+	color: #428BCA;
 }
 
 .panel .header {
+	font-size: 20px;
 	padding: 7px 10px;
-	background-color: rgb(245, 245, 245);
+	background-color: rgb(237, 237, 237); 
+	/* background-color: rgb(255, 255, 255); */
 	box-shadow: 0px 1px 0px rgb(224, 224, 224);
 }
 
 #sidebar .panel {
-	font-size: 13px;
+	font-size: 15px;
 	background:none repeat scroll 0% 0% rgb(255, 255, 255);
 }
 
@@ -35,3 +37,20 @@ tr,td{
 	padding: 10px;
 }
 
+#content {
+	width: 660px;
+	font-size: 15px;
+	padding: 0px;
+}
+
+#content .header {
+	color: #428BCA;
+}
+#content .panel {
+	font-size: 15px;
+	background:none repeat scroll 0% 0% rgb(255, 255, 255);
+}
+#content .inner{
+	line-height: 2em;
+	padding: 10px;
+}
