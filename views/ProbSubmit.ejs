@@ -1,4 +1,5 @@
 <script src="/javascripts/editors.js"></script>
+<script src="/javascripts/probsubmit.js"></script>
 
 <style type="text/css" media="screen">
 	#embedded_ace_code {
@@ -23,6 +24,7 @@
 
 <div id="title">
 	<h2 style="text-align:center"><font color="#428BCA">Submit Your Solution</font></h2>
+	<h6 id="code-err_msg" style="text-align:center; font-weight:normal;"></h6>
 </div>
 <div class="col-md-2" id="langselect">
 	<select class="form-control" name="lang" id="lang" onchange="SelectLang(this)">
@@ -47,26 +49,14 @@
 <script src="/javascripts/mode-java.js" type="text/javascript" charset="utf-8"></script>
 <script src="/javascripts/mode-c_cpp.js" type="text/javascript" charset="utf-8"></script>
 <script>
-	var editor = ace.edit("embedded_ace_code");
-	editor.setTheme("ace/theme/chrome");
-	editor.getSession().setMode("ace/mode/c_cpp");
-	editor.focus();
-	document.getElementById('embedded_ace_code').style.fontSize='12px';
-	function SelectLang(choose) {
-		var obj = choose.value;
-		var editor = ace.edit("embedded_ace_code");
-		editor.setTheme("ace/theme/chrome");
-		if(obj == "12" || obj == "13" || obj == "1" || obj == "2") {
-			editor.getSession().setMode("ace/mode/c_cpp");
-		} else if(obj == "3") {
-			editor.getSession().setMode("ace/mode/java");
-		} else {
-			editor.getSession().setMode("ace/mode/pascal");
-		}
-	}
 	function Submit() {
 		var editor = ace.edit("embedded_ace_code");
 		var code = editor.getValue();
+		if(code.length < 20) {
+			$('#code-err_msg').css({'color':'red'});
+			$('#code-err_msg').html('Code length should not less than 20.');
+			return;	
+		}
 		var aform = document.createElement('form');
 		aform.method='post';
 		aform.action='/ProbSubmit?pid=<%= fprob.pid %>';

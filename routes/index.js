@@ -354,6 +354,8 @@ module.exports = function(app) {
 	now_date.setHours(now_date.getHours()+8);
 	now_date = now_date.toISOString().replace(/T/,' ').replace(/\..+/,'');
 	*/
+
+	//POST_CHECK
 	app.post('/Contest/CheckPid', function(req, res) {
 		var oj = req.body['oj'];
 		var vid = req.body['pid'];
@@ -840,6 +842,18 @@ module.exports = function(app) {
 		});
 	});
 
+
+	//POST_CHECK
+	app.post('/CheckUsernameExists', function(req, res) {
+		User.get(req.body['username'], function(err, user) {
+			if(user) {
+				res.send({exists:1});
+			} else {
+				res.send({exists:0});
+			}
+		});
+	});
+
 	app.post('/reg', checkNotLogin);
 	app.post('/reg', function(req, res) {
 		//check the password entered are the same
@@ -848,35 +862,38 @@ module.exports = function(app) {
 			return res.redirect('/reg');
 		}
 
-		//生成口令的散列值
+		//md5
 		var md5 = crypto.createHash('md5');
 		var password = md5.update(req.body.password).digest('base64');
 
 		var newUser = new User({
 			username: req.body.username,
-		    password: password,
-		    total_submit: 0,
-		    total_ac: 0,
+		    	password: password,
+		    	total_submit: 0,
+		    	total_ac: 0,
+		    	vtotal_submit: 0,
+		    	vtotal_ac: 0,
 		});
 
 		//check if the username already exists
 		User.get(newUser.username, function(err, user) {
-			if (user)
-			err = 'Username already exists.';
-		if (err) {
-			req.flash('error', err);
-			return res.redirect('/reg');
-		}
-		//if not exists, add a new user
-		newUser.save(function(err) {
+			if (user) {
+				err = 'Username already exists.';
+			}
 			if (err) {
 				req.flash('error', err);
 				return res.redirect('/reg');
 			}
-			req.session.user = newUser;
-			req.flash('success', 'Register succeed.');
-			res.redirect('/');
-		});
+			//if not exists, add a new user
+			newUser.save(function(err) {
+				if (err) {
+					req.flash('error', err);
+					return res.redirect('/reg');
+				}
+				req.session.user = newUser;
+				req.flash('success', 'Register succeed.');
+				res.redirect('/');
+			});
 		});
 	});
 
@@ -918,6 +935,47 @@ module.exports = function(app) {
 	});
 
 
+	//GET_CHANGE
+	app.get('/accounts/ChangePasswd', checkLogin);
+	app.get('/accounts/ChangePasswd', function(req, res) {
+		var username = req.query.u;
+		res.render('ChangePasswd', {
+			title: 'Change Password',
+			fusername: username,
+		});
+	});
+	//POST_CHANGE
+	app.post('/accounts/ChangePasswd', checkLogin);
+	app.post('/accounts/ChangePasswd', function(req, res) {
+		var username = req.session.user.username;
+		var md5 = crypto.createHash('md5');
+		var password = md5.update(req.body['password']).digest('base64');
+		User.update(username, {password:password}, function(err) {
+			if(err) {
+				req.flash('error', 'Change password failed.');
+				return res.redirect('/');
+			}
+			req.flash('success', 'Change password succeed.');
+			res.redirect('/');
+		});
+	});
+	app.post('/CheckPasswd', function(req, res) {
+		var md5 = crypto.createHash('md5');
+		var username = req.body['username'];
+		var passwd = req.body['passwd'];
+		var password = md5.update(passwd).digest('base64');
+		User.get(username, function(err, user) {
+			if (!user) {
+				req.flash('error', 'User doesn\'t exists.');
+				return res.redirect('/');
+			}
+			if(user.password != password) {
+				res.send({match:0});
+			} else res.send({match:1});
+		});
+	});
+
+
 
 	app.get('/u/:user', function(req, res) {
 		User.get(req.params.user, function(err, user) {
@@ -951,54 +1009,54 @@ module.exports = function(app) {
 			res.redirect('/u/' + currentUser.username);
 		});
 	});
-};
-function SendCode(HOST, PORT, data) {
-	var client = new net.Socket();
-	client.connect(PORT, HOST, function() {
-		client.write(data);
-	});
-};
+	};
+	function SendCode(HOST, PORT, data) {
+		var client = new net.Socket();
+		client.connect(PORT, HOST, function() {
+			client.write(data);
+		});
+	};
 
-function checkAccess(req, res, next) {
-	var CID = req.query.cid;
-	var USERNAME = "";
-	if(req.session.user) USERNAME = req.session.user.username;
-	Contest.get(CID, function(err, cont) {
-		if(err) {
-			req.flash('error', err);
-			return res.redirect('/Contest/Contests');
+	function checkAccess(req, res, next) {
+		var CID = req.query.cid;
+		var USERNAME = "";
+		if(req.session.user) USERNAME = req.session.user.username;
+		Contest.get(CID, function(err, cont) {
+			if(err) {
+				req.flash('error', err);
+				return res.redirect('/Contest/Contests');
+			}
+			if(cont.passwd != "") {
+				Contest_User.get(CID, USERNAME, function(err, cnt) {
+					if(err) {
+						req.flash('error', err);
+						return res.redirect('/Contest/Contests');
+					}
+					if(cnt == 0) {
+						return res.redirect('/Contest/Enter?cid='+CID);
+					}
+					next();
+				});
+			} else next();
+		});
+	}
+	function checkLogin(req, res, next) {
+		var url = "/login";
+		var pid = req.query.pid;
+		var type = req.query.type;
+		if(pid) url += "?pid="+pid;
+		if(type) url += "?type="+type;
+		if (!req.session.user) {
+			req.flash('error', 'Please Sign in first.');
+			return res.redirect(url);
 		}
-		if(cont.passwd != "") {
-			Contest_User.get(CID, USERNAME, function(err, cnt) {
-				if(err) {
-					req.flash('error', err);
-					return res.redirect('/Contest/Contests');
-				}
-				if(cnt == 0) {
-					return res.redirect('/Contest/Enter?cid='+CID);
-				}
-				next();
-			});
-		} else next();
-	});
-}
-function checkLogin(req, res, next) {
-	var url = "/login";
-	var pid = req.query.pid;
-	var type = req.query.type;
-	if(pid) url += "?pid="+pid;
-	if(type) url += "?type="+type;
-	if (!req.session.user) {
-		req.flash('error', 'Please Sign in first.');
-		return res.redirect(url);
+		next();
 	}
-	next();
-}
 
-function checkNotLogin(req, res, next) {
-	if (req.session.user) {
-		req.flash('error', 'Signed in.');
-		return res.redirect('/');
+	function checkNotLogin(req, res, next) {
+		if (req.session.user) {
+			req.flash('error', 'Signed in.');
+			return res.redirect('/');
+		}
+		next();
 	}
-	next();
-}
