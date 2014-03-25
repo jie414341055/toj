@@ -5,7 +5,8 @@ var url=require('url');
 
 var minutes = 60, the_interval = minutes * 60 * 1000;
 
-setInterval(function() {
+function getRecent_Contest() {
+	console.log('...');
 	var html = "";
 	var getURL = url.parse('http://contests.acmicpc.info/contests.json');
 	var req = http.get(getURL, function (res) {
@@ -26,10 +27,11 @@ setInterval(function() {
 						mongodb.close();
 						return callback(err);
 					}
-					collection.ensureIndex('id', {unique:true});
+					collection.ensureIndex({"id":-1}, {unique:true, dropDups:true});
 					collection.insert(data, {safe:true}, function(err, data) {
 						mongodb.close();
-						callback(err, data);
+						//callback(err, data);
+						//console.log(data);
 					});
 				});
 			});
@@ -37,5 +39,6 @@ setInterval(function() {
 	}).on('error', function(err) {
 		console.log("http get error:",err);
 	});
+}
 
-}, the_interval);
+setInterval(getRecent_Contest, the_interval);

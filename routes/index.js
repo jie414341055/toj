@@ -276,6 +276,60 @@ module.exports = function(app) {
 					fcorrlang: corrlang,
 					fpageID: pageID,
 					fselected:{
+						"lang":lang,
+					},
+					furl: url,
+					ftotal_page: total_page,
+				});
+			});
+		});
+	});
+
+	//GET_STATISTICS
+	app.get('/Statistics', function(req, res) {
+	//Status?pid=&username=&lang=&result=&page=
+		var query = {};
+		var pid = req.query.pid;
+		var lang = req.query.lang;
+		var pageID = req.query.page;
+
+		if(pid) {
+			query.pid = parseInt(pid);
+			url += "pid="+pid;
+		} else {
+			query.pid = 0;
+			url += "pid=";
+		}
+		if(lang) {
+			query.lang = lang;
+			url += "&lang=" + lang;
+		} else url += "&lang=";
+		if(pageID) pageID = parseInt(pageID);
+		else pageID = 1;
+
+
+		var loginUser = "";
+		if(req.session.user)  loginUser = req.session.user.username;
+		
+		Status.getCount(query, function(err, total_num) {
+			if(err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			}
+			Status.GetStatistics(query, pageID, function(err, stats) {
+				if(err) {
+					req.flash('error', err);
+					return res.redirect('/');
+				}
+				var total_page = Math.ceil(total_num / 15);
+				if(total_page == 0) total_page = 1;
+				res.render('Statistics', {
+					title:'Statistics',
+					floginUser: loginUser,
+					fstats: stats,
+					fcorrlang: corrlang,
+					fpageID: pageID,
+					fselected:{
 						"pid":pid,
 						"username":username,
 						"lang":lang,
@@ -287,7 +341,7 @@ module.exports = function(app) {
 			});
 		});
 	});
-	
+
 	//GET_SHOWCODE
 	app.get('/ShowCode', function(req, res) {
 		var runid = req.query.runid;

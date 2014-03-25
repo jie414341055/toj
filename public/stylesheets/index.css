@@ -31,6 +31,7 @@ tr,td{
 #sidebar .panel {
 	font-size: 15px;
 	background:none repeat scroll 0% 0% rgb(255, 255, 255);
+	background:url('/icon/brillant11.png');
 }
 
 #sidebar .inner{
@@ -51,6 +52,7 @@ tr,td{
 #content .panel {
 	font-size: 15px;
 	background:none repeat scroll 0% 0% rgb(255, 255, 255);
+	background:url('/icon/brillant11.png');
 }
 #content .inner{
 	line-height: 2em;
