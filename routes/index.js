@@ -295,15 +295,12 @@ module.exports = function(app) {
 
 		if(pid) {
 			query.pid = parseInt(pid);
-			url += "pid="+pid;
 		} else {
 			query.pid = 0;
-			url += "pid=";
 		}
 		if(lang) {
 			query.lang = lang;
-			url += "&lang=" + lang;
-		} else url += "&lang=";
+		} 
 		if(pageID) pageID = parseInt(pageID);
 		else pageID = 1;
 
@@ -316,7 +313,9 @@ module.exports = function(app) {
 				req.flash('error', err);
 				return res.redirect('/');
 			}
-			Status.GetStatistics(query, pageID, function(err, stats) {
+			Status.GetStatistics(query, pageID, function(err, statistics) {
+				console.log(statistics);
+				/*
 				if(err) {
 					req.flash('error', err);
 					return res.redirect('/');
@@ -338,6 +337,7 @@ module.exports = function(app) {
 					furl: url,
 					ftotal_page: total_page,
 				});
+				*/
 			});
 		});
 	});

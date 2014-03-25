@@ -195,3 +195,25 @@ Status.getMulti = function page(query, callback) {
 		});
 	});
 };
+
+Status.GetStatistics = function GetStatistics(query, callback) {
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+		db.collection('Status', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			collection.aggregate({$match:query}, {$group:{_id:"$result", cnt:{$sum:1}}}, function(err, docs) {
+				mongodb.close();
+				if(err) {
+					callback(err, null);
+				}
+				//callback(null, docs);
+				return docs;
+			});
+		});
+	});
+};
