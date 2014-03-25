@@ -547,6 +547,7 @@ module.exports = function(app) {
 					fcid: CID,
 					findex: index,
 					fprob: prob,
+					fedtime: cont.end_time,
 
 				});
 			});

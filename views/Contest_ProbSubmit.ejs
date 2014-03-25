@@ -1,4 +1,5 @@
 <script src="/javascripts/editors.js"></script>
+<script src="/javascripts/contest_probsubmit.js"></script>
 
 <style type="text/css" media="screen">
 	#embedded_ace_code {
@@ -33,25 +34,9 @@
 <script src="/javascripts/mode-java.js" type="text/javascript" charset="utf-8"></script>
 <script src="/javascripts/mode-c_cpp.js" type="text/javascript" charset="utf-8"></script>
 <script>
-	var editor = ace.edit("embedded_ace_code");
-	editor.setTheme("ace/theme/chrome");
-	editor.getSession().setMode("ace/mode/c_cpp");
-	function SelectLang(choose) {
-		var obj = choose.value;
-		var editor = ace.edit("embedded_ace_code");
-		editor.setTheme("ace/theme/chrome");
-		if(obj == "12" || obj == "13" || obj == "1" || obj == "2") {
-			editor.getSession().setMode("ace/mode/c_cpp");
-		} else if(obj == "3") {
-			editor.getSession().setMode("ace/mode/java");
-		} else {
-			editor.getSession().setMode("ace/mode/pascal");
-		}
-
-	}
-</script>
-<script>
 	function Submit() {
+		var edtime = <%- JSON.stringify(fedtime)%>;
+		if(!CheckTime(edtime)) return;
 		var editor = ace.edit("embedded_ace_code");
 		var code = editor.getValue();
 		var aform = document.createElement('form');
