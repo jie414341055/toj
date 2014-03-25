@@ -211,8 +211,33 @@ Status.GetStatistics = function GetStatistics(query, callback) {
 				if(err) {
 					callback(err, null);
 				}
-				//callback(null, docs);
-				return docs;
+				callback(null, docs);
+			});
+		});
+	});
+};
+
+Status.GetLeader = function GetLeader(query, callback) {
+	mongodb.open(function(err, db) {
+		if (err) {
+			return callback(err);
+		}
+		db.collection('Status', function(err, collection) {
+			if (err) {
+				mongodb.close();
+				return callback(err);
+			}
+			collection.find(query).sort({time_used:1, mem_used:1}).limit(15).skip((pageID - 1) * 15).toArray(function(err, docs) {
+				mongodb.close();
+				if(err) {
+					callback(err, null);
+				}
+				var stats = [];
+				docs.forEach(function(doc, index) {
+					var pp = new Status(doc);
+					stats.push(pp);
+				});
+				callback(null, stats);
 			});
 		});
 	});
