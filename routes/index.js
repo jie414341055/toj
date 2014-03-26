@@ -313,31 +313,26 @@ module.exports = function(app) {
 				req.flash('error', err);
 				return res.redirect('/');
 			}
-			Status.GetStatistics(query, pageID, function(err, statistics) {
-				console.log(statistics);
-				/*
-				if(err) {
-					req.flash('error', err);
-					return res.redirect('/');
-				}
-				var total_page = Math.ceil(total_num / 15);
-				if(total_page == 0) total_page = 1;
-				res.render('Statistics', {
-					title:'Statistics',
-					floginUser: loginUser,
-					fstats: stats,
-					fcorrlang: corrlang,
-					fpageID: pageID,
-					fselected:{
-						"pid":pid,
-						"username":username,
-						"lang":lang,
-						"result":digit2result[result],
-					},
-					furl: url,
-					ftotal_page: total_page,
+			Status.GetStatistics(query, function(err, statistics) {
+				Status.GetLeader(query, function(err, stats) {
+					if(err) {
+						req.flash('error', err);
+						return res.redirect('/');
+					}
+					var total_page = Math.ceil(total_num / 15);
+					if(total_page == 0) total_page = 1;
+
+					res.render('Statistics', {
+						title:'Statistics',
+						floginUser: loginUser,
+						fstatistics: statistics,
+						fstats: stats,
+						fcorrlang: corrlang,
+						fpageID: pageID,
+						flang: lang,
+						ftotal_page: total_page,
+					});
 				});
-				*/
 			});
 		});
 	});
@@ -352,8 +347,8 @@ module.exports = function(app) {
 			}
 			var currentUser = req.session.user;
 			if(!currentUser || currentUser.username != stat.username) {
-					req.flash('error', 'You don\' have the permission!');
-					return res.redirect('/Status');
+				req.flash('error', 'You don\' have the permission!');
+				return res.redirect('/Status');
 			}
 			Code.get(runid, function(err, code) {
 				if(err || !code) {
