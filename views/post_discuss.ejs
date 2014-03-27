@@ -1,6 +1,8 @@
 <link href="/stylesheets/postdiscuss.css" rel="stylesheet">
 <link href="/stylesheets/wmd.css" rel="stylesheet">
-<script src="/javascripts/wmd/showdown.js" type="text/javascript"></script>
+<script src="/javascripts/wmd/Markdown.Converter.js" type="text/javascript"></script>
+<script src="/javascripts/wmd/Markdown.Sanitizer.js" type="text/javascript"></script>
+<script src="/javascripts/wmd/Markdown.Editor.js" type="text/javascript"></script>
 
 <div id="main">
 	<div id="sidebar">
@@ -22,6 +24,10 @@
 			</div>
 		</div>
 
+		<div class="panel" style="padding-top: 230px;">
+			<button class="btn btn-primary btn-lg">Post</button>
+		</div>
+
 	</div>
 	<div id="content">
 		<div class="panel">
@@ -36,10 +42,12 @@
 					</div>
 					<div class="form-group">
 						<label class="bold" for="title" style="display:block;">Content</label>
-						<div id="wmd-button-bar" style="background:#FFFFFF;"></div>
-						<textarea id="wmd-input" class="wmd-panel" style="margin-left:0%; height:300px; background-color:#FFFFFF; border-radius:4px; "></textarea>
-						<br/>
-						<div id="wmd-preview" class="wmd-panel" style="margin-left:0%;"></div>
+						<div class="wmd-panel" style="margin-left:0%; height:300px; border-radius:4px; width:100%;">
+							<div id="wmd-button-bar" style="background:#FFFFFF;"></div>
+							<textarea id="wmd-input" class="wmd-input" style="background-color:#FFFFFF; border-radius:4px; "></textarea>
+							<br/>
+							<div id="wmd-preview" class="wmd-preview" style="margin-left:0%;"></div>
+						</div>
 					</div>
 
 				</form>
@@ -47,4 +55,11 @@
 		</div>
 	</div>
 </div>
-<script src="/javascripts/wmd/wmd.js" type="text/javascript"></script>
+<script>
+	$(function() {
+		var converter = Markdown.getSanitizingConverter();
+		var editor = new Markdown.Editor(converter);
+		editor.run();
+
+	});
+</script>
