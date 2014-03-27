@@ -21,6 +21,7 @@ function Prob(prob) {
 	this.total_ole = prob.total_ole;
 	this.total_pe = prob.total_pe;
 	this.total_rf = prob.total_rf;
+	this.total_other = prob.total_other;
 	this.vtotal_ac = prob.vtotal_ac;
 	this.vtotal_submit = prob.vtotal_submit;
 	this.special_status = prob.special_status;
@@ -56,6 +57,7 @@ Prob.prototype.save = function save(callback) {
 		total_pe:	this.total_pe,
 		total_ole:	this.total_ole,
 		total_rf:	this.total_rf,
+		total_other:	this.total_other,
 		vtotal_ac:	this.vtotal_ac,
 		vtotal_submit:	this.vtotal_submit,
 		special_status:	this.special_status,

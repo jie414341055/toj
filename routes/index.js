@@ -314,7 +314,7 @@ module.exports = function(app) {
 				return res.redirect('/');
 			}
 			Status.GetStatistics(query, function(err, statistics) {
-				Status.GetLeader(query, function(err, stats) {
+				Status.GetLeader(query, pageID, function(err, stats) {
 					if(err) {
 						req.flash('error', err);
 						return res.redirect('/');

@@ -13,6 +13,7 @@ function Status(stat) {
 	this.mem_used = stat.mem_used;
 	this.code_len = stat.code_len;
 	this.ce_info = stat.ce_info;
+	this.speed = stat.speed; //speed=51 is the most fastest one with accpeted result
 };
 
 module.exports = Status;
@@ -31,6 +32,7 @@ Status.prototype.save = function save(callback) {
 		lang:		this.lang,
 		username:	this.username,
 		ce_info:	this.ce_info,
+		speed:		this.speed,
 	};
 	mongodb.open(function(err, db) {
 		if(err) {
@@ -217,7 +219,7 @@ Status.GetStatistics = function GetStatistics(query, callback) {
 	});
 };
 
-Status.GetLeader = function GetLeader(query, callback) {
+Status.GetLeader = function GetLeader(query, pageID, callback) {
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -227,6 +229,7 @@ Status.GetLeader = function GetLeader(query, callback) {
 				mongodb.close();
 				return callback(err);
 			}
+			pageID = parseInt(pageID);
 			collection.find(query).sort({time_used:1, mem_used:1}).limit(15).skip((pageID - 1) * 15).toArray(function(err, docs) {
 				mongodb.close();
 				if(err) {

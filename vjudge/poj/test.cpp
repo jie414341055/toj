@@ -240,17 +240,44 @@ bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu
 			BSON("run_ID" << temp.runid),
 			BSON("$set" << BSON("vrun_ID" << runid << "oj" << "POJ" << "result"<<result<<"time_used"<<tu<<"mem_used"<<mu<<"ce_info"<<ce_info)),
 			true, false);
+
 	/* minjie update User */
 	db_client.update("toj.User",
 			BSON("username" << temp.user),
 			BSON("$inc"<<BSON("total_submit"<<1)),
 			false,true);
 			//upsert,multi
-	if(result == "Accepted")
+
+	if(result == "Accepted") {
 		db_client.update("toj.User",
 				BSON("username" << temp.user),
 				BSON("$inc"<<BSON("total_ac"<<1)),
 				false,true);
+
+		/* update speed */
+		bson::bo obj = db_client.findOne("toj.Status",
+				BSON("username" << temp.user << "pid" << temp.pid << "speed" << 51));
+		bool fast = false;
+		if(obj.isEmpty()) fast = true;
+		else {
+			int time_used = boost::lexical_cast<int>(obj.getStringField("time_used"));
+			int mem_used = boost::lexical_cast<int>(obj.getStringField("mem_used"));
+			int now_tu = boost::lexical_cast<int>(tu);
+			int now_mu = boost::lexical_cast<int>(mu);
+			if(now_tu < time_used || (now_tu == time_used && now_mu < mem_used))
+				fast = true;
+		}
+		if(fast) {
+			db_client.update("toj.Status",
+					BSON("username" << temp.user << "pid" << temp.pid),
+					BSON("$set" << BSON("speed" << 50)),
+					true, false);
+			db_client.update("toj.Status",
+					BSON("run_ID" << temp.runid),
+					BSON("$set" << BSON("speed" << 51)),
+					true, false);
+		}
+	}
 
 	/* minjie update Problem */
 	db_client.update("toj.Problem",
@@ -259,14 +286,27 @@ bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu
 			false,true);
 			//upsert,multi
 	string dbresult;
-	if(result == "Accepted") dbresult = "total_ac";
-	else if(result == "Wrong Answer") dbresult = "total_wa";
-	else if(result == "Presentation Error") dbresult = "total_pe";
-	else if(result == "Compilation Error") dbresult = "total_ce";
-	else if(result == "Runtime Error") dbresult = "total_re";
-	else if(result == "Time Limit Exceeded") dbresult = "total_tle";
-	else if(result == "Memory Limit Exceeded") dbresult = "total_mle";
-	else if(result == "Output Limit Exceeded") dbresult = "total_ole";
+	switch(result[0]) {
+		case 'A': 	dbresult = "total_ac";
+			  	break;
+		case 'W': 	dbresult = "total_wa";
+			  	break;
+		case 'P': 	dbresult = "total_pe";
+			  	break;
+		case 'C': 	dbresult = "total_ce";
+			  	break;
+		case 'R': 	dbresult = "total_re";
+			  	break;
+		case 'T': 	dbresult = "total_tle";
+			  	break;
+		case 'M': 	dbresult = "total_mle";
+			  	break;
+		case 'O': 	dbresult = "total_ole";
+			  	break;
+		default:  	dbresult = "total_other";
+			  	break;
+	}
+
 	db_client.update("toj.Problem",
 			BSON("pid" << temp.pid),
 			BSON("$inc"<<BSON(dbresult<<1)),
@@ -309,7 +349,7 @@ void toBottFile(string runid,string tu,string mu,string result,string ce_info){
 void judge(string pid,string lang,string runid,string src) {
 	/* minjie*/
 	db_client.insert("toj.Status",
-			BSON("run_ID" << temp.runid << "result" << "Queuing" << "submit_time" << temp.submit_time
+			BSON("run_ID" << temp.runid << "result" << "Queuing" << "speed" << 50 << "submit_time" << temp.submit_time
 				<< "pid"<<temp.pid<<"lang"<<lang<<"username"<<temp.user<<"code_len"<< covert(src.length())));
 
 	db_client.insert("toj.Code", BSON("run_ID" << temp.runid << "code" << src));
