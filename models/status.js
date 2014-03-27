@@ -198,7 +198,7 @@ Status.getMulti = function page(query, callback) {
 	});
 };
 
-Status.GetStatistics = function GetStatistics(query, callback) {
+Status.GetStatistics = function GetStatistics(query, pageID, callback) {
 	mongodb.open(function(err, db) {
 		if (err) {
 			return callback(err);
@@ -208,28 +208,6 @@ Status.GetStatistics = function GetStatistics(query, callback) {
 				mongodb.close();
 				return callback(err);
 			}
-			collection.aggregate({$match:query}, {$group:{_id:"$result", cnt:{$sum:1}}}, function(err, docs) {
-				mongodb.close();
-				if(err) {
-					callback(err, null);
-				}
-				callback(null, docs);
-			});
-		});
-	});
-};
-
-Status.GetLeader = function GetLeader(query, pageID, callback) {
-	mongodb.open(function(err, db) {
-		if (err) {
-			return callback(err);
-		}
-		db.collection('Status', function(err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
-			pageID = parseInt(pageID);
 			collection.find(query).sort({time_used:1, mem_used:1}).limit(15).skip((pageID - 1) * 15).toArray(function(err, docs) {
 				mongodb.close();
 				if(err) {

@@ -288,18 +288,22 @@ module.exports = function(app) {
 	//GET_STATISTICS
 	app.get('/Statistics', function(req, res) {
 	//Status?pid=&username=&lang=&result=&page=
-		var query = {};
+		var query = {speed:51};
 		var pid = req.query.pid;
 		var lang = req.query.lang;
 		var pageID = req.query.page;
+		var url='/Statistics?';
 
 		if(pid) {
 			query.pid = parseInt(pid);
+			url += 'pid=' + pid;
 		} else {
-			query.pid = 0;
+			query.pid = 1000;
+			url += 'pid=1000';
 		}
 		if(lang) {
 			query.lang = lang;
+			url += '&lang=' + lang;
 		} 
 		if(pageID) pageID = parseInt(pageID);
 		else pageID = 1;
@@ -311,13 +315,17 @@ module.exports = function(app) {
 		Status.getCount(query, function(err, total_num) {
 			if(err) {
 				req.flash('error', err);
-				return res.redirect('/');
+				return res.redirect('/Problems');
 			}
-			Status.GetStatistics(query, function(err, statistics) {
-				Status.GetLeader(query, pageID, function(err, stats) {
+			Status.GetStatistics(query, pageID, function(err, statistics) {
+				if(err) {
+					req.flash('error', err);
+					return res.redirect('/Problems');
+				}
+				Prob.get({pid:query.pid}, function(err, prob) {
 					if(err) {
 						req.flash('error', err);
-						return res.redirect('/');
+						return res.redirect('/Problems');
 					}
 					var total_page = Math.ceil(total_num / 15);
 					if(total_page == 0) total_page = 1;
@@ -325,12 +333,15 @@ module.exports = function(app) {
 					res.render('Statistics', {
 						title:'Statistics',
 						floginUser: loginUser,
+						fprob: prob,
 						fstatistics: statistics,
-						fstats: stats,
 						fcorrlang: corrlang,
 						fpageID: pageID,
 						flang: lang,
 						ftotal_page: total_page,
+						ftotal_num: total_num,
+						furl: url,
+						
 					});
 				});
 			});
@@ -399,10 +410,10 @@ module.exports = function(app) {
 		});
 	});
 	/*
-	var now_date = new Date();
-	now_date.setHours(now_date.getHours()+8);
-	now_date = now_date.toISOString().replace(/T/,' ').replace(/\..+/,'');
-	*/
+	   var now_date = new Date();
+	   now_date.setHours(now_date.getHours()+8);
+	   now_date = now_date.toISOString().replace(/T/,' ').replace(/\..+/,'');
+	 */
 
 	//POST_CHECK
 	app.post('/Contest/CheckPid', function(req, res) {
@@ -441,15 +452,15 @@ module.exports = function(app) {
 			}
 			var cont = {
 				"cid": cnt + 1,
-				"type": parseInt(type),
-				"title": title,
-				"desc": desc,
-				"start_time": new Date(st_time),
-				"end_time": new Date(ed_time),
-				"author": currentUser.username,
-				"access": passwd=="",
-				"passwd": passwd,
-				"problem": prob,
+			"type": parseInt(type),
+			"title": title,
+			"desc": desc,
+			"start_time": new Date(st_time),
+			"end_time": new Date(ed_time),
+			"author": currentUser.username,
+			"access": passwd=="",
+			"passwd": passwd,
+			"problem": prob,
 			};
 			var Cont = new Contest(cont);
 			Cont.save(function(err) {
@@ -481,7 +492,7 @@ module.exports = function(app) {
 			} else {
 				cuser = {
 					'username': req.session.user.username,
-					'cid': parseInt(CID),
+			'cid': parseInt(CID),
 				};
 				var Cuser = new Contest_User(cuser);
 				Cuser.save(function(err) {
@@ -712,9 +723,9 @@ module.exports = function(app) {
 						fpageID: pageID,
 						fselected:{
 							"pid":pid,
-							"username":username,
-							"lang":lang,
-							"result":digit2result[result],
+						"username":username,
+						"lang":lang,
+						"result":digit2result[result],
 						},
 						furl: url,
 						ftotal_page: total_page,
@@ -738,8 +749,8 @@ module.exports = function(app) {
 			}
 			var currentUser = req.session.user;
 			if(!currentUser || currentUser.username != stat.username) {
-					req.flash('error', 'You don\' have the permission!');
-					return res.redirect('/Status');
+				req.flash('error', 'You don\' have the permission!');
+				return res.redirect('/Status');
 			}
 			Contest_Code.get(cid, runid, function(err, code) {
 				if(err || !code) {
@@ -860,10 +871,10 @@ module.exports = function(app) {
 		var currentUser = req.session.user;
 		var info = {
 			'nickname': req.body['nickname'],
-			'email':	req.body['email'],
-			'school':	req.body['univer'],
-			'country':	req.body['country'],
-			'decl':	req.body['decl'],
+		'email':	req.body['email'],
+		'school':	req.body['univer'],
+		'country':	req.body['country'],
+		'decl':	req.body['decl'],
 		};
 		User.update(currentUser.username, info, function(err) {
 			res.redirect('/profile/'+currentUser.username);
@@ -918,11 +929,11 @@ module.exports = function(app) {
 
 		var newUser = new User({
 			username: req.body.username,
-		    	password: password,
-		    	total_submit: 0,
-		    	total_ac: 0,
-		    	vtotal_submit: 0,
-		    	vtotal_ac: 0,
+		    password: password,
+		    total_submit: 0,
+		    total_ac: 0,
+		    vtotal_submit: 0,
+		    vtotal_ac: 0,
 		});
 
 		//check if the username already exists
@@ -1059,54 +1070,54 @@ module.exports = function(app) {
 			res.redirect('/u/' + currentUser.username);
 		});
 	});
-	};
-	function SendCode(HOST, PORT, data) {
-		var client = new net.Socket();
-		client.connect(PORT, HOST, function() {
-			client.write(data);
-		});
-	};
+};
+function SendCode(HOST, PORT, data) {
+	var client = new net.Socket();
+	client.connect(PORT, HOST, function() {
+		client.write(data);
+	});
+};
 
-	function checkAccess(req, res, next) {
-		var CID = req.query.cid;
-		var USERNAME = "";
-		if(req.session.user) USERNAME = req.session.user.username;
-		Contest.get(CID, function(err, cont) {
-			if(err) {
-				req.flash('error', err);
-				return res.redirect('/Contest/Contests');
-			}
-			if(cont.passwd != "") {
-				Contest_User.get(CID, USERNAME, function(err, cnt) {
-					if(err) {
-						req.flash('error', err);
-						return res.redirect('/Contest/Contests');
-					}
-					if(cnt == 0) {
-						return res.redirect('/Contest/Enter?cid='+CID);
-					}
-					next();
-				});
-			} else next();
-		});
-	}
-	function checkLogin(req, res, next) {
-		var url = "/login";
-		var pid = req.query.pid;
-		var type = req.query.type;
-		if(pid) url += "?pid="+pid;
-		if(type) url += "?type="+type;
-		if (!req.session.user) {
-			req.flash('error', 'Please Sign in first.');
-			return res.redirect(url);
+function checkAccess(req, res, next) {
+	var CID = req.query.cid;
+	var USERNAME = "";
+	if(req.session.user) USERNAME = req.session.user.username;
+	Contest.get(CID, function(err, cont) {
+		if(err) {
+			req.flash('error', err);
+			return res.redirect('/Contest/Contests');
 		}
-		next();
+		if(cont.passwd != "") {
+			Contest_User.get(CID, USERNAME, function(err, cnt) {
+				if(err) {
+					req.flash('error', err);
+					return res.redirect('/Contest/Contests');
+				}
+				if(cnt == 0) {
+					return res.redirect('/Contest/Enter?cid='+CID);
+				}
+				next();
+			});
+		} else next();
+	});
+}
+function checkLogin(req, res, next) {
+	var url = "/login";
+	var pid = req.query.pid;
+	var type = req.query.type;
+	if(pid) url += "?pid="+pid;
+	if(type) url += "?type="+type;
+	if (!req.session.user) {
+		req.flash('error', 'Please Sign in first.');
+		return res.redirect(url);
 	}
+	next();
+}
 
-	function checkNotLogin(req, res, next) {
-		if (req.session.user) {
-			req.flash('error', 'Signed in.');
-			return res.redirect('/');
-		}
-		next();
+function checkNotLogin(req, res, next) {
+	if (req.session.user) {
+		req.flash('error', 'Signed in.');
+		return res.redirect('/');
 	}
+	next();
+}

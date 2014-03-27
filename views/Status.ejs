@@ -98,12 +98,10 @@
 					<% } %>
 
 					<td><a href=/ShowProblems?pid=<%- stat.pid%>> <%- stat.pid %></a></td>
-					<td><%- stat.time_used %>
-					<% if(stat.time_used) {%>MS<% } %>
+					<td><%- stat.time_used %><% if(stat.time_used) {%>MS<% } %>
 					</td>
 
-					<td><%- stat.mem_used %>
-					<% if(stat.mem_used) {%>K<% } %>
+					<td><%- stat.mem_used %><% if(stat.mem_used) {%>K<% } %>
 					</td>
 
 					<% if(floginUser == stat.username) { %>

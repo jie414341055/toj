@@ -1,95 +1,57 @@
 <link href="/stylesheets/statistics.css" rel="stylesheet">
 <script src="/javascripts/statistics.js"></script>
 
-<div id="title">
-	<h2 style="text-align:center"><font color="#428BCA">Realtime Status</font></h2>
-</div>
 
 <div class="form-horizontal" role="form">
-	<div class="form-group">
-		<label class="col-sm-1 control-label">Language:</label>
-		<div class="col-xs-2">
-			<select id = "lang" class="form-control">
-				<option value=""<%if(!flang){%>selected<%}%>>All</option>
-				<option value="12"<%if(flang=='12'){%>selected<%}%>>C++</option>
-				<option value="1"<%if(flang=='1'){%>selected<%}%>>G++</option>
-				<option value="3"<%if(flang=='3'){%>selected<%}%>>Java</option>
-				<option value="2"<%if(flang=='2'){%>selected<%}%>>GCC</option>
-				<option value="13"<%if(flang=='13'){%>selected<%}%>>C</option>
-				<option value="4"<%if(flang=='4'){%>selected<%}%>>Pascal</option>
-				<option value="15"<%if(flang=='15'){%>selected<%}%>>Perl</option>
-				<option value="16"<%if(flang=='16'){%>selected<%}%>>Python</option>
-			</select>
-		</div>
+	<div id="title">
+		<h2 style="text-align:center; color:#428BCA;"><%= fprob.title %></h2>
+	</div>
+	<div class="form-group" style="margin-bottom:5px;">
+		<label class="col-sm-2 control-label" style="width:12%;">Language:</label>
+		<label class="col-sm-1 control-label" style="width:5%;"><a href=javascript:lang(12)>C++</a></label>
+		<label class="col-sm-1 control-label" style="width:5%;"><a href=javascript:lang(1)>G++</a></label>
+		<label class="col-sm-1 control-label" style="width:5%;"><a href=javascript:lang(3)>Java</a></label>
+		<label class="col-sm-1 control-label" style="width:8%;"><a href=javascript:lang(4)>Pascal</a></label>
+		<label class="col-sm-1 control-label" style="width:5%;"><a href=javascript:lang(2)>GCC</a></label>
+		<label class="col-sm-1 control-label" style="width:7%;"><a href=javascript:lang(13)>C</a></label>
 	</div>
 	<div class="form-group">
 		<table id="Status" class="table table-condensed table-bordered table-striped table-centered">
 			<thead>
 				<tr>
-					<th class="header-runid">
-						<div id="searchTitleBtn" class="" order='asc'><a href="#">Run ID</a></div>
+					<th class="header-rank">
+						<div id="searchTitleBtn" class="" order='asc'><a href="#">Rank</a></div>
 					</th>
-					<th class="header-sub_time">
-						<div id="searchTitleBtn" class="" order='asc'><a href="#">Submit Time</a></div>
-					</th>
-					<th class="header-result">
-						<div id="titleBtn" class="" order='asc'><a href="#">Result</a></div>
-					</th>
-					<th class="header-pid">
-						<div id="searchAcrateBtn" class="" order='asc'><a href="#">PID</a></div>
+					<th class="header-username">
+						<div id="searchTitleBtn" class="" order='asc'><a href="#">Author</a></div>
 					</th>
 					<th class="header-time">
-						<div id="searchAcrateBtn" class="" order='asc'><a href="#">Time</a></div>
+						<div id="titleBtn" class="" order='asc'><a href="#">Time</a></div>
 					</th>
 					<th class="header-memory">
 						<div id="searchAcrateBtn" class="" order='asc'><a href="#">Memory</a></div>
 					</th>
-					<th class="header-codelen">
+					<th class="header-code_len">
 						<div id="searchAcrateBtn" class="" order='asc'><a href="#">Code Len</a></div>
 					</th>
 					<th class="header-lang">
 						<div id="searchAcrateBtn" class="" order='asc'><a href="#">Language</a></div>
 					</th>
-					<th class="header-user">
-						<div id="searchAcrateBtn" class="" order='asc'><a href="#">User</a></div>
+					<th class="header-sub_time">
+						<div id="searchAcrateBtn" class="" order='asc'><a href="#">Submit Time</a></div>
 					</th>
 				</tr>
 			</thead>
 			<tbody>
-				<% fstats.forEach(function(stat, index) { %>
+				<% fstatistics.forEach(function(stat, index) { %>
 				<tr>
-					<td><%- stat.run_ID %></td>
-
-					<td><%- stat.submit_time %></td>
-
-					<% if(stat.result == "Accepted") {%>
-					<td><font color="red"><%- stat.result %></font></td>
-					<% } else if(stat.result == "Compilation Error") {%>
-					<td><font color="#6633FF"><a href=/ShowCEError?runid=<%- stat.run_ID%>><%- stat.result %></a></font></td>
-					<% } else if(stat.result == "Presentation Error") {%>
-					<td><font color="orange"><%- stat.result %></font></td>
-					<% } else { %>
-					<td><font color="green"><%- stat.result %></font></td>
-					<% } %>
-
-					<td><a href=/ShowProblems?pid=<%- stat.pid%>> <%- stat.pid %></a></td>
-					<td><%- stat.time_used %>
-					<% if(stat.time_used) {%>MS<% } %>
-					</td>
-
-					<td><%- stat.mem_used %>
-					<% if(stat.mem_used) {%>K<% } %>
-					</td>
-
-					<% if(floginUser == stat.username) { %>
-					<td><a href=/ShowCode?runid=<%- stat.run_ID %>><%- stat.code_len %>B</a></td>
-					<% } else {%>
+					<td><%= (fpageID-1)*15 + index+1 %></td>
+					<td><%- stat.username %></td>
+					<td><%- stat.time_used %>MS</td>
+					<td><%- stat.mem_used %>K</td>
 					<td><%- stat.code_len %>B</td>
-					<% } %>
-
-					<td><%- fcorrlang[stat.lang]%></td>
-
-					<td><a href=/profile/<%- stat.username %>><%- stat.username %></a></td>
+					<td><%- fcorrlang[stat.lang] %></td>
+					<td><%- stat.submit_time %></td>
 				</tr>
 				<% }) %>
 			</tbody>
@@ -114,3 +76,55 @@
 		</center>
 	</div>
 </div>
+
+<div id="statistics">
+	<table id="statistics_table" class="table table-hover table-bordered table-condensed">
+			<tr>
+				<th style="color:#428BCA; width:80%;">Total Submissions</th>
+				<td style="width:20%;"><%= fprob.total_submit %></td>
+			</tr>	
+			<tr>
+				<th style="color:#428BCA; width:80%;">Accepted Users</th>
+				<td style="width:20%;"><%= ftotal_num %></td>
+			</tr>	
+			<tr>
+				<th style="color:red;">Accepted</th>
+				<td><%= fprob.total_ac %></td>
+			</tr>	
+			<tr>
+				<th style="color:orange;">Presentation Error</th>
+				<td><%= fprob.total_pe  %></td>
+			</tr>	
+			<tr>
+				<th style="color:green;">Wrong Answer </th>
+				<td><%= fprob.total_wa %></td>
+			</tr>	
+			<tr>
+				<th style="color:green;">Runtime Error</th>
+				<td><%= fprob.total_re %></td>
+			</tr>	
+			<tr>
+				<th style="color:green;">Time Limit Exceeded</th>
+				<td><%= fprob.total_tle %></td>
+			</tr>	
+			<tr>
+				<th style="color:green;">Memory Limit Exceeded</th>
+				<td><%= fprob.total_mle %></td>
+			</tr>	
+			<tr>
+				<th style="color:green;">Output Limit Exceeded</th>
+				<td><%= fprob.total_ole %></td>
+			</tr>	
+			<tr>
+				<th style="color:#6633FF;">Compilation Error</th>
+				<td><%= fprob.total_ce %></td>
+			</tr>	
+	</table>
+</div>
+<script>
+	function lang(slang) {
+		var pid = <%- JSON.stringify(fprob.pid) %>;
+		var newurl = '/Statistics?pid=' + pid + '&lang=' + slang;
+		window.location.replace(newurl);
+	}
+</script>
