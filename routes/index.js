@@ -847,6 +847,16 @@ module.exports = function(app) {
 	});
 
 
+	//GET_DISCUSS
+	app.get('/:problem/newpost', function(req, res) {
+		console.log(req.params.problem);
+		res.render('post_discuss', {
+			title:'New post',
+		});
+	});
+
+
+
 	//GET_PROFILE
 	app.get('/profile/:user', function(req, res) {
 		var currentUser = req.session.user;
