@@ -389,7 +389,7 @@ module.exports = function(app) {
 				req.flash('error', err);
 				return res.redirect('/Contests?type'+type);
 			}
-			res.render('Contests', {
+			res.render('Contest/Contests', {
 				title: 'Contests',
 				fconts: conts,
 				ftm: new Date(),
@@ -403,7 +403,7 @@ module.exports = function(app) {
 		var currentUser = req.session.user;
 		var type = req.query.type;
 
-		res.render('Arrange', {
+		res.render('Contest/Arrange', {
 			title: 'Arrange a Contest',
 			fuser: currentUser,
 			ftype: type,
@@ -475,7 +475,7 @@ module.exports = function(app) {
 	});
 	app.get('/Contest/Enter', function(req, res) {
 		var CID = req.query.cid;
-		res.render('Contest_Enter', {
+		res.render('Contest/Contest_Enter', {
 			title: 'Enter Contest',
 			fcid: CID,
 		});
@@ -514,7 +514,7 @@ module.exports = function(app) {
 				req.flash('error', err);
 				return res.redirect('/Contest/Contests');
 			}
-			res.render('ShowContest', {
+			res.render('Contest/ShowContest', {
 				title: cont.title,
 				fcont: cont,
 			});
@@ -547,7 +547,7 @@ module.exports = function(app) {
 				req.flash('error', err);
 				return res.redirect('/Contest/Contests?cid='+CID);
 			}
-			res.render('Contest_Problem', {
+			res.render('Contest/Contest_Problem', {
 				title: 'Problems',
 				fcont: cont,
 			});
@@ -572,7 +572,7 @@ module.exports = function(app) {
 					req.flash('error', err);
 					return res.redirect('/Contest/Contests');
 				}
-				res.render('Contest_ShowProblem', {
+				res.render('Contest/Contest_ShowProblem', {
 					title: req.query.pid + '-' + prob.title,
 					fcont: cont,
 					findex: index,
@@ -602,7 +602,7 @@ module.exports = function(app) {
 					req.flash('error', err);
 					return res.redirect('/Contest/Contests');
 				}
-				res.render('Contest_ProbSubmit', {
+				res.render('Contest/Contest_ProbSubmit', {
 					title: 'Submit',
 					fcid: CID,
 					findex: index,
@@ -714,7 +714,7 @@ module.exports = function(app) {
 					}
 					var total_page = Math.ceil(total_num/15);
 					if(total_page == 0) total_page = 1;
-					res.render('Contest_Status', {
+					res.render('Contest/Contest_Status', {
 						title:'Status',
 						floginUser: loginUser,
 						fcont: cont,
@@ -757,7 +757,7 @@ module.exports = function(app) {
 					req.flash('error', 'You don\' have the permission!');
 					return res.redirect('/Status');
 				}
-				res.render('Contest_ShowCode', {
+				res.render('Contest/Contest_ShowCode', {
 					title: 'View Code',
 					fstat: stat,
 					fcode: code,
@@ -778,7 +778,7 @@ module.exports = function(app) {
 				return res.redirect('/Contest/ShowContests?cid='+cid);
 			}
 			Contest_Status.getMulti({cid:parseInt(CID)}, function(err, stats) {
-				res.render('Contest_Standing', {
+				res.render('Contest/Contest_Standing', {
 					title:'Standing',
 					fcont: cont,
 					fstats: stats,
@@ -839,7 +839,7 @@ module.exports = function(app) {
 				req.flash('error', err);
 				return res.redirect('/');
 			}
-			res.render('Contest_ShowCEError', {
+			res.render('Contest/Contest_ShowCEError', {
 				title: 'Error',
 				fce_info: stat.ce_info,
 			});
