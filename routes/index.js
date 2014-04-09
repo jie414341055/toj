@@ -1086,6 +1086,9 @@ function SendCode(HOST, PORT, data) {
 	client.connect(PORT, HOST, function() {
 		client.write(data);
 	});
+	client.on('data', function(data) {
+		client.destroy();
+	});
 };
 
 function checkAccess(req, res, next) {

@@ -15,7 +15,8 @@ server2.on('connection', function(sock2) {
 			sock2.write(data1);
 		});
 		sock2.on('data', function(data2) {
-			console.log(data2.toString());
+			//console.log(data2.toString());
+			sock1.write(data2);
 		});
 	});
 });
