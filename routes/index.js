@@ -9,6 +9,7 @@ var Contest_Code = require('../models/contest_code.js');
 var Contest = require('../models/contest.js');
 var Contest_User = require('../models/contest_user.js');
 var Contest_Status = require('../models/contest_status.js');
+var Contest_Prob = require('../models/contest_prob.js');
 var net = require('net');
 var fs = require('fs');
 var querystring = require('querystring');
@@ -452,17 +453,18 @@ module.exports = function(app) {
 			}
 			var cont = {
 				"cid": cnt + 1,
-			"type": parseInt(type),
-			"title": title,
-			"desc": desc,
-			"start_time": new Date(st_time),
-			"end_time": new Date(ed_time),
-			"author": currentUser.username,
-			"access": passwd=="",
-			"passwd": passwd,
-			"problem": prob,
+				"type": parseInt(type),
+				"title": title,
+				"desc": desc,
+				"start_time": new Date(st_time),
+				"end_time": new Date(ed_time),
+				"author": currentUser.username,
+				"access": passwd=="",
+				"passwd": passwd,
+				"problem": prob,
 			};
 			var Cont = new Contest(cont);
+			//maybe here need insert contest_prob  CODE1
 			Cont.save(function(err) {
 				if (err) {
 					req.flash('error', err);
@@ -520,6 +522,8 @@ module.exports = function(app) {
 			});
 		});
 	});
+
+
 	app.post('/Contest/GetProblems', function(req, res) {
 		//query multi times
 		var CID = req.body['cid'];
@@ -547,9 +551,12 @@ module.exports = function(app) {
 				req.flash('error', err);
 				return res.redirect('/Contest/Contests?cid='+CID);
 			}
-			res.render('Contest/Contest_Problem', {
-				title: 'Problems',
-				fcont: cont,
+			Contest_Prob.get(CID, function(err, probs) {
+				res.render('Contest/Contest_Problem', {
+					title: 'Problems',
+					fcont: cont,
+					fprobs: probs,
+				});
 			});
 		});
 	});
@@ -723,12 +730,84 @@ module.exports = function(app) {
 						fpageID: pageID,
 						fselected:{
 							"pid":pid,
-						"username":username,
-						"lang":lang,
-						"result":digit2result[result],
+							"username":username,
+							"lang":lang,
+							"result":digit2result[result],
 						},
 						furl: url,
 						ftotal_page: total_page,
+					});
+				});
+			});
+		});
+	});
+
+	//GET_CONTEST_STATISTICS
+	app.get('/Contest/Statistics', checkLogin);
+	app.get('/Contest/Statistics', checkAccess);
+	app.get('/Contest/Statistics', function(req, res) {
+	//Status?pid=&username=&lang=&result=&page=
+		var query = {speed:51};
+		var cid = req.query.cid;
+		var nid = req.query.pid;
+		var lang = req.query.lang;
+		var pageID = req.query.page;
+		var url='/Contest/Statistics?';
+
+		if(cid) {
+			query.cid = parseInt(cid);
+			url += 'cid=' + cid;
+		} else {
+			return res.redirect('/Contest/Contests');
+		}
+		if(nid) {
+			query.nid = nid;
+			url += '&pid=' + nid;
+		} else {
+			return res.redirect('/Contest/Contests');
+		}
+		if(lang) {
+			query.lang = lang;
+			url += '&lang=' + lang;
+		} 
+		if(pageID) pageID = parseInt(pageID);
+		else pageID = 1;
+
+
+		var loginUser = "";
+		if(req.session.user)  loginUser = req.session.user.username;
+		
+		Contest_Status.getCount(query, function(err, total_num) {
+			if(err) {
+				req.flash('error', err);
+				return res.redirect('/Contest/Contests');
+			}
+			Contest_Status.GetStatistics(query, pageID, function(err, statistics) {
+				if(err) {
+					req.flash('error', err);
+					return res.redirect('/Contest/Contests');
+				}
+				Contest_Prob.get({cid:query.cid, nid:query.nid}, function(err, prob) {
+					if(err) {
+						req.flash('error', err);
+						return res.redirect('/Contest/Contests');
+					}
+					var total_page = Math.ceil(total_num / 15);
+					if(total_page == 0) total_page = 1;
+
+					/* need to be fix CODE2*/
+					res.render('Contest/Contest_Statistics', {
+						title:'Statistics',
+						floginUser: loginUser,
+						fprob: prob,
+						fstatistics: statistics,
+						fcorrlang: corrlang,
+						fpageID: pageID,
+						flang: lang,
+						ftotal_page: total_page,
+						ftotal_num: total_num,
+						furl: url,
+						
 					});
 				});
 			});
@@ -992,9 +1071,9 @@ module.exports = function(app) {
 			}
 			req.session.user = user;
 			req.flash('success', 'Sign in success.');
-			if(req.query.pid) res.redirect("/ProbSubmit?pid="+req.query.pid);
-			if(req.query.type) res.redirect("/Contest/Contests?type="+req.query.type);
-			else res.redirect('/');
+			if(req.query.pid) return res.redirect("/ProbSubmit?pid="+req.query.pid);
+			if(req.query.type) return res.redirect("/Contest/Contests?type="+req.query.type);
+			else return res.redirect('/');
 		});
 	});
 
