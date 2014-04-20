@@ -182,6 +182,7 @@ module.exports = function(app) {
 	//		return res.redirect('/login');
 	//	}
 		pid = parseInt(pid);
+		lang = parseInt(lang);
 		Prob.get({pid:pid}, function(err, prob) {
 			if(err) {
 				req.flash('error', err);
