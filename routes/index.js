@@ -14,6 +14,14 @@ var net = require('net');
 var fs = require('fs');
 var querystring = require('querystring');
 
+
+var judge_string = "yourjudgestring";
+var error_string = "yourerrorjudgestring";
+var submit_string = "yoursubmitstring";
+var rejudge_string = "yourrejudgestring";
+var HOST = "127.0.0.1";
+var PORT = 5907;
+
 var digit2result = new Array();
 var corrlang = new Array();
 
@@ -189,38 +197,49 @@ module.exports = function(app) {
 					return res.redirect('/ShowProblems?pid='+pid);
 				}
 
-				var oj = prob.oj;
-				var HOST = '127.0.0.1';
-				var PORT = Judger_server[oj];
 				var runid = parseInt(runID) + 1;
+				var data = submit_string + "\n" + runid + "\n" + prob.oj + "\n";
 
 
-				var now_date = new Date();
-				now_date.setHours(now_date.getHours()+8);
-				var sub_time = now_date.toISOString().replace(/T/,' ').replace(/\..+/,'');
+				//var now_date = new Date();
+				//now_date.setHours(now_date.getHours()+8);
+				//var sub_time = now_date.toISOString().replace(/T/,' ').replace(/\..+/,'');
 
-				var data = prob.oj + " 2  __SOURCE-CODE-BEGIN-LABLE__\n" + code + "\n__SOURCE-CODE-END-LABLE__\n" + runid + "\n" + sub_time + "\n" + pid + " " + lang + " " + currentUser.username + " " + prob.vid + " ss mm\n";
 
-				/*
+				var cod = new Code({
+					run_ID: runid,
+				    	code: code
+				});
 				var stat = new Status({
 					run_ID:	runid,
+					username: currentUser.username,
 					pid:	prob.pid,
 					oj:	prob.oj,
 					lang:	lang,
-					username: currentUser.username,
-					submit_time:	new Date().toISOString().replace(/T/,' ').replace(/\..+/,''),
-					result:	"Received"
+					code_len: 	code.length,
+					submit_time:	new Date(),
+					result:	"Waiting"
 				});
-				console.log(stat);
-				stat.save(function(err) {
+				//console.log(stat);
+				cod.save(function(err) {
 					if (err) {
 						req.flash('error', err);
 						return res.redirect('/ProbSubmit?pid='+prob.pid);
 					}
+
+					stat.save(function(err) {
+						if (err) {
+							req.flash('error', err);
+							return res.redirect('/ProbSubmit?pid='+prob.pid);
+						}
+						var client = new net.Socket();
+						client.connect(PORT, HOST, function() {
+							client.write(data);
+						});
+						res.redirect('/Status?page=1');
+					});
 				});
-				*/
-				SendCode(HOST, PORT, data);
-				res.redirect('/Status?page=1');
+				//SendCode(HOST, PORT, data);
 			});
 		});
 	});
@@ -420,7 +439,6 @@ module.exports = function(app) {
 	app.post('/Contest/CheckPid', function(req, res) {
 		var oj = req.body['oj'];
 		var vid = req.body['pid'];
-		vid = parseInt(vid);
 		Prob.get({vid:vid, oj:oj}, function(err, prob) {
 			if(err || !prob) {
 				res.send({error:1, title:''});
@@ -530,7 +548,7 @@ module.exports = function(app) {
 		var index = req.body['index'];
 		var nid = parseInt(index) + 1001;
 		Contest.get(CID, function(err, cont) {
-			Prob.get({oj: cont.problem[index].oj, vid:parseInt(cont.problem[index].vid)}, function(err, prob) {
+			Prob.get({oj: cont.problem[index].oj, vid:cont.problem[index].vid}, function(err, prob) {
 				Contest_Status.getCount({cid:parseInt(CID), nid:""+nid}, function(err, all) {
 					Contest_Status.getCount({cid:parseInt(CID), nid:""+nid, result:"Accepted"}, function(err, ac) {
 						res.send({title:prob.title, all:all, ac: ac});
@@ -574,7 +592,7 @@ module.exports = function(app) {
 			} else if(index < 0 || index >= cont.problem.length) {
 				return res.redirect('/Contest/Contests');
 			}
-			Prob.get({oj:cont.problem[index].oj, vid:parseInt(cont.problem[index].vid)}, function(err, prob) {
+			Prob.get({oj:cont.problem[index].oj, vid:cont.problem[index].vid}, function(err, prob) {
 				if(err || !prob) {
 					req.flash('error', err);
 					return res.redirect('/Contest/Contests');
@@ -657,7 +675,7 @@ module.exports = function(app) {
 
 					var data = prob.oj + " 2  __SOURCE-CODE-BEGIN-LABLE__\n" + code + "\n__SOURCE-CODE-END-LABLE__\n" + runid + "\n" + sub_time + "\n" + prob.pid + " " + lang + " " + currentUser.username + " " + prob.vid + " " + CID + " " + req.query.pid + " ss mm\n";
 
-					SendCode(HOST, PORT, data);
+					//SendCode(HOST, PORT, data);
 					res.redirect('/Contest/Status?cid='+CID+'&page=1');
 				});
 			});

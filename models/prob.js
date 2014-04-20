@@ -148,7 +148,7 @@ Prob.search = function search(query, info, callback) {
 			}
 			var probs = [];
 			var reg = '.*' + info + '.*';
-			collection.find({$and:[query,{$or:[{pid:parseInt(info)},{vid:parseInt(info)}]}]}).toArray(function(err, docs) {
+			collection.find({$and:[query,{$or:[{pid:parseInt(info)},{vid:info}]}]}).toArray(function(err, docs) {
 				docs.forEach(function(doc, index) {
 					var pp = new Prob(doc);
 					probs.push(pp);

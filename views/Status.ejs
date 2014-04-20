@@ -85,7 +85,8 @@
 				<tr>
 					<td><%- stat.run_ID %></td>
 
-					<td><%- stat.submit_time %></td>
+					<%var tm = stat.submit_time; tm.setHours(tm.getHours()+8); %>
+					<td><%- tm.toISOString().replace(/T/,' ').replace(/\..+/,'') %></td>
 
 					<% if(stat.result == "Accepted") {%>
 					<td><font color="red"><%- stat.result %></font></td>

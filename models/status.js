@@ -2,7 +2,6 @@ var mongodb = require('./db');
 
 function Status(stat) {
 	this.run_ID = stat.run_ID;
-	this.vrun_ID = stat.vrun_ID;
 	this.oj = stat.oj;
 	this.submit_time = stat.submit_time;
 	this.result = stat.result;
@@ -21,7 +20,6 @@ module.exports = Status;
 Status.prototype.save = function save(callback) {
 	var stat = {
 		run_ID:		this.run_ID,
-		vrun_ID:	this.vrun_ID,
 		oj:		this.oj,
 		submit_time:	this.submit_time,
 		result:		this.result,
