@@ -15,6 +15,7 @@ var fs = require('fs');
 var querystring = require('querystring');
 
 
+
 var judge_string = "yourjudgestring";
 var error_string = "yourerrorjudgestring";
 var submit_string = "yoursubmitstring";
@@ -24,6 +25,11 @@ var PORT = 5907;
 
 var digit2result = new Array();
 var corrlang = new Array();
+var ojs = new Array();
+
+ojs[0] = "HDU";
+ojs[1] = "POJ";
+ojs[2] = "ZOJ";
 
 digit2result[0] = "Accepted";
 digit2result[1] = "Wrong Answer";
@@ -42,13 +48,6 @@ corrlang[4] = "Pascal";
 corrlang[12] = "C++";
 corrlang[13] = "C";
 
-Judger_server = {};
-Judger_server['HDU'] = 6969;
-Judger_server['POJ'] = 6971;
-
-Contest_Judger_server = {};
-Contest_Judger_server['HDU'] = 7070;
-Contest_Judger_server['POJ'] = 7072;
 
 module.exports = function(app) {
 	app.get('/test', function(req, res) {
@@ -666,7 +665,7 @@ module.exports = function(app) {
 
 					var oj = prob.oj;
 					var HOST = '127.0.0.1';
-					var PORT = Contest_Judger_server[oj];
+					var PORT = 5907; 
 					var runid = parseInt(runID) + 1;
 
 					var now_date = new Date();
