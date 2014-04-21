@@ -105,6 +105,7 @@ module.exports = function(app) {
 					fprobs: probs,
 					furl: url,
 					foj: oj,
+					fojs: ojs,
 				});
 			});
 		});
@@ -142,6 +143,7 @@ module.exports = function(app) {
 				title:'Search Result',
 				fprobs: probs,
 				foj: oj,
+				fojs: ojs,
 				fnum: probs.length,
 			});
 			

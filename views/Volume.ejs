@@ -91,8 +91,14 @@
 						<div class="oj-select">
 						<select id = "ojs" class="oj-form">
 							<option value="0">All</option>
+							<% fojs.forEach(function(oj, index) { %>
+							<option value=<%= oj %><%if(foj== oj){%> selected<%}%>><%= oj %></option>
+							<% }); %>
+							<!--
+							<option value="0">All</option>
 							<option value="HDU"<%if(foj=="HDU"){%>selected<%}%>>HDU</option>
 							<option value="POJ"<%if(foj=="POJ"){%>selected<%}%>>POJ</option>
+							-->
 						</select>
 						</div>
 					</th>
