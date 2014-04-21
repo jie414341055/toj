@@ -45,6 +45,8 @@ corrlang[1] = "G++";
 corrlang[2] = "GCC";
 corrlang[3] = "Java";
 corrlang[4] = "Pascal";
+corrlang[5] = "Python";
+corrlang[8] = "Perl";
 corrlang[12] = "C++";
 corrlang[13] = "C";
 
