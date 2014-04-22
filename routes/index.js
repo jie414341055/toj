@@ -225,22 +225,34 @@ module.exports = function(app) {
 					result:	"Waiting"
 				});
 				//console.log(stat);
-				cod.save(function(err) {
+				Prob.update_submit(pid, function(err) {
 					if (err) {
 						req.flash('error', err);
 						return res.redirect('/ProbSubmit?pid='+prob.pid);
 					}
-
-					stat.save(function(err) {
+					User.update_submit(currentUser.username, function(err) {
 						if (err) {
 							req.flash('error', err);
 							return res.redirect('/ProbSubmit?pid='+prob.pid);
 						}
-						var client = new net.Socket();
-						client.connect(PORT, HOST, function() {
-							client.write(data);
+						cod.save(function(err) {
+							if (err) {
+								req.flash('error', err);
+								return res.redirect('/ProbSubmit?pid='+prob.pid);
+							}
+
+							stat.save(function(err) {
+								if (err) {
+									req.flash('error', err);
+									return res.redirect('/ProbSubmit?pid='+prob.pid);
+								}
+								var client = new net.Socket();
+								client.connect(PORT, HOST, function() {
+									client.write(data);
+								});
+								res.redirect('/Status?page=1');
+							});
 						});
-						res.redirect('/Status?page=1');
 					});
 				});
 				//SendCode(HOST, PORT, data);

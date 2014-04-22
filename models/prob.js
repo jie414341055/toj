@@ -217,3 +217,21 @@ Prob.getContestProb = function getContestProb(query, callback) {
 		});
 	});
 }
+
+Prob.update_submit = function update_submit(PID, callback) {
+	mongodb.open(function(err, db) {
+		if(err) {
+			return callback(err);
+		}
+		db.collection('Problem', function(err, collection) {
+			if(err) {
+				mongodb.close();
+				return callback(err);
+			}
+			PID = parseInt(PID);
+			collection.update({pid:PID}, {$inc:{total_submit:1}});
+			mongodb.close();
+			callback(err);
+		});
+	});
+}

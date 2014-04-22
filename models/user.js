@@ -142,3 +142,20 @@ User.update= function getCount(username, info, callback) {
 		});
 	});
 };
+
+User.update_submit = function getCount(username, callback) {
+	mongodb.open(function(err, db) {
+		if(err) {
+			return callback(err);
+		}
+		db.collection('User', function(err, collection) {
+			if(err) {
+				mongodb.close();
+				return callback(err);
+			}
+			collection.update({username:username}, {$inc:{total_submit:1}});
+			mongodb.close();
+			callback(err);
+		});
+	});
+};
