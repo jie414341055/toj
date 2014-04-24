@@ -58,11 +58,12 @@
 				<p><a class="btn btn-primary btn-lg" role="button">Learn more &raquo;</a></p>
 		</div>
 		<div class="panel">
-			<div class="header" style="background-color:transparent;">
+			<div class="header">
 				<span>Recent Contests on other OJs</span>
 			</div>
 			<div class="inner">
 				<table class="table table-hover table-condensed">
+					<thead>
 					<tr>
 						<td>#</td>
 						<td>OJ</td>
@@ -71,6 +72,8 @@
 						<!--<td>Week</td>-->
 						<td>Access</td>
 					</tr>
+					</thead>
+					<tbody>
 					<% fcontests.forEach(function(cont, index) { %>
 					<tr>
 						<td><%= index+1 %></td>
@@ -81,6 +84,7 @@
 						<td><%= cont.access %></td>
 					</tr>	
 					<% }) %>
+					</tbody>
 				</table>
 			</div>
 		</div>
