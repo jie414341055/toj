@@ -126,10 +126,12 @@ Prob.page = function page(query, pageID, callback) {
 				}
 
 				var probs = [];
-				docs.forEach(function(doc, index) {
-					var pp = new Prob(doc);
-					probs.push(pp);
-				});
+				if(docs) {
+					docs.forEach(function(doc, index) {
+						var pp = new Prob(doc);
+						probs.push(pp);
+					});
+				}
 				callback(null, probs);
 			});
 		});
@@ -149,20 +151,24 @@ Prob.search = function search(query, info, callback) {
 			var probs = [];
 			var reg = '.*' + info + '.*';
 			collection.find({$and:[query,{$or:[{pid:parseInt(info)},{vid:info}]}]}).toArray(function(err, docs) {
-				docs.forEach(function(doc, index) {
-					var pp = new Prob(doc);
-					probs.push(pp);
-				});
+				if(docs) {
+					docs.forEach(function(doc, index) {
+						var pp = new Prob(doc);
+						probs.push(pp);
+					});
+				}
 				collection.find({$and:[query,{$or:[{title:new RegExp(reg)},{source:new RegExp(reg)}]}]},{desc:0,input:0,output:0,sample_in:0,sample_out:0}).limit(100).sort({pid:1}).toArray(function(err, docs) {
 					mongodb.close();
 					if(err) {
 						callback(err, null);
 					}
 				
-					docs.forEach(function(doc, index) {
-						var pp = new Prob(doc);
-						probs.push(pp);
-					});
+					if(docs) {
+						docs.forEach(function(doc, index) {
+							var pp = new Prob(doc);
+							probs.push(pp);
+						});
+					}
 					callback(null, probs);
 				});
 			});
@@ -208,10 +214,12 @@ Prob.getContestProb = function getContestProb(query, callback) {
 				}
 
 				var probs = [];
-				docs.forEach(function(doc, index) {
-					var pp = new Prob(doc);
-					probs.push(pp);
-				});
+				if(docs) {
+					docs.forEach(function(doc, index) {
+						var pp = new Prob(doc);
+						probs.push(pp);
+					});
+				}
 				callback(null, probs);
 			});
 		});
