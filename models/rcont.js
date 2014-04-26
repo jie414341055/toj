@@ -56,10 +56,12 @@ Rcont.get = function get(callback) {
 					callback(err, null);
 				}
 				var rconts = [];
-				docs.forEach(function(doc, index) {
-					var rr = new Rcont(doc);
-					rconts.push(rr);
-				});
+				if(docs) {
+					docs.forEach(function(doc, index) {
+						var rr = new Rcont(doc);
+						rconts.push(rr);
+					});
+				}
 				callback(null, rconts);
 			});
 		});
