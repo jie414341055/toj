@@ -1,4 +1,6 @@
-.gif
-.bmp
-.jpg
-.bmp
+*.gif
+*.bmp
+*.jpg
+*.png
+*.bmp
+*.out

@@ -455,3 +455,200 @@ Error: Error setting TTL index on collection : sessions
     at Cursor.toArray (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/cursor.js:158:10)
     at Cursor.toArray (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/scope.js:10:20)
     at /home/vjudge/toj/node_modules/mongodb/lib/mongodb/db.js:1541:65
+Error: Can't set headers after they are sent.
+    at ServerResponse.OutgoingMessage.setHeader (http.js:692:11)
+    at ServerResponse.res.setHeader (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/patch.js:62:20)
+    at ServerResponse.res.header (/home/vjudge/toj/node_modules/express/lib/response.js:280:8)
+    at ServerResponse.res.send (/home/vjudge/toj/node_modules/express/lib/response.js:85:10)
+    at ServerResponse.res._render (/home/vjudge/toj/node_modules/express/lib/view.js:442:10)
+    at ServerResponse.res.render (/home/vjudge/toj/node_modules/express/lib/view.js:318:17)
+    at ServerResponse.res._render (/home/vjudge/toj/node_modules/express/lib/view.js:432:10)
+    at ServerResponse.res.render (/home/vjudge/toj/node_modules/express/lib/view.js:318:17)
+    at /home/vjudge/toj/routes/index.js:144:8
+    at /home/vjudge/toj/models/prob.js:172:6
+Error: Can't render headers after they are sent to the client.
+    at ServerResponse.OutgoingMessage._renderHeaders (http.js:734:11)
+    at ServerResponse.res._renderHeaders (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/patch.js:76:25)
+    at ServerResponse.writeHead (http.js:1151:20)
+    at Object.errorHandler [as handle] (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/errorHandler.js:83:13)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:199:17)
+    at IncomingMessage.next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:201:11)
+    at ServerResponse.res.render (/home/vjudge/toj/node_modules/express/lib/view.js:328:16)
+    at /home/vjudge/toj/routes/index.js:144:8
+    at /home/vjudge/toj/models/prob.js:172:6
+    at /home/vjudge/toj/node_modules/mongodb/lib/mongodb/cursor.js:159:22
+Error: Can't set headers after they are sent.
+    at ServerResponse.OutgoingMessage.setHeader (http.js:692:11)
+    at ServerResponse.res.setHeader (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/patch.js:62:20)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:166:13)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:213:9)
+    at IncomingMessage.next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:201:11)
+    at ServerResponse.res.render (/home/vjudge/toj/node_modules/express/lib/view.js:328:16)
+    at /home/vjudge/toj/routes/index.js:144:8
+    at /home/vjudge/toj/models/prob.js:172:6
+    at /home/vjudge/toj/node_modules/mongodb/lib/mongodb/cursor.js:159:22
+    at commandHandler (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/cursor.js:678:48)
+Error: db object already connecting, open cannot be called multiple times
+    at Db.open (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/db.js:246:11)
+    at Function.search (/home/vjudge/toj/models/prob.js:142:10)
+    at Object.<anonymous> (/home/vjudge/toj/routes/index.js:139:8)
+    at nextMiddleware (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:175:25)
+    at param (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:183:17)
+    at pass (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:191:11)
+    at Object.router (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:197:7)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:204:15)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/session.js:322:9)
+    at /home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/session.js:341:9
+
+/home/vjudge/toj/node_modules/mongodb/lib/mongodb/connection/base.js:242
+        throw message;      
+              ^
+Error: Can't set headers after they are sent.
+    at ServerResponse.OutgoingMessage.setHeader (http.js:692:11)
+    at ServerResponse.res.setHeader (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/patch.js:62:20)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:166:13)
+    at IncomingMessage.next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:213:9)
+    at ServerResponse.res.render (/home/vjudge/toj/node_modules/express/lib/view.js:328:16)
+    at /home/vjudge/toj/routes/index.js:144:8
+    at /home/vjudge/toj/models/prob.js:172:6
+    at /home/vjudge/toj/node_modules/mongodb/lib/mongodb/cursor.js:159:22
+    at commandHandler (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/cursor.js:678:48)
+    at Db._executeQueryCommand (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/db.js:1751:12)
+Failed to load c++ bson extension, using pure JS version
+========================================================================================
+=  Please ensure that you set the default write concern for the database by setting    =
+=   one of the options                                                                 =
+=                                                                                      =
+=     w: (value of > -1 or the string 'majority'), where < 1 means                     =
+=        no write acknowledgement                                                       =
+=     journal: true/false, wait for flush to journal before acknowledgement             =
+=     fsync: true/false, wait for flush to file system before acknowledgement           =
+=                                                                                      =
+=  For backward compatibility safe is still supported and                              =
+=   allows values of [true | false | {j:true} | {w:n, wtimeout:n} | {fsync:true}]      =
+=   the default value is false which means the driver receives does not                =
+=   return the information of the success/error of the insert/update/remove            =
+=                                                                                      =
+=   ex: new Db(new Server('localhost', 27017), {safe:false})                           =
+=                                                                                      =
+=   http://www.mongodb.org/display/DOCS/getLastError+Command                           =
+=                                                                                      =
+=  The default of no acknowledgement will change in the very near future                =
+=                                                                                      =
+=  This message will disappear when the default safe is set on the driver Db           =
+========================================================================================
+Express server listening on port 3000 in development mode
+Error: db object already connecting, open cannot be called multiple times
+    at Db.open (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/db.js:246:11)
+    at Function.get (/home/vjudge/toj/models/rcont.js:43:10)
+    at Object.<anonymous> (/home/vjudge/toj/routes/index.js:68:9)
+    at nextMiddleware (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:175:25)
+    at param (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:183:17)
+    at pass (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:191:11)
+    at Object.router (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:197:7)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:204:15)
+    at Object.session [as handle] (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/session.js:304:7)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:204:15)
+Error: db object already connecting, open cannot be called multiple times
+    at Db.open (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/db.js:246:11)
+    at Function.get (/home/vjudge/toj/models/rcont.js:43:10)
+    at Object.<anonymous> (/home/vjudge/toj/routes/index.js:68:9)
+    at nextMiddleware (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:175:25)
+    at param (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:183:17)
+    at pass (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:191:11)
+    at Object.router (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:197:7)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:204:15)
+    at Object.session [as handle] (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/session.js:304:7)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:204:15)
+Error: db object already connecting, open cannot be called multiple times
+    at Db.open (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/db.js:246:11)
+    at Function.get (/home/vjudge/toj/models/rcont.js:43:10)
+    at Object.<anonymous> (/home/vjudge/toj/routes/index.js:68:9)
+    at nextMiddleware (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:175:25)
+    at param (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:183:17)
+    at pass (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:191:11)
+    at Object.router (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:197:7)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:204:15)
+    at Object.session [as handle] (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/session.js:304:7)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:204:15)
+Error: db object already connecting, open cannot be called multiple times
+    at Db.open (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/db.js:246:11)
+    at Function.get (/home/vjudge/toj/models/rcont.js:43:10)
+    at Object.<anonymous> (/home/vjudge/toj/routes/index.js:68:9)
+    at nextMiddleware (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:175:25)
+    at param (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:183:17)
+    at pass (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:191:11)
+    at Object.router (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:197:7)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:204:15)
+    at Object.session [as handle] (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/session.js:304:7)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:204:15)
+Error: db object already connecting, open cannot be called multiple times
+    at Db.open (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/db.js:246:11)
+    at Function.get (/home/vjudge/toj/models/rcont.js:43:10)
+    at Object.<anonymous> (/home/vjudge/toj/routes/index.js:68:9)
+    at nextMiddleware (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:175:25)
+    at param (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:183:17)
+    at pass (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:191:11)
+    at Object.router (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:197:7)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:204:15)
+    at Object.session [as handle] (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/session.js:304:7)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:204:15)
+Error: db object already connecting, open cannot be called multiple times
+    at Db.open (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/db.js:246:11)
+    at Function.get (/home/vjudge/toj/models/rcont.js:43:10)
+    at Object.<anonymous> (/home/vjudge/toj/routes/index.js:68:9)
+    at nextMiddleware (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:175:25)
+    at param (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:183:17)
+    at pass (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:191:11)
+    at Object.router (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:197:7)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:204:15)
+    at Object.session [as handle] (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/session.js:304:7)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:204:15)
+Error: db object already connecting, open cannot be called multiple times
+    at Db.open (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/db.js:246:11)
+    at Function.get (/home/vjudge/toj/models/rcont.js:43:10)
+    at Object.<anonymous> (/home/vjudge/toj/routes/index.js:68:9)
+    at nextMiddleware (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:175:25)
+    at param (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:183:17)
+    at pass (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:191:11)
+    at Object.router (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:197:7)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:204:15)
+    at Object.session [as handle] (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/session.js:304:7)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:204:15)
+Error: db object already connecting, open cannot be called multiple times
+    at Db.open (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/db.js:246:11)
+    at Function.get (/home/vjudge/toj/models/rcont.js:43:10)
+    at Object.<anonymous> (/home/vjudge/toj/routes/index.js:68:9)
+    at nextMiddleware (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:175:25)
+    at param (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:183:17)
+    at pass (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:191:11)
+    at Object.router (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:197:7)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:204:15)
+    at Object.session [as handle] (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/session.js:304:7)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:204:15)
+Error: db object already connecting, open cannot be called multiple times
+    at Db.open (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/db.js:246:11)
+    at Function.get (/home/vjudge/toj/models/rcont.js:43:10)
+    at Object.<anonymous> (/home/vjudge/toj/routes/index.js:68:9)
+    at nextMiddleware (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:175:25)
+    at param (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:183:17)
+    at pass (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:191:11)
+    at Object.router (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/router.js:197:7)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:204:15)
+    at Object.session [as handle] (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/middleware/session.js:304:7)
+    at next (/home/vjudge/toj/node_modules/express/node_modules/connect/lib/http.js:204:15)
+
+/home/vjudge/toj/node_modules/mongodb/lib/mongodb/connection/base.js:242
+        throw message;      
+              ^
+TypeError: Cannot call method 'forEach' of null
+    at /home/vjudge/toj/models/rcont.js:59:10
+    at /home/vjudge/toj/node_modules/mongodb/lib/mongodb/cursor.js:159:22
+    at commandHandler (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/cursor.js:678:48)
+    at /home/vjudge/toj/node_modules/mongodb/lib/mongodb/db.js:1806:9
+    at Server.Base._callHandler (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/connection/base.js:442:41)
+    at Server.Base._flushAllCallHandlers (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/connection/base.js:413:10)
+    at Server.close (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/connection/server.js:206:10)
+    at Db.close (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/db.js:347:21)
+    at Db.open (/home/vjudge/toj/node_modules/mongodb/lib/mongodb/db.js:244:10)
+    at Function.get (/home/vjudge/toj/models/rcont.js:43:10)
