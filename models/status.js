@@ -212,10 +212,12 @@ Status.GetStatistics = function GetStatistics(query, pageID, callback) {
 					callback(err, null);
 				}
 				var stats = [];
-				docs.forEach(function(doc, index) {
-					var pp = new Status(doc);
-					stats.push(pp);
-				});
+				if(docs) {
+					docs.forEach(function(doc, index) {
+						var pp = new Status(doc);
+						stats.push(pp);
+					});
+				}
 				callback(null, stats);
 			});
 		});

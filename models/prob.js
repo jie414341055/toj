@@ -122,7 +122,7 @@ Prob.page = function page(query, pageID, callback) {
 			collection.find(query,{pid:1,title:1,oj:1,vid:1,vtotal_submit:1,vtotal_ac:1,total_submit:1,total_ac:1 }).sort({pid:1}).limit(100).skip((pageID - 1) * 100).toArray(function(err, docs) {
 				mongodb.close();
 				if(err) {
-					callback(err, null);
+					return callback(err, null);
 				}
 
 				var probs = [];
@@ -160,7 +160,7 @@ Prob.search = function search(query, info, callback) {
 				collection.find({$and:[query,{$or:[{title:new RegExp(reg)},{source:new RegExp(reg)}]}]},{desc:0,input:0,output:0,sample_in:0,sample_out:0}).limit(100).sort({pid:1}).toArray(function(err, docs) {
 					mongodb.close();
 					if(err) {
-						callback(err, null);
+						return callback(err, null);
 					}
 				
 					if(docs) {
@@ -189,7 +189,7 @@ Prob.getCount = function getCount(query, callback) {
 			collection.find(query).count(function(err, count) {
 				mongodb.close();
 				if(err) {
-					callback(err, null);
+					return callback(err, null);
 				}
 				callback(null, count);
 			});
@@ -210,7 +210,7 @@ Prob.getContestProb = function getContestProb(query, callback) {
 			collection.find({$or:query}).toArray(function(err, docs) {
 				mongodb.close();
 				if(err) {
-					callback(err, null);
+					return callback(err, null);
 				}
 
 				var probs = [];

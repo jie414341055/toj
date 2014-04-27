@@ -68,7 +68,7 @@ module.exports = function(app) {
 		Rcont.get(function(err, rconts) {
 			if (err) {
 				rconts = [];
-			}
+			} 
 			res.render('index', {
 				title: 'Home',
 				fcontests: rconts,
@@ -78,7 +78,7 @@ module.exports = function(app) {
 	app.get('/Problems', function(req, res) {
 
 
-		var vol_num = req.query.Volume;
+		var vol_num = parseInt(req.query.Volume);
 		if(!vol_num || vol_num == "") vol_num = 1;
 		else vol_num = parseInt(vol_num);
 
@@ -94,22 +94,24 @@ module.exports = function(app) {
 			if(err) {
 				req.flash('error', err);
 				return res.redirect('/');
-			}
-			Prob.page(query, vol_num, function(err, probs) {
-				if (err) {
-					req.flash('error', err);
-					return res.redirect('/');
-				}
-				res.render('Volume', {
-					title:'Problems',
-					fvol_num: vol_num,
-					ftotal_vol: Math.ceil(total_prob_num/100),
-					fprobs: probs,
-					furl: url,
-					foj: oj,
-					fojs: ojs,
+			} else {
+				Prob.page(query, vol_num, function(err, probs) {
+					if (err) {
+						req.flash('error', err);
+						return res.redirect('/');
+					} else {
+						res.render('Volume', {
+							title:'Problems',
+							fvol_num: vol_num,
+							ftotal_vol: Math.ceil(total_prob_num/100),
+							fprobs: probs,
+							furl: url,
+							foj: oj,
+							fojs: ojs,
+						});
+					}
 				});
-			});
+			}
 		});
 	});
 	//app.get(/\/ShowProblems(\?pid=(\d+)?)?/, function(req, res) {
@@ -121,12 +123,13 @@ module.exports = function(app) {
 			if (!prob) {
 				req.flash('error', 'No such problem!');
 				return res.redirect('/Problems');
+			} else {
+
+				res.render('ShowProblem', {
+					title: prob.title,
+					fprob: prob,
+				});
 			}
-			
-			res.render('ShowProblem', {
-				title: prob.title,
-				fprob: prob,
-			});
 		});
 	});
 
@@ -140,15 +143,16 @@ module.exports = function(app) {
 			if(err) {
 				req.flash('error', 'Something happened...');
 				return res.redirect('/Problems');
+			} else {
+				res.render('SearchProblems', {
+					title:'Search Result',
+					fprobs: probs,
+					foj: oj,
+					fojs: ojs,
+					fnum: probs.length,
+				});
 			}
-			res.render('SearchProblems', {
-				title:'Search Result',
-				fprobs: probs,
-				foj: oj,
-				fojs: ojs,
-				fnum: probs.length,
-			});
-			
+
 		});
 
 	});
@@ -157,7 +161,7 @@ module.exports = function(app) {
 	app.get('/ProbSubmit', function(req, res) {
 		var currentUser = req.session.user;
 		var pid = req.query.pid;
-	
+
 		pid = parseInt(pid);
 		Prob.get({pid:pid}, function(err, prob) {
 			if(err) {
@@ -167,12 +171,13 @@ module.exports = function(app) {
 			if (!prob) {
 				req.flash('error', 'No such problem!');
 				return res.redirect('/Problems');
+			} else {
+				//console.log('/Showproblem/' + prob.pid);
+				res.render('ProbSubmit', {
+					title: 'Submit',
+					fprob: prob,
+				});
 			}
-			//console.log('/Showproblem/' + prob.pid);
-			res.render('ProbSubmit', {
-				title: 'Submit',
-				fprob: prob,
-			});
 		});
 	});
 	app.post('/ProbSubmit', checkLogin);
@@ -181,9 +186,9 @@ module.exports = function(app) {
 		var code = req.body['code'];
 		var lang = req.body['lang'];
 		var currentUser = req.session.user;
-	//	if(!currentUser) {
-	//		return res.redirect('/login');
-	//	}
+		//	if(!currentUser) {
+		//		return res.redirect('/login');
+		//	}
 		pid = parseInt(pid);
 		lang = parseInt(lang);
 		Prob.get({pid:pid}, function(err, prob) {
@@ -194,75 +199,80 @@ module.exports = function(app) {
 			if (!prob) {
 				req.flash('error', 'No such problem!');
 				return res.redirect('/Problems');
-			}
-			Status.getCount({}, function(err, runID) {
-				if(err) {
-					req.flash('error', 'Database error!');
-					return res.redirect('/ShowProblems?pid='+pid);
-				}
-
-				var runid = parseInt(runID) + 1;
-				var data = submit_string + "\n" + runid + "\n" + prob.oj + "\n";
-
-
-				//var now_date = new Date();
-				//now_date.setHours(now_date.getHours()+8);
-				//var sub_time = now_date.toISOString().replace(/T/,' ').replace(/\..+/,'');
-
-
-				var cod = new Code({
-					run_ID: runid,
-				    	code: code
-				});
-				var stat = new Status({
-					run_ID:	runid,
-					username: currentUser.username,
-					pid:	prob.pid,
-					oj:	prob.oj,
-					lang:	lang,
-					code_len: 	code.length,
-					submit_time:	new Date(),
-					result:	"Waiting"
-				});
-				//console.log(stat);
-				Prob.update_submit(pid, function(err) {
-					if (err) {
-						req.flash('error', err);
-						return res.redirect('/ProbSubmit?pid='+prob.pid);
+			} else {
+				Status.getCount({}, function(err, runID) {
+					if(err) {
+						req.flash('error', 'Database error!');
+						return res.redirect('/ShowProblems?pid='+pid);
 					}
-					User.update_submit(currentUser.username, function(err) {
+
+					var runid = parseInt(runID) + 1;
+					var data = submit_string + "\n" + runid + "\n" + prob.oj + "\n";
+
+
+					//var now_date = new Date();
+					//now_date.setHours(now_date.getHours()+8);
+					//var sub_time = now_date.toISOString().replace(/T/,' ').replace(/\..+/,'');
+
+
+					var cod = new Code({
+						run_ID: runid,
+					    	code: code
+					});
+					var stat = new Status({
+						run_ID:	runid,
+					    username: currentUser.username,
+					    pid:	prob.pid,
+					    oj:	prob.oj,
+					    lang:	lang,
+					    code_len: 	code.length,
+					    submit_time:	new Date(),
+					    result:	"Waiting"
+					});
+					//console.log(stat);
+					Prob.update_submit(pid, function(err) {
 						if (err) {
 							req.flash('error', err);
 							return res.redirect('/ProbSubmit?pid='+prob.pid);
-						}
-						cod.save(function(err) {
+						} else {
+						User.update_submit(currentUser.username, function(err) {
 							if (err) {
 								req.flash('error', err);
 								return res.redirect('/ProbSubmit?pid='+prob.pid);
-							}
+							} else {
+								cod.save(function(err) {
+									if (err) {
+										req.flash('error', err);
+										return res.redirect('/ProbSubmit?pid='+prob.pid);
+									} else {
 
-							stat.save(function(err) {
-								if (err) {
-									req.flash('error', err);
-									return res.redirect('/ProbSubmit?pid='+prob.pid);
-								}
-								var client = new net.Socket();
-								client.connect(PORT, HOST, function() {
-									client.write(data);
+										stat.save(function(err) {
+											if (err) {
+												req.flash('error', err);
+												return res.redirect('/ProbSubmit?pid='+prob.pid);
+											} else {
+												var client = new net.Socket();
+												client.connect(PORT, HOST, function() {
+													client.write(data);
+												});
+												res.redirect('/Status?page=1');
+											}
+										});
+									}
 								});
-								res.redirect('/Status?page=1');
-							});
+							}
 						});
+						}
 					});
+					//SendCode(HOST, PORT, data);
 				});
-				//SendCode(HOST, PORT, data);
-			});
+			}
 		});
 	});
 
 	//GET_STATUS
 	app.get('/Status', function(req, res) {
-	//Status?pid=&username=&lang=&result=&page=
+		//Status?pid=&username=&lang=&result=&page=
 		var query = {};
 		var url = "/Status?";
 		var pid = req.query.pid;
@@ -279,7 +289,7 @@ module.exports = function(app) {
 			url += "&username=" + username;
 		} else url += "&username=";
 		if(lang) {
-			query.lang = lang;
+			query.lang = parseInt(lang);
 			url += "&lang=" + lang;
 		} else url += "&lang=";
 		if(result) {
@@ -292,38 +302,40 @@ module.exports = function(app) {
 
 		var loginUser = "";
 		if(req.session.user)  loginUser = req.session.user.username;
-		
+
 		Status.getCount(query, function(err, total_num) {
 			if(err) {
 				req.flash('error', err);
 				return res.redirect('/');
-			}
-			Status.page(query, pageID, function(err, stats) {
-				if(err) {
-					req.flash('error', err);
-					return res.redirect('/');
-				}
-				var total_page = Math.ceil(total_num / 15);
-				if(total_page == 0) total_page = 1;
-				res.render('Status', {
-					title:'Status',
-					floginUser: loginUser,
-					fstats: stats,
-					fcorrlang: corrlang,
-					fpageID: pageID,
-					fselected:{
-						"lang":lang,
-					},
-					furl: url,
-					ftotal_page: total_page,
+			} else {
+				Status.page(query, pageID, function(err, stats) {
+					if(err) {
+						req.flash('error', err);
+						return res.redirect('/');
+					} else {
+						var total_page = Math.ceil(total_num / 15);
+						if(total_page == 0) total_page = 1;
+						res.render('Status', {
+							title:'Status',
+							floginUser: loginUser,
+							fstats: stats,
+							fcorrlang: corrlang,
+							fpageID: pageID,
+							fselected:{
+								"lang":lang,
+							},
+							furl: url,
+							ftotal_page: total_page,
+						});
+					}
 				});
-			});
+			}
 		});
 	});
 
 	//GET_STATISTICS
 	app.get('/Statistics', function(req, res) {
-	//Status?pid=&username=&lang=&result=&page=
+		//Status?pid=&username=&lang=&result=&page=
 		var query = {speed:51};
 		var pid = req.query.pid;
 		var lang = req.query.lang;
@@ -338,7 +350,7 @@ module.exports = function(app) {
 			url += 'pid=1000';
 		}
 		if(lang) {
-			query.lang = lang;
+			query.lang = parseInt(lang);
 			url += '&lang=' + lang;
 		} 
 		if(pageID) pageID = parseInt(pageID);
@@ -347,40 +359,43 @@ module.exports = function(app) {
 
 		var loginUser = "";
 		if(req.session.user)  loginUser = req.session.user.username;
-		
+
 		Status.getCount(query, function(err, total_num) {
 			if(err) {
 				req.flash('error', err);
 				return res.redirect('/Problems');
-			}
-			Status.GetStatistics(query, pageID, function(err, statistics) {
-				if(err) {
-					req.flash('error', err);
-					return res.redirect('/Problems');
-				}
-				Prob.get({pid:query.pid}, function(err, prob) {
+			} else {
+				Status.GetStatistics(query, pageID, function(err, statistics) {
 					if(err) {
 						req.flash('error', err);
 						return res.redirect('/Problems');
-					}
-					var total_page = Math.ceil(total_num / 15);
-					if(total_page == 0) total_page = 1;
+					} else {
+						Prob.get({pid:query.pid}, function(err, prob) {
+							if(err) {
+								req.flash('error', err);
+								return res.redirect('/Problems');
+							} else {
+								var total_page = Math.ceil(total_num / 15);
+								if(total_page == 0) total_page = 1;
 
-					res.render('Statistics', {
-						title:'Statistics',
-						floginUser: loginUser,
-						fprob: prob,
-						fstatistics: statistics,
-						fcorrlang: corrlang,
-						fpageID: pageID,
-						flang: lang,
-						ftotal_page: total_page,
-						ftotal_num: total_num,
-						furl: url,
-						
-					});
+								res.render('Statistics', {
+									title:'Statistics',
+									floginUser: loginUser,
+									fprob: prob,
+									fstatistics: statistics,
+									fcorrlang: corrlang,
+									fpageID: pageID,
+									flang: lang,
+									ftotal_page: total_page,
+									ftotal_num: total_num,
+									furl: url,
+
+								});
+							}
+						});
+					}
 				});
-			});
+			}
 		});
 	});
 
@@ -391,25 +406,28 @@ module.exports = function(app) {
 			if(err || !stat) {
 				req.flash('error', 'The code does not exists!');
 				return res.redirect('/Status');
-			}
-			var currentUser = req.session.user;
-			if(!currentUser || currentUser.username != stat.username) {
-				req.flash('error', 'You don\' have the permission!');
-				return res.redirect('/Status');
-			}
-			Code.get(runid, function(err, code) {
-				if(err || !code) {
-					req.flash('error', 'The code does not exists!');
+			} else {
+				var currentUser = req.session.user;
+				if(!currentUser || currentUser.username != stat.username) {
+					req.flash('error', 'You don\' have the permission!');
 					return res.redirect('/Status');
-				}
-				res.render('ShowCode', {
-					title: 'View Code',
-					fstat: stat,
-					fcode: code,
-					fcorrlang: corrlang,
-				});
+				} else {
+					Code.get(runid, function(err, code) {
+						if(err || !code) {
+							req.flash('error', 'The code does not exists!');
+							return res.redirect('/Status');
+						} else {
+							res.render('ShowCode', {
+								title: 'View Code',
+								fstat: stat,
+								fcode: code,
+								fcorrlang: corrlang,
+							});
+						}
 
-			});
+					});
+				}
+			}
 		});
 	});
 
@@ -424,12 +442,13 @@ module.exports = function(app) {
 			if(err) {
 				req.flash('error', err);
 				return res.redirect('/Contests?type'+type);
+			} else {
+				res.render('Contest/Contests', {
+					title: 'Contests',
+					fconts: conts,
+					ftm: new Date(),
+				});
 			}
-			res.render('Contest/Contests', {
-				title: 'Contests',
-				fconts: conts,
-				ftm: new Date(),
-			});
 		});
 	});
 
@@ -484,27 +503,29 @@ module.exports = function(app) {
 			if(err) {
 				req.flash('error', err);
 				return res.redirect('/');
+			} else {
+				var cont = {
+					"cid": cnt + 1,
+					"type": parseInt(type),
+					"title": title,
+					"desc": desc,
+					"start_time": new Date(st_time),
+					"end_time": new Date(ed_time),
+					"author": currentUser.username,
+					"access": passwd=="",
+					"passwd": passwd,
+					"problem": prob,
+				};
 			}
-			var cont = {
-				"cid": cnt + 1,
-				"type": parseInt(type),
-				"title": title,
-				"desc": desc,
-				"start_time": new Date(st_time),
-				"end_time": new Date(ed_time),
-				"author": currentUser.username,
-				"access": passwd=="",
-				"passwd": passwd,
-				"problem": prob,
-			};
 			var Cont = new Contest(cont);
 			//maybe here need insert contest_prob  CODE1
 			Cont.save(function(err) {
 				if (err) {
 					req.flash('error', err);
 					return res.redirect('/');
+				} else {
+					res.redirect('/Contest/Contests?type='+type);
 				}
-				res.redirect('/Contest/Contests?type='+type);
 			});
 		});
 
@@ -528,7 +549,7 @@ module.exports = function(app) {
 			} else {
 				cuser = {
 					'username': req.session.user.username,
-			'cid': parseInt(CID),
+					'cid': parseInt(CID),
 				};
 				var Cuser = new Contest_User(cuser);
 				Cuser.save(function(err) {
@@ -549,11 +570,12 @@ module.exports = function(app) {
 			if(err) {
 				req.flash('error', err);
 				return res.redirect('/Contest/Contests');
+			} else {
+				res.render('Contest/ShowContest', {
+					title: cont.title,
+					fcont: cont,
+				});
 			}
-			res.render('Contest/ShowContest', {
-				title: cont.title,
-				fcont: cont,
-			});
 		});
 	});
 
@@ -584,14 +606,15 @@ module.exports = function(app) {
 			if(err) {
 				req.flash('error', err);
 				return res.redirect('/Contest/Contests?cid='+CID);
-			}
-			Contest_Prob.get(CID, function(err, probs) {
-				res.render('Contest/Contest_Problem', {
-					title: 'Problems',
-					fcont: cont,
-					fprobs: probs,
+			} else {
+				Contest_Prob.get(CID, function(err, probs) {
+					res.render('Contest/Contest_Problem', {
+						title: 'Problems',
+						fcont: cont,
+						fprobs: probs,
+					});
 				});
-			});
+			}
 		});
 	});
 
@@ -612,14 +635,14 @@ module.exports = function(app) {
 				if(err || !prob) {
 					req.flash('error', err);
 					return res.redirect('/Contest/Contests');
+				} else {
+					res.render('Contest/Contest_ShowProblem', {
+						title: req.query.pid + '-' + prob.title,
+						fcont: cont,
+						findex: index,
+						fprob: prob,
+					});
 				}
-				res.render('Contest/Contest_ShowProblem', {
-					title: req.query.pid + '-' + prob.title,
-					fcont: cont,
-					findex: index,
-					fprob: prob,
-				});
-
 			});
 		});
 	});
@@ -637,21 +660,23 @@ module.exports = function(app) {
 				return res.redirect('/Contest/Contests');
 			} else if(index < 0 || index >= cont.problem.length) {
 				return res.redirect('/Contest/Contests');
-			}
-			Prob.get({oj:cont.problem[index].oj, vid:parseInt(cont.problem[index].vid)}, function(err, prob) {
-				if(err || !prob) {
-					req.flash('error', err);
-					return res.redirect('/Contest/Contests');
-				}
-				res.render('Contest/Contest_ProbSubmit', {
-					title: 'Submit',
-					fcid: CID,
-					findex: index,
-					fprob: prob,
-					fedtime: cont.end_time,
+			} else {
+				Prob.get({oj:cont.problem[index].oj, vid:parseInt(cont.problem[index].vid)}, function(err, prob) {
+					if(err || !prob) {
+						req.flash('error', err);
+						return res.redirect('/Contest/Contests');
+					} else {
+						res.render('Contest/Contest_ProbSubmit', {
+							title: 'Submit',
+							fcid: CID,
+							findex: index,
+							fprob: prob,
+							fedtime: cont.end_time,
 
+						});
+					}
 				});
-			});
+			}
 		});
 	});
 
@@ -667,34 +692,37 @@ module.exports = function(app) {
 			if(err || !cont) {
 				req.flash('error', err);
 				return res.redirect('/Contest/ShowContests?cid='+CID);
-			}
-			Prob.get({oj:cont.problem[index].oj, vid:parseInt(cont.problem[index].vid)}, function(err, prob) {
-				if(err || !prob) {
-					req.flash('error', err);
-					return res.redirect('/Contest/ShowContests?cid='+CID);
-				}
-				Contest_Status.getCount({cid:parseInt(CID)}, function(err, runID) {
-					if(err) {
-						req.flash('error', 'Database error!');
+			} else {
+				Prob.get({oj:cont.problem[index].oj, vid:parseInt(cont.problem[index].vid)}, function(err, prob) {
+					if(err || !prob) {
+						req.flash('error', err);
 						return res.redirect('/Contest/ShowContests?cid='+CID);
+					} else {
+						Contest_Status.getCount({cid:parseInt(CID)}, function(err, runID) {
+							if(err) {
+								req.flash('error', 'Database error!');
+								return res.redirect('/Contest/ShowContests?cid='+CID);
+							} else {
+
+								var oj = prob.oj;
+								var HOST = '127.0.0.1';
+								var PORT = 5907; 
+								var runid = parseInt(runID) + 1;
+
+								var now_date = new Date();
+
+								now_date.setHours(now_date.getHours()+8);
+								var sub_time = now_date.toISOString().replace(/T/,' ').replace(/\..+/,'');
+
+								var data = prob.oj + " 2  __SOURCE-CODE-BEGIN-LABLE__\n" + code + "\n__SOURCE-CODE-END-LABLE__\n" + runid + "\n" + sub_time + "\n" + prob.pid + " " + lang + " " + currentUser.username + " " + prob.vid + " " + CID + " " + req.query.pid + " ss mm\n";
+
+								//SendCode(HOST, PORT, data);
+								res.redirect('/Contest/Status?cid='+CID+'&page=1');
+							}
+						});
 					}
-
-					var oj = prob.oj;
-					var HOST = '127.0.0.1';
-					var PORT = 5907; 
-					var runid = parseInt(runID) + 1;
-
-					var now_date = new Date();
-
-					now_date.setHours(now_date.getHours()+8);
-					var sub_time = now_date.toISOString().replace(/T/,' ').replace(/\..+/,'');
-
-					var data = prob.oj + " 2  __SOURCE-CODE-BEGIN-LABLE__\n" + code + "\n__SOURCE-CODE-END-LABLE__\n" + runid + "\n" + sub_time + "\n" + prob.pid + " " + lang + " " + currentUser.username + " " + prob.vid + " " + CID + " " + req.query.pid + " ss mm\n";
-
-					//SendCode(HOST, PORT, data);
-					res.redirect('/Contest/Status?cid='+CID+'&page=1');
 				});
-			});
+			}
 		});
 	});
 
@@ -728,7 +756,7 @@ module.exports = function(app) {
 			url += "&username=" + username;
 		} else url += "&username=";
 		if(lang) {
-			query.lang = lang;
+			query.lang = parseInt(lang);
 			url += "&lang=" + lang;
 		} else url += "&lang=";
 		if(result) {
@@ -747,31 +775,33 @@ module.exports = function(app) {
 				if(err) {
 					req.flash('error', err);
 					return res.redirect('/');
-				}
-				Contest_Status.page(query, pageID, function(err, stats) {
-					if(err) {
-						req.flash('error', err);
-						return res.redirect('/');
-					}
-					var total_page = Math.ceil(total_num/15);
-					if(total_page == 0) total_page = 1;
-					res.render('Contest/Contest_Status', {
-						title:'Status',
-						floginUser: loginUser,
-						fcont: cont,
-						fstats: stats,
-						fcorrlang: corrlang,
-						fpageID: pageID,
-						fselected:{
-							"pid":pid,
-							"username":username,
-							"lang":lang,
-							"result":digit2result[result],
-						},
-						furl: url,
-						ftotal_page: total_page,
+				} else {
+					Contest_Status.page(query, pageID, function(err, stats) {
+						if(err) {
+							req.flash('error', err);
+							return res.redirect('/');
+						} else {
+							var total_page = Math.ceil(total_num/15);
+							if(total_page == 0) total_page = 1;
+							res.render('Contest/Contest_Status', {
+								title:'Status',
+								floginUser: loginUser,
+								fcont: cont,
+								fstats: stats,
+								fcorrlang: corrlang,
+								fpageID: pageID,
+								fselected:{
+									"pid":pid,
+								"username":username,
+								"lang":lang,
+								"result":digit2result[result],
+								},
+								furl: url,
+								ftotal_page: total_page,
+							});
+						}
 					});
-				});
+				}
 			});
 		});
 	});
@@ -780,7 +810,7 @@ module.exports = function(app) {
 	app.get('/Contest/Statistics', checkLogin);
 	app.get('/Contest/Statistics', checkAccess);
 	app.get('/Contest/Statistics', function(req, res) {
-	//Status?pid=&username=&lang=&result=&page=
+		//Status?pid=&username=&lang=&result=&page=
 		var query = {speed:51};
 		var cid = req.query.cid;
 		var nid = req.query.pid;
@@ -801,7 +831,7 @@ module.exports = function(app) {
 			return res.redirect('/Contest/Contests');
 		}
 		if(lang) {
-			query.lang = lang;
+			query.lang = parseInt(lang);
 			url += '&lang=' + lang;
 		} 
 		if(pageID) pageID = parseInt(pageID);
@@ -810,41 +840,44 @@ module.exports = function(app) {
 
 		var loginUser = "";
 		if(req.session.user)  loginUser = req.session.user.username;
-		
+
 		Contest_Status.getCount(query, function(err, total_num) {
 			if(err) {
 				req.flash('error', err);
 				return res.redirect('/Contest/Contests');
-			}
-			Contest_Status.GetStatistics(query, pageID, function(err, statistics) {
-				if(err) {
-					req.flash('error', err);
-					return res.redirect('/Contest/Contests');
-				}
-				Contest_Prob.get({cid:query.cid, nid:query.nid}, function(err, prob) {
+			} else {
+				Contest_Status.GetStatistics(query, pageID, function(err, statistics) {
 					if(err) {
 						req.flash('error', err);
 						return res.redirect('/Contest/Contests');
-					}
-					var total_page = Math.ceil(total_num / 15);
-					if(total_page == 0) total_page = 1;
+					} else {
+						Contest_Prob.get({cid:query.cid, nid:query.nid}, function(err, prob) {
+							if(err) {
+								req.flash('error', err);
+								return res.redirect('/Contest/Contests');
+							} else {
+								var total_page = Math.ceil(total_num / 15);
+								if(total_page == 0) total_page = 1;
 
-					/* need to be fix CODE2*/
-					res.render('Contest/Contest_Statistics', {
-						title:'Statistics',
-						floginUser: loginUser,
-						fprob: prob,
-						fstatistics: statistics,
-						fcorrlang: corrlang,
-						fpageID: pageID,
-						flang: lang,
-						ftotal_page: total_page,
-						ftotal_num: total_num,
-						furl: url,
-						
-					});
+								/* need to be fix CODE2*/
+								res.render('Contest/Contest_Statistics', {
+									title:'Statistics',
+									floginUser: loginUser,
+									fprob: prob,
+									fstatistics: statistics,
+									fcorrlang: corrlang,
+									fpageID: pageID,
+									flang: lang,
+									ftotal_page: total_page,
+									ftotal_num: total_num,
+									furl: url,
+
+								});
+							}
+						});
+					}
 				});
-			});
+			}
 		});
 	});
 
@@ -864,20 +897,22 @@ module.exports = function(app) {
 			if(!currentUser || currentUser.username != stat.username) {
 				req.flash('error', 'You don\' have the permission!');
 				return res.redirect('/Status');
-			}
-			Contest_Code.get(cid, runid, function(err, code) {
-				if(err || !code) {
-					req.flash('error', 'You don\' have the permission!');
-					return res.redirect('/Status');
-				}
-				res.render('Contest/Contest_ShowCode', {
-					title: 'View Code',
-					fstat: stat,
-					fcode: code,
-					fcorrlang: corrlang,
-				});
+			} else {
+				Contest_Code.get(cid, runid, function(err, code) {
+					if(err || !code) {
+						req.flash('error', 'You don\' have the permission!');
+						return res.redirect('/Status');
+					} else {
+						res.render('Contest/Contest_ShowCode', {
+							title: 'View Code',
+							fstat: stat,
+							fcode: code,
+							fcorrlang: corrlang,
+						});
+					}
 
-			});
+				});
+			}
 		});
 	});
 
@@ -889,14 +924,15 @@ module.exports = function(app) {
 			if(err || !cont) {
 				req.flash('error', err);
 				return res.redirect('/Contest/ShowContests?cid='+cid);
-			}
-			Contest_Status.getMulti({cid:parseInt(CID)}, function(err, stats) {
-				res.render('Contest/Contest_Standing', {
-					title:'Standing',
-					fcont: cont,
-					fstats: stats,
+			} else {
+				Contest_Status.getMulti({cid:parseInt(CID)}, function(err, stats) {
+					res.render('Contest/Contest_Standing', {
+						title:'Standing',
+						fcont: cont,
+						fstats: stats,
+					});
 				});
-			});
+			}
 		});
 	});
 
@@ -910,19 +946,21 @@ module.exports = function(app) {
 			if(err) {
 				req.flash('error', err);
 				return res.redirect('/');
-			}
-			User.page({}, page, function(err, users) {
-				if(err) {
-					req.flash('error', err);
-					return res.redirect('/Ranklist');
-				}
-				res.render('Ranklist', {
-					title: 'Ranklist',
-					fusers: users,
-					fpage: page,
-					ftotal_page: Math.ceil(total_num/50),
+			} else {
+				User.page({}, page, function(err, users) {
+					if(err) {
+						req.flash('error', err);
+						return res.redirect('/Ranklist');
+					} else {
+						res.render('Ranklist', {
+							title: 'Ranklist',
+							fusers: users,
+							fpage: page,
+							ftotal_page: Math.ceil(total_num/50),
+						});
+					}
 				});
-			});
+			}
 		});
 	});
 
@@ -933,11 +971,12 @@ module.exports = function(app) {
 			if(err) {
 				req.flash('error', err);
 				return res.redirect('/');
+			} else {
+				res.render('ShowCEError', {
+					title: 'Error',
+					fce_info: stat.ce_info,
+				});
 			}
-			res.render('ShowCEError', {
-				title: 'Error',
-				fce_info: stat.ce_info,
-			});
 		});
 	});
 
@@ -951,11 +990,12 @@ module.exports = function(app) {
 			if(err) {
 				req.flash('error', err);
 				return res.redirect('/');
+			} else {
+				res.render('Contest/Contest_ShowCEError', {
+					title: 'Error',
+					fce_info: stat.ce_info,
+				});
 			}
-			res.render('Contest/Contest_ShowCEError', {
-				title: 'Error',
-				fce_info: stat.ce_info,
-			});
 		});
 	});
 
@@ -979,15 +1019,16 @@ module.exports = function(app) {
 			if(!user) {
 				req.flash('error', 'user doesn\'t exists.');
 				return res.redirect('/');
-			}
-			Status.getMulti({username:req.params.user}, function(err, pids) {
-				res.render('profile', {
-					title: 'Profile',
-					fuser: user,
-					fusername: username,
-					fpids: pids,
+			} else {
+				Status.getMulti({username:req.params.user}, function(err, pids) {
+					res.render('profile', {
+						title: 'Profile',
+						fuser: user,
+						fusername: username,
+						fpids: pids,
+					});
 				});
-			});
+			}
 		});
 	});
 	app.post('/SaveProfile', function(req, res) {
@@ -1012,9 +1053,10 @@ module.exports = function(app) {
 			if (err) {
 				req.flash('error', err);
 				return res.redirect('/');
+			} else {
+				req.flash('success', 'post success.');
+				res.redirect('/u/' + currentUser.username);
 			}
-			req.flash('success', 'post success.');
-			res.redirect('/u/' + currentUser.username);
 		});
 	});
 
